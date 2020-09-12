@@ -1,1 +1,43 @@
 <h1 class="sub-header">Strategies</h1>
+<div class="mt-5">
+  <h2>Your strategies</h2>
+  <table>
+    <tr>
+      <th class="text-center">Active</th>
+      <th>Name</th>
+      <th>Coin Pair</th>
+      <th>Indicator</th>
+      <th>Time Frame</th>
+      <th>Budget</th>
+      <th>From</th>
+    </tr>
+    <tr (click)="editStrategy($index,str)"  *ngFor="let str of strategies; let $index =index; " class="pointer">
+      <td class="text-center"><span [ngClass]="{'run': str.is_active == 1 ,'stop':str.is_active == 0}"  class="dot"></span></td>
+      <td>{{str.name}}</td>
+      <td>{{str.coin_pair}}</td>
+      <td>{{str.indicator_id}}</td>
+      <td>{{str.timeframe}}</td>
+      <td>{{str.budget}}</td>
+      <td>{{str.created_at}}</td>
+      <modal id="edit-modal" #editModal>
+        <div class="app-modal-header"><h3>Edit strategies {{$index+1}}</h3></div>
+        <div class="app-modal-body">
+          <div class="row">
+            <div class="col-sm-6">
+              <label>Active</label>
+            </div>
+            <div class="col-sm-6">
+              <!-- Default switch -->
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" id="customSwitches">
+                <label class="custom-control-label" for="customSwitches"></label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </modal>
+    </tr>
+
+  </table>
+</div>
+
