@@ -10,7 +10,7 @@ import {SettingsComponent} from './settings/settings.component';
 
 const routes: Routes = [
   {
-    path: '', component: HomeComponent,
+    path: '', component: HomeComponent, canActivate: [HomeGuard],
     children: [
       {path: '', redirectTo: 'dashboard', pathMatch: 'full'},
       {

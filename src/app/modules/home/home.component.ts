@@ -1,4 +1,6 @@
 import {Component} from '@angular/core';
+import {AuthService} from '../../core/services/auth.service';
+import {Router} from '@angular/router';
 // import {ActivatedRoute, Route, Router} from "@angular/router";
 @Component({
     selector: 'travel-component',
@@ -7,6 +9,9 @@ import {Component} from '@angular/core';
 })
 export class HomeComponent{
 
-    constructor() {}
+    constructor(public authService: AuthService,
+                private router: Router  ) {
+
+    }
 }
 

@@ -25,6 +25,7 @@ export class AuthService {
   logout() {
     // remove user from local storage to log user out
     localStorage.clear();
+    this.router.navigate(['auth']).then();
   }
 
   get token(): string {

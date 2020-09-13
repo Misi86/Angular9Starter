@@ -6,11 +6,11 @@ import {NotFoundComponent} from './modules/home/404/404.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
-  // {
-  //   path: 'auth',
-  //   loadChildren: () => import('./modules/authentication/authentication.module').then(m =>
-  //     m.AuthenticationModule)
-  // },
+  {
+    path: 'auth',
+    loadChildren: () => import('./modules/authentication/authentication.module').then(m =>
+      m.AuthenticationModule)
+  },
   {
     path: 'home',
     loadChildren: () => import('./modules/home/home.module').then(m =>

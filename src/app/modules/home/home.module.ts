@@ -20,6 +20,7 @@ import {ModalComponent} from '../../shared/modal/modal.component';
     // BrowserModule,
     // HttpClientModule,
   ],
+  providers: [HomeGuard],
   declarations: [
     HomeComponent,
     DashboardComponent,
