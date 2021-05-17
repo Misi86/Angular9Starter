@@ -7,10 +7,9 @@
       <th class="text-center">Active</th>
       <th>Name</th>
       <th>Coin Pair</th>
-<!--      <th>Indicator</th>-->
       <th>Time Frame</th>
-      <th>Start Budget</th>
-      <th>Current Budget</th>
+      <th>Start BTC</th>
+      <th>Current BTC</th>
       <th>Buy Price</th>
       <th>Sell Price</th>
       <th>From</th>
@@ -20,7 +19,6 @@
       <td class="text-center"><span [ngClass]="{'run': str.is_active == 1 ,'stop':str.is_active == 0}"  class="dot"></span></td>
       <td>{{str.name}}</td>
       <td>{{str.coin_pair}}</td>
-<!--      <td>{{str.indicator_id}}</td>-->
       <td>{{str.timeframe}}</td>
       <td>{{str.initial_budget}}</td>
       <td>{{str.current_budget}}</td>
