@@ -9,36 +9,32 @@
       <th>Coin Pair</th>
 <!--      <th>Indicator</th>-->
       <th>Time Frame</th>
-      <th>Budget</th>
+      <th>Start Budget</th>
+      <th>Current Budget</th>
+      <th>Buy Price</th>
+      <th>Sell Price</th>
       <th>From</th>
       <th></th>
     </tr>
-    <tr   *ngFor="let str of activeStrategies; let $index =index; " class="pointer">
+    <tr   *ngFor="let str of activeStrategies; let $index =index; ">
       <td class="text-center"><span [ngClass]="{'run': str.is_active == 1 ,'stop':str.is_active == 0}"  class="dot"></span></td>
       <td>{{str.name}}</td>
       <td>{{str.coin_pair}}</td>
 <!--      <td>{{str.indicator_id}}</td>-->
       <td>{{str.timeframe}}</td>
-      <td>{{str.budget}}</td>
+      <td>{{str.initial_budget}}</td>
+      <td>{{str.current_budget}}</td>
+      <td>{{str.buy_price}}</td>
+      <td>{{str.sell_price}}</td>
       <td>{{str.created_at}}</td>
       <td><button class="btn btn-danger">STOP</button></td>
-<!--      <modal id="edit-modal" #confirmModal>-->
-<!--        <div class="app-modal-header"><h3>Edit strategies {{$index+1}}</h3></div>-->
-<!--        <div class="app-modal-body">-->
-<!--          <div class="row">-->
-<!--            <div class="col-sm-6">-->
-<!--              <label>Active</label>-->
-<!--            </div>-->
-<!--            <div class="col-sm-6">-->
-<!--              &lt;!&ndash; Default switch &ndash;&gt;-->
-<!--              <div class="custom-control custom-switch">-->
-<!--                <input type="checkbox" class="custom-control-input" id="customSwitches">-->
-<!--                <label class="custom-control-label" for="customSwitches"></label>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </modal>-->
+      <modal id="edit-modal" #confirmModal>
+        <div class="app-modal-header"><h3>Edit strategies {{$index+1}}</h3></div>
+        <div class="app-modal-body">
+          <p>Buy Price: 0.00005 BTC </p>
+          <p>Sell Price: 0.000051 BTC </p>
+        </div>
+      </modal>
     </tr>
 
   </table>
