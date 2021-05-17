@@ -1,43 +1,58 @@
 <h1 class="sub-header">Strategies</h1>
-<div class="mt-5">
-  <h2>Your strategies</h2>
-  <table>
-    <tr>
-      <th class="text-center">Active</th>
-      <th>Name</th>
-      <th>Coin Pair</th>
-      <th>Indicator</th>
-      <th>Time Frame</th>
-      <th>Budget</th>
-      <th>From</th>
-    </tr>
-    <tr (click)="editStrategy($index,str)"  *ngFor="let str of strategies; let $index =index; " class="pointer">
-      <td class="text-center"><span [ngClass]="{'run': str.is_active == 1 ,'stop':str.is_active == 0}"  class="dot"></span></td>
-      <td>{{str.name}}</td>
-      <td>{{str.coin_pair}}</td>
-      <td>{{str.indicator_id}}</td>
-      <td>{{str.timeframe}}</td>
-      <td>{{str.budget}}</td>
-      <td>{{str.created_at}}</td>
-      <modal id="edit-modal" #editModal>
-        <div class="app-modal-header"><h3>Edit strategies {{$index+1}}</h3></div>
-        <div class="app-modal-body">
-          <div class="row">
-            <div class="col-sm-6">
-              <label>Active</label>
-            </div>
-            <div class="col-sm-6">
-              <!-- Default switch -->
-              <div class="custom-control custom-switch">
-                <input type="checkbox" class="custom-control-input" id="customSwitches">
-                <label class="custom-control-label" for="customSwitches"></label>
-              </div>
-            </div>
-          </div>
-        </div>
-      </modal>
-    </tr>
 
-  </table>
-</div>
+  <div class="strategies-container ">
+    <div>
+      <div class="row">
+        <div class="col-sm-3 form-group">
+          <label for="strategy-name">Strategy Name</label>
+        </div>
+        <div class="col-sm-9 form-group">
+          <input class="form-control" type="text"  id="strategy-name">
+        </div>
+        <div class="col-sm-3 form-group">
+          <label for="select-pairs">Seleziona Pairs</label>
+        </div>
+        <div class="col-sm-9 form-group">
+          <select class="form-control" id="select-pairs">
+            <option value="eth">BTC/ETH</option>
+            <option value="sol">BTC/SOL</option>
+            <option value="bnb">BTC/BNB</option>
+          </select>
+        </div>
+        <div class="col-sm-3 form-group">
+          <label for="buy-price">Buy Price</label>
+        </div>
+        <div class="col-sm-9 form-group">
+          <input class="form-control" type="text" id="buy-price">
+        </div>
+        <div class="col-sm-3 form-group">
+          <label for="sell-price">Sell Price</label>
+        </div>
+        <div class="col-sm-9 form-group">
+          <input class="form-control" type="text" id="sell-price">
+        </div>
+        <div class="col-sm-3 form-group">
+        </div>
+        <div class="col-sm-9 form-group">
+          <button class="btn btn-primary float-right" (click)="editStrategy()" >START</button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+  <modal #confirmModal>
+    <div class="app-modal-header">
+      <h3>Confirm Action</h3>
+    </div>
+    <div class="app-modal-body text-center">
+      <h5></h5>
+      <p>You are starting "Strategy 1" with current setting</p>
+      <p>Buy Price: 0.00005 BTC </p>
+      <p>Sell Price: 0.000051 BTC </p>
+      <h3>PLEASE CONFIRM</h3>
+      <button class="btn btn-danger float-left" (click)="close()">DECLINE</button>
+      <button class="btn btn-success float-right" (click)="close()">CONFIRM</button>
+    </div>
+  </modal>
 
