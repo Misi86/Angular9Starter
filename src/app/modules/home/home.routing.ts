@@ -16,13 +16,15 @@ const routes: Routes = [
       {
         path: 'dashboard',
         component: DashboardComponent
-      }, {
-        path: 'indicators',
-        component: IndicatorsComponent
-      }, {
-      path: 'strategies',
-        component: StrategiesComponent
-      }, {
+      },
+      // , {
+      //   path: 'indicators',
+      //   component: IndicatorsComponent
+      // }, {
+      // path: 'strategies',
+      //   component: StrategiesComponent
+      // },
+      {
       path: 'settings',
         component: SettingsComponent
 }
