@@ -3,6 +3,10 @@ table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 100%;
+
+  .hidden-column{
+   //display: block;
+  }
 }
 .dot {
   height: 18px;
@@ -25,4 +29,12 @@ td, th {
 
 tr:nth-child(even) {
   background-color: #dddddd;
+}
+
+@media screen and (max-width: 600px) {
+  .table {
+  }
+  .hidden-column{
+    display: none !important;
+  }
 }

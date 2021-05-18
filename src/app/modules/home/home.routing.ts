@@ -25,11 +25,12 @@ const routes: Routes = [
       , {
       path: 'strategies',
         component: StrategiesComponent
-      },
-      {
-      path: 'settings',
-        component: SettingsComponent
-}
+      }
+//       ,
+//       {
+//       path: 'settings',
+//         component: SettingsComponent
+// }
     ],
   }
 ];

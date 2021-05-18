@@ -22,6 +22,7 @@ export class AuthService {
         return resp;
       }));
   }
+
   logout() {
     // remove user from local storage to log user out
     localStorage.clear();

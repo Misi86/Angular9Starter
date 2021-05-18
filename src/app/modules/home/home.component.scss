@@ -46,8 +46,24 @@
       }
     }
   }
+  .panel-side{
+    margin-left: 16.666667%;
+  }
+
   footer{
     color: white;
     min-height: 60px;
   }
+
+  .start-btn{
+    background-color: #183153;
+    opacity: 0.8;
+  }
+}
+@media screen and (max-width: 600px) {
+ .site-wrapper{
+   .panel-side {
+     margin-left: 0%;
+   }
+ }
 }

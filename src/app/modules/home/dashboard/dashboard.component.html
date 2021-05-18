@@ -2,38 +2,56 @@
 
 <div class="mt-5">
   <h2>Your Active Strategies</h2>
-  <table>
+  <table class="table-responsive">
     <tr>
       <th class="text-center">Active</th>
       <th>Name</th>
-      <th>Coin Pair</th>
-      <th>Time Frame</th>
-      <th>Start BTC</th>
-      <th>Current BTC</th>
-      <th>Buy Price</th>
-      <th>Sell Price</th>
-      <th>From</th>
-      <th></th>
+      <th class="hidden-column">Coin Pair</th>
+      <th class="hidden-column">Start BTC</th>
+      <th class="hidden-column">Current BTC</th>
+      <th class="hidden-column">Buy Price</th>
+      <th class="hidden-column">Sell Price</th>
+      <th >From</th>
+      <th>STOP</th>
     </tr>
     <tr   *ngFor="let str of activeStrategies; let $index =index; ">
-      <td class="text-center"><span [ngClass]="{'run': str.is_active == 1 ,'stop':str.is_active == 0}"  class="dot"></span></td>
+      <td class="text-center">
+        <span (click)="openConfirmModal($index)" class="d-sm-block d-md-none">INFO</span>
+        <span class="d-none d-lg-block">
+        <span [ngClass]="{'run': str.is_active == 1 ,'stop':str.is_active == 0}"  class="dot"></span>
+      </span>
+      </td>
       <td>{{str.name}}</td>
-      <td>{{str.coin_pair}}</td>
-      <td>{{str.timeframe}}</td>
-      <td>{{str.initial_budget}}</td>
-      <td>{{str.current_budget}}</td>
-      <td>{{str.buy_price}}</td>
-      <td>{{str.sell_price}}</td>
-      <td>{{str.created_at}}</td>
-      <td><button class="btn btn-danger">STOP</button></td>
-      <modal id="edit-modal" #confirmModal>
-        <div class="app-modal-header"><h3>Edit strategies {{$index+1}}</h3></div>
-        <div class="app-modal-body">
-          <p>Buy Price: 0.00005 BTC </p>
-          <p>Sell Price: 0.000051 BTC </p>
-        </div>
-      </modal>
+      <td class="hidden-column">{{str.coin_pair}}</td>
+      <td class="hidden-column">{{str.initial_budget}}</td>
+      <td class="hidden-column">{{str.current_budget}}</td>
+      <td class="hidden-column">{{str.buy_price}}</td>
+      <td class="hidden-column">{{str.sell_price}}</td>
+      <td >{{str.created_at}}</td>
+      <td><button (click)="openStopModal($index)" class="btn btn-danger">STOP</button></td>
     </tr>
-
   </table>
+  <modal id="edit-modal" #detailsModal>
+    <div class="app-modal-header"><h3>Details {{checkMobileData.id}}</h3></div>
+    <div class="app-modal-body">
+      <p>{{checkMobileData.name}}</p>
+      <p>{{checkMobileData.coin_pair}}</p>
+      <p>{{checkMobileData.initial_budget}}</p>
+      <p>{{checkMobileData.current_budget}}</p>
+      <p>{{checkMobileData.buy_price}}</p>
+      <p>{{checkMobileData.sell_price}}</p>
+      <p>{{checkMobileData.created_at}}</p>
+    </div>
+  </modal>
+  <modal id="stop-modal" #stopModal>
+      <div class="app-modal-header"><h3>STOP {{stopData.id}}</h3></div>
+      <div class="app-modal-body">
+        <div class="text-center">
+          <h2>You are stopping {{stopData.name}}</h2>
+          <h2>Please Confirm !!</h2>
+        </div>
+        <button class="btn btn-danger float-left" (click)="closeStop()">CLOSE</button>
+        <button class="btn start-btn float-right" (click)="closeStop()">STOP IT</button>
+      </div>
+  </modal>
 </div>
