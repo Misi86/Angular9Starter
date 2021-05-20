@@ -9,17 +9,20 @@ import {StrategiesComponent} from './strategies/strategies.component';
 import {SettingsComponent} from './settings/settings.component';
 import {CommonModule} from '@angular/common';
 import {ModalComponent} from '../../shared/modal/modal.component';
+import {ReactiveFormsModule} from '@angular/forms';
+import {AlertComponent} from '../../shared/alert/alert.component';
 // import {BrowserModule} from "@angular/platform-browser";
 // import {HttpClientModule} from "@angular/common/http";
 
 
 @NgModule({
-  imports: [
-    AuthenticationRoutingModule,
-    CommonModule,
-    // BrowserModule,
-    // HttpClientModule,
-  ],
+    imports: [
+        AuthenticationRoutingModule,
+        CommonModule,
+        ReactiveFormsModule,
+        // BrowserModule,
+        // HttpClientModule,
+    ],
   providers: [HomeGuard],
   declarations: [
     HomeComponent,
@@ -28,10 +31,12 @@ import {ModalComponent} from '../../shared/modal/modal.component';
     StrategiesComponent,
     SettingsComponent,
     NotFoundComponent,
-    ModalComponent
+    ModalComponent,
+    AlertComponent
   ],
   exports: [
-    ModalComponent
+    ModalComponent,
+    AlertComponent
   ]
 })
 export class HomeModule {

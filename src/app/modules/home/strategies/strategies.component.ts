@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalComponent} from '../../../shared/modal/modal.component';
+import {AlertService} from "../../../shared/alert/alert.service";
 
 declare var $: any;
 
@@ -10,13 +11,18 @@ declare var $: any;
   styleUrls: ['./strategies.component.scss'],
 })
 export class StrategiesComponent implements OnInit {
-  // public strategies: any;
+  public strategiesForm: FormGroup;
   @ViewChild('confirmModal') confirmModal: ModalComponent;
 
-  // private strategiesForm: any;
-  constructor() {
+  constructor(private fb: FormBuilder,
+              private alert: AlertService) {
 
-
+    this.strategiesForm = this.fb.group({
+      strategy_name: ['', Validators.required],
+      strategy_pairs: ['', Validators.required],
+      strategy_buy_price: ['', Validators.required],
+      strategy_sell_price: ['', Validators.required],
+    });
 
   }
 
@@ -32,10 +38,11 @@ export class StrategiesComponent implements OnInit {
   }
 
   close() {
-  this.confirmModal.dismiss();
+    this.confirmModal.dismiss();
   }
 
   openConfirmModal() {
+    this.alert.addMessage('danger', 'alllllluurua');
     this.confirmModal.show('modal-lg');
   }
 

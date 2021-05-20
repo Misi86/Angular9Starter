@@ -8,6 +8,8 @@ import {AuthService} from './core/services/auth.service';
 import {APIInterceptor} from './shared/http-resources/api.interceptor';
 import {ErrorInterceptor} from './shared/http-resources/error.interceptor';
 import {TokenInterceptor} from './shared/http-resources/token.interceptor';
+import {AlertService} from './shared/alert/alert.service';
+import {HomeModule} from "./modules/home/home.module";
 
 @NgModule({
   declarations: [
@@ -16,13 +18,15 @@ import {TokenInterceptor} from './shared/http-resources/token.interceptor';
   imports: [
     BrowserModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HomeModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
-    AuthService
+    AuthService,
+    AlertService,
   ],
   bootstrap: [AppComponent]
 })

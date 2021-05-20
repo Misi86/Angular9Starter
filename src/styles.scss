@@ -20,3 +20,13 @@ html, body{
 .stop-btn{
 
 }
+.alert-wrapper{
+  position: fixed;
+  top: 70px;
+  right: 15px;
+  max-width: 400px;
+  z-index:1000;
+  .alert{
+    margin-right: 16px;
+  }
+}

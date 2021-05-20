@@ -1,19 +1,19 @@
 <h1 class="sub-header">Strategies</h1>
 
   <div class="strategies-container ">
-    <div>
+    <form [formGroup]="strategiesForm" (ngSubmit)="openConfirmModal()" >
       <div class="row">
         <div class="col-sm-3 form-group">
           <label for="strategy-name">Strategy Name</label>
         </div>
         <div class="col-sm-9 form-group">
-          <input class="form-control" type="text"  id="strategy-name">
+          <input formControlName="strategy_name" class="form-control" type="text"  id="strategy-name">
         </div>
         <div class="col-sm-3 form-group">
           <label for="select-pairs">Seleziona Pairs</label>
         </div>
         <div class="col-sm-9 form-group">
-          <select class="form-control" id="select-pairs">
+          <select formControlName="strategy_pairs" class="form-control" id="select-pairs">
             <option value="eth">BTC/ETH</option>
             <option value="sol">BTC/SOL</option>
             <option value="bnb">BTC/BNB</option>
@@ -23,22 +23,22 @@
           <label for="buy-price">Buy Price</label>
         </div>
         <div class="col-sm-9 form-group">
-          <input class="form-control" type="text" id="buy-price">
+          <input formControlName="strategy_buy_price" class="form-control" type="text" id="buy-price">
         </div>
         <div class="col-sm-3 form-group">
           <label for="sell-price">Sell Price</label>
         </div>
         <div class="col-sm-9 form-group">
-          <input class="form-control" type="text" id="sell-price">
+          <input formControlName="strategy_buy_price" class="form-control" type="text" id="sell-price">
         </div>
         <div class="col-sm-3 form-group">
         </div>
         <div class="col-sm-9 form-group">
-          <button class="btn start-btn float-right" (click)="editStrategy()" >START</button>
+          <button class="btn start-btn float-right" >START</button>
         </div>
       </div>
 
-    </div>
+    </form>
 
   </div>
   <modal #confirmModal>
