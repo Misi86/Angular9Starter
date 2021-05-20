@@ -1,7 +1,7 @@
 <div class="site-wrapper">
   <header class="navbar-crypto">
     <nav class="navbar  navbar-expand-md">
-      <a class="navbar-brand" href="#">Hi User</a>
+      <a class="navbar-brand" href="#">Hi <span class="text-capitalize">{{authService.user}} </span> with role: {{authService.role}}</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon">O</span>
       </button>
@@ -18,9 +18,9 @@
             <!--          <li class="nav-item">-->
             <!--            <a class="nav-link" [routerLink]="['indicators']"><img width="22" src="assets/icons/chart-line-solid.svg"> <span>  Indicator</span></a>-->
             <!--          </li>-->
-<!--            <li class="nav-item">-->
-<!--              <a class="nav-link" [routerLink]="['settings']"><img width="22" src="assets/icons/folder-open-solid.svg"> <span>  Settings</span></a>-->
-<!--            </li>-->
+            <li class="nav-item" *ngIf="authService.role == 'admin'">
+              <a class="nav-link" [routerLink]="['settings']"><img width="22" src="assets/icons/folder-open-solid.svg"> <span>  Settings</span></a>
+            </li>
           </ul>
         </div>
         <button class="btn btn-lg" (click)="authService.logout()">
@@ -47,9 +47,9 @@
 <!--          <li class="nav-item">-->
 <!--            <a class="nav-link" [routerLink]="['indicators']"><img width="22" src="assets/icons/chart-line-solid.svg"> <span>  Indicator</span></a>-->
 <!--          </li>-->
-<!--          <li class="nav-item">-->
-<!--            <a class="nav-link" [routerLink]="['settings']"><img width="22" src="assets/icons/folder-open-solid.svg"> <span>  Settings</span></a>-->
-<!--          </li>-->
+          <li class="nav-item" *ngIf="authService.role == 'admin'">
+            <a class="nav-link" [routerLink]="['settings']"><img width="22" src="assets/icons/folder-open-solid.svg"> <span>  Settings</span></a>
+          </li>
         </ul>
       </div>
       <div class="col-sm-10 panel-side">

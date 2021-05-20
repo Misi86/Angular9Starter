@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
 import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
@@ -10,6 +10,8 @@ import {HttpClient} from '@angular/common/http';
 export class AuthService {
 
   private _token;
+  private _user;
+  private _role;
 
   constructor(private router: Router,
               private http: HttpClient) {
@@ -20,6 +22,8 @@ export class AuthService {
     return this.http.get<any>('api/login/' + username + '/' + password)
       .pipe(map(resp => {
         this.token = resp.token;
+        this.user = resp.user;
+        this.role = resp.role;
         return resp;
       }));
   }
@@ -38,6 +42,21 @@ export class AuthService {
   set token(value: string) {
     localStorage.setItem('token', value);
     this._token = value;
+  }
+
+  set user(value: string) {
+    localStorage.setItem('user', value);
+    this._user = value;
+  }
+  get user(): string {
+    return this._user || localStorage.getItem('user');
+  }
+  set role(value: string) {
+    localStorage.setItem('role', value);
+    this._user = value;
+  }
+  get role(): string {
+    return this._user || localStorage.getItem('role');
   }
 
 }
