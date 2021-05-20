@@ -16,7 +16,8 @@ export class AuthService {
   }
 
   login(username: string, password: string) {
-    return this.http.post<any>('api/login', {email: 'eve.holt@reqres.in' , password: 'cityslicka'})
+    // console.log(username, password );
+    return this.http.get<any>('api/login/' + username + '/' + password)
       .pipe(map(resp => {
         this.token = resp.token;
         return resp;
@@ -26,7 +27,8 @@ export class AuthService {
   logout() {
     // remove user from local storage to log user out
     localStorage.clear();
-    this.router.navigate(['auth']).then();
+    this.token = '';
+    this.router.navigate(['auth/login']).then();
   }
 
   get token(): string {

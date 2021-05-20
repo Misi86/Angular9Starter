@@ -8,7 +8,6 @@ export class APIInterceptor implements HttpInterceptor {
   private api = environment.api;
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-
     const apiReq = req.clone({ url: this.api + req.url });
     return next.handle(apiReq);
   }

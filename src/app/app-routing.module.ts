@@ -5,7 +5,7 @@ import {NotFoundComponent} from './modules/home/404/404.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: '', redirectTo: 'auth', pathMatch: 'full' },
   {
     path: 'auth',
     loadChildren: () => import('./modules/authentication/authentication.module').then(m =>

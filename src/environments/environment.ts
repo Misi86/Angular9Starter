@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   local: true,
-  api: 'https://reqres.in/'
+  api: 'http://127.0.0.1:3000/'
 };
 
 /*

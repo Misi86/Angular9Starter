@@ -9,9 +9,11 @@ export class AuthenticationGuard implements CanActivate {
 
   canActivate() {
     if (!this.authService.token){
+      // this.router.navigate(['home/dashboard']).then();
       return true;
     } else {
-      return this.router.createUrlTree(['']);
+      this.router.navigate(['home/dashboard']).then();
+      // return this.router.createUrlTree(['']);
     }
   }
 }
