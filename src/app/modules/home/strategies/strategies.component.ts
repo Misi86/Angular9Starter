@@ -20,6 +20,7 @@ export class StrategiesComponent implements OnInit {
     this.strategiesForm = this.fb.group({
       strategy_name: ['', Validators.required],
       strategy_pairs: ['', Validators.required],
+      strategy_capital: ['', Validators.required],
       strategy_buy_price: ['', Validators.required],
       strategy_sell_price: ['', Validators.required],
     });
@@ -41,8 +42,11 @@ export class StrategiesComponent implements OnInit {
     this.confirmModal.dismiss();
   }
 
+  get formValue() {
+    return this.strategiesForm.controls;
+  }
+
   openConfirmModal() {
-    this.alert.addMessage('danger', 'alllllluurua');
     this.confirmModal.show('modal-lg');
   }
 

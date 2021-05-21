@@ -31,10 +31,7 @@ export class LoginComponent implements OnInit{
         (resp) => {
           this.router.navigate(['home']).then();
         },
-        (error) => {
-          this.alert.addMessage('danger', error.error);
-          console.log(error);
-        }
+        (error) => {}
       );
     }
 }

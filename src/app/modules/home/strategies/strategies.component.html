@@ -1,7 +1,7 @@
 <h1 class="sub-header">Strategies</h1>
 
   <div class="strategies-container ">
-    <form [formGroup]="strategiesForm" (ngSubmit)="openConfirmModal()" >
+    <form [formGroup]="strategiesForm" (ngSubmit)="openConfirmModal()" novalidate>
       <div class="row">
         <div class="col-sm-3 form-group">
           <label for="strategy-name">Strategy Name</label>
@@ -20,21 +20,27 @@
           </select>
         </div>
         <div class="col-sm-3 form-group">
+          <label for="buy-price">Capital BTC</label>
+        </div>
+        <div class="col-sm-9 form-group">
+          <input formControlName="strategy_capital" class="form-control inputStr" type="number" id="capital">
+        </div>
+        <div class="col-sm-3 form-group">
           <label for="buy-price">Buy Price</label>
         </div>
         <div class="col-sm-9 form-group">
-          <input formControlName="strategy_buy_price" class="form-control" type="text" id="buy-price">
+          <input formControlName="strategy_buy_price" class="form-control inputStr" type="number" id="buy-price">
         </div>
         <div class="col-sm-3 form-group">
           <label for="sell-price">Sell Price</label>
         </div>
         <div class="col-sm-9 form-group">
-          <input formControlName="strategy_buy_price" class="form-control" type="text" id="sell-price">
+          <input formControlName="strategy_sell_price" class="form-control inputStr" type="number" id="sell-price">
         </div>
         <div class="col-sm-3 form-group">
         </div>
         <div class="col-sm-9 form-group">
-          <button class="btn start-btn float-right" >START</button>
+          <button [disabled]="strategiesForm.invalid" class="btn start-btn float-right" >START</button>
         </div>
       </div>
 
@@ -46,10 +52,11 @@
       <h3>Confirm Action</h3>
     </div>
     <div class="app-modal-body text-center">
-      <h5></h5>
-      <p>You are starting "Strategy 1" with current setting</p>
-      <p>Buy Price: 0.00005 BTC </p>
-      <p>Sell Price: 0.000051 BTC </p>
+      <p>You are starting "{{formValue.strategy_name.value}}" with current setting</p>
+      <p>Pairs: {{formValue.strategy_pairs.value}}</p>
+      <p>Buy Price: {{formValue.strategy_buy_price.value}} BTC </p>
+      <p>Sell Price: {{formValue.strategy_sell_price.value}} BTC </p>
+      <p>Capital: {{formValue.strategy_capital.value}} BTC </p>
       <h3>PLEASE CONFIRM</h3>
       <button class="btn btn-danger float-left" (click)="close()">DECLINE</button>
       <button class="btn start-btn float-right" (click)="close()">CONFIRM</button>

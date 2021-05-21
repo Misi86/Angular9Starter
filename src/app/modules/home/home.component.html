@@ -18,7 +18,7 @@
             <!--          <li class="nav-item">-->
             <!--            <a class="nav-link" [routerLink]="['indicators']"><img width="22" src="assets/icons/chart-line-solid.svg"> <span>  Indicator</span></a>-->
             <!--          </li>-->
-            <li class="nav-item" *ngIf="authService.role == 'admin'">
+            <li class="nav-item" >
               <a class="nav-link" [routerLink]="['settings']"><img width="22" src="assets/icons/folder-open-solid.svg"> <span>  Settings</span></a>
             </li>
           </ul>
@@ -33,7 +33,7 @@
   </header>
   <main role="main" class="main-content container-fluid">
     <div class="row">
-      <div class="d-none d-lg-block col-sm-2 side-menu" >
+      <div class="d-none d-sm-block col-sm-2 side-menu" >
         <div class="profile-img">
           <img src="assets/bitcoin-brands.svg">
         </div>

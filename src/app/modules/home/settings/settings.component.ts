@@ -1,12 +1,21 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {AuthService} from '../../../core/services/auth.service';
+
+declare var $: any;
 
 @Component({
-    selector: 'settings-component',
-    templateUrl: './settings.component.html',
-    styleUrls: ['./settings.component.scss'],
+  selector: 'settings-component',
+  templateUrl: './settings.component.html',
+  styleUrls: ['./settings.component.scss'],
 })
-export class SettingsComponent{
+export class SettingsComponent implements OnInit {
 
-    constructor() {}
+  constructor(public authService: AuthService) {
+  }
+
+  ngOnInit() {
+  }
+
+
 }
 

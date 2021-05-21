@@ -3,22 +3,23 @@ import { HttpRequest, HttpHandler, HttpEvent, HttpInterceptor } from '@angular/c
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import {AuthService} from '../../core/services/auth.service';
+import {AlertService} from '../alert/alert.service';
 
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService,
+              private alert: AlertService) { }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     return next.handle(request).pipe(catchError(err => {
       if (err.status === 401) {
         // auto logout if 401 response returned from api
-        console.log('ci passo');
         this.authService.logout();
       }
 
       const error = err.error;
-      console.log('>>>', error);
+      this.alert.addMessage('danger', error.error);
       return throwError(error);
     }));
   }

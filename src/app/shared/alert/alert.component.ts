@@ -1,7 +1,7 @@
 import {Component, ElementRef, OnInit, ViewChild} from "@angular/core";
-import {AlertService} from "./alert.service";
+import {AlertService} from './alert.service';
 
-const $ = require('jquery');
+declare var $: any;
 
 @Component({
   selector: 'alert',
