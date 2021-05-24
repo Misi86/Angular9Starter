@@ -9,7 +9,8 @@ import {APIInterceptor} from './shared/http-resources/api.interceptor';
 import {ErrorInterceptor} from './shared/http-resources/error.interceptor';
 import {TokenInterceptor} from './shared/http-resources/token.interceptor';
 import {AlertService} from './shared/alert/alert.service';
-import {HomeModule} from "./modules/home/home.module";
+import {HomeModule} from './modules/home/home.module';
+import {ActionService} from './core/services/action.service';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import {HomeModule} from "./modules/home/home.module";
     {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
     AuthService,
     AlertService,
+    ActionService,
   ],
   bootstrap: [AppComponent]
 })

@@ -1,17 +1,17 @@
-<h1 class="sub-header">Dashboard</h1>
+<h1 class="sub-header">Riepilogo</h1>
 
 <div class="mt-5">
-  <h2>Your Active Strategies</h2>
+  <h2>Strategie attive</h2>
   <table class="table-responsive">
     <tr>
-      <th class="text-center">Active</th>
-      <th>Name</th>
-      <th class="hidden-column">Coin Pair</th>
-      <th class="hidden-column">Start BTC</th>
-      <th class="hidden-column">Current BTC</th>
+      <th class="text-center">Stato</th>
+      <th>Nome</th>
+      <th class="hidden-column">Scambio</th>
+      <th class="hidden-column">BTC iniziali</th>
+      <th class="hidden-column">BTC attuali</th>
       <th class="hidden-column">Buy Price</th>
       <th class="hidden-column">Sell Price</th>
-      <th >From</th>
+      <th >Dal</th>
       <th>STOP</th>
     </tr>
     <tr   *ngFor="let str of activeStrategies; let $index =index; ">
@@ -32,7 +32,7 @@
     </tr>
   </table>
   <modal id="edit-modal" #detailsModal>
-    <div class="app-modal-header"><h3>Details {{checkMobileData.id}}</h3></div>
+    <div class="app-modal-header"><h3>Dettaggli: {{checkMobileData.id}}</h3></div>
     <div class="app-modal-body">
       <p>{{checkMobileData.name}}</p>
       <p>{{checkMobileData.coin_pair}}</p>
@@ -47,11 +47,11 @@
       <div class="app-modal-header"><h3>STOP {{stopData.id}}</h3></div>
       <div class="app-modal-body">
         <div class="text-center">
-          <h2>You are stopping {{stopData.name}}</h2>
-          <h2>Please Confirm !!</h2>
+          <h2>Stai fermando {{stopData.name}}</h2>
+          <h2>Conferma !!</h2>
         </div>
-        <button class="btn btn-danger float-left" (click)="closeStop()">CLOSE</button>
-        <button class="btn start-btn float-right" (click)="closeStop()">STOP IT</button>
+        <button class="btn btn-danger float-left" (click)="closeStop()">CHIUDI</button>
+        <button class="btn start-btn float-right" (click)="closeStop()">STOP </button>
       </div>
   </modal>
 </div>

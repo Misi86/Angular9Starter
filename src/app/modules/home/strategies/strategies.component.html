@@ -1,26 +1,25 @@
-<h1 class="sub-header">Strategies</h1>
+<h1 class="sub-header">Strategie</h1>
 
   <div class="strategies-container ">
     <form [formGroup]="strategiesForm" (ngSubmit)="openConfirmModal()" novalidate>
       <div class="row">
         <div class="col-sm-3 form-group">
-          <label for="strategy-name">Strategy Name</label>
+          <label for="strategy-name">Nome</label>
         </div>
         <div class="col-sm-9 form-group">
           <input formControlName="strategy_name" class="form-control" type="text"  id="strategy-name">
         </div>
         <div class="col-sm-3 form-group">
-          <label for="select-pairs">Seleziona Pairs</label>
+          <label for="select-pairs">Seleziona Scambio</label>
         </div>
         <div class="col-sm-9 form-group">
-          <select formControlName="strategy_pairs" class="form-control" id="select-pairs">
-            <option value="eth">BTC/ETH</option>
-            <option value="sol">BTC/SOL</option>
-            <option value="bnb">BTC/BNB</option>
+          <select (ngModelChange)="loadPrices()" formControlName="strategy_pairs" class="form-control" id="select-pairs">
+            <option value=""></option>
+            <option *ngFor="let p of pairs" [value]="p.name">{{p.name}}</option>
           </select>
         </div>
         <div class="col-sm-3 form-group">
-          <label for="buy-price">Capital BTC</label>
+          <label for="buy-price">Capitale BTC</label>
         </div>
         <div class="col-sm-9 form-group">
           <input formControlName="strategy_capital" class="form-control inputStr" type="number" id="capital">
@@ -49,17 +48,17 @@
   </div>
   <modal #confirmModal>
     <div class="app-modal-header">
-      <h3>Confirm Action</h3>
+      <h3>Conferma azione</h3>
     </div>
     <div class="app-modal-body text-center">
-      <p>You are starting "{{formValue.strategy_name.value}}" with current setting</p>
-      <p>Pairs: {{formValue.strategy_pairs.value}}</p>
+      <p>Stai inizializzando "{{formValue.strategy_name.value}}" con i seguenti settaggi</p>
+      <p>Scambio: {{formValue.strategy_pairs.value}}</p>
       <p>Buy Price: {{formValue.strategy_buy_price.value}} BTC </p>
       <p>Sell Price: {{formValue.strategy_sell_price.value}} BTC </p>
-      <p>Capital: {{formValue.strategy_capital.value}} BTC </p>
-      <h3>PLEASE CONFIRM</h3>
-      <button class="btn btn-danger float-left" (click)="close()">DECLINE</button>
-      <button class="btn start-btn float-right" (click)="close()">CONFIRM</button>
+      <p>Capitale: {{formValue.strategy_capital.value}} BTC </p>
+      <h3>CONFERMA</h3>
+      <button class="btn btn-danger float-left" (click)="close()">DECLINA</button>
+      <button class="btn start-btn float-right" (click)="close()">CONFERMA</button>
     </div>
   </modal>
 
