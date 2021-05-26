@@ -18,6 +18,7 @@ export class StrategiesComponent implements OnInit {
   public strategiesForm: FormGroup;
   @ViewChild('confirmModal') confirmModal: ModalComponent;
   public pairs: any;
+  private currentPrice: number;
 
   constructor(private fb: FormBuilder,
               private alert: AlertService,
@@ -53,6 +54,8 @@ export class StrategiesComponent implements OnInit {
       const price = _.find(this.pairs, {name: val});
       // @ts-ignore
       // console.log(price.price.toFixed(8), _.isNumber(price.price));
+      this.currentPrice = price.price;
+      const formattedPrice = Math.floor(price.price.toFixed(8));
       this.formValue.strategy_buy_price.setValue(price.price.toFixed(8));
       this.formValue.strategy_sell_price.setValue(price.price.toFixed(8));
     }
@@ -60,21 +63,20 @@ export class StrategiesComponent implements OnInit {
   }
 
   initializeStrategy() {
-
+    const quantity = this.formValue.strategy_capital.value / parseFloat(this.formValue.strategy_buy_price.value);
     const date = new Date();
-    // buy = parseFloat(buy);
+
     const payload = {
       name: this.formValue.strategy_name.value,
       coin_pair: this.formValue.strategy_pairs.value,
-      capital: this.formValue.strategy_capital.value,
-      current_capital: this.formValue.strategy_capital.value,
+      capital: Math.round(quantity),
+      current_capital: Math.round(quantity),
       current_status: 'BUY',
-      buy_price:  this.formValue.strategy_buy_price.value,
-      sell_price: this.formValue.strategy_sell_price.value,
+      buy_price: parseFloat(this.formValue.strategy_buy_price.value),
+      sell_price: parseFloat(this.formValue.strategy_sell_price.value),
       date: this.datePipe.transform(date, 'yyyy-MM-dd'),
       status: 'ACTIVE',
     };
-
     this.actionService.setStrategy(payload).subscribe((resp) => {
       if (resp) {
         this.close();
