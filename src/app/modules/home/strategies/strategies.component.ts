@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ModalComponent} from '../../../shared/modal/modal.component';
 import {AlertService} from '../../../shared/alert/alert.service';
 import {ActionService} from '../../../core/services/action.service';
+import {DatePipe} from '@angular/common';
 import * as _ from 'lodash';
 
 declare var $: any;
@@ -11,6 +12,7 @@ declare var $: any;
   selector: 'strategies-component',
   templateUrl: './strategies.component.html',
   styleUrls: ['./strategies.component.scss'],
+  providers: [DatePipe]
 })
 export class StrategiesComponent implements OnInit {
   public strategiesForm: FormGroup;
@@ -19,7 +21,8 @@ export class StrategiesComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
               private alert: AlertService,
-              private actionService: ActionService) {
+              private actionService: ActionService,
+              private datePipe: DatePipe) {
 
     this.strategiesForm = this.fb.group({
       strategy_name: ['', Validators.required],
@@ -48,15 +51,44 @@ export class StrategiesComponent implements OnInit {
     const val = this.formValue.strategy_pairs.value;
     if (val) {
       const price = _.find(this.pairs, {name: val});
-      this.formValue.strategy_buy_price.setValue(price.price);
-      this.formValue.strategy_sell_price.setValue(price.price);
+      // @ts-ignore
+      // console.log(price.price.toFixed(8), _.isNumber(price.price));
+      this.formValue.strategy_buy_price.setValue(price.price.toFixed(8));
+      this.formValue.strategy_sell_price.setValue(price.price.toFixed(8));
     }
 
+  }
+
+  initializeStrategy() {
+
+    const date = new Date();
+    // buy = parseFloat(buy);
+    const payload = {
+      name: this.formValue.strategy_name.value,
+      coin_pair: this.formValue.strategy_pairs.value,
+      capital: this.formValue.strategy_capital.value,
+      current_capital: this.formValue.strategy_capital.value,
+      current_status: 'BUY',
+      buy_price:  this.formValue.strategy_buy_price.value,
+      sell_price: this.formValue.strategy_sell_price.value,
+      date: this.datePipe.transform(date, 'yyyy-MM-dd'),
+      status: 'ACTIVE',
+    };
+
+    this.actionService.setStrategy(payload).subscribe((resp) => {
+      if (resp) {
+        this.close();
+      }
+    });
   }
 
   editStrategy() {
     this.openConfirmModal();
 
+  }
+
+  openConfirmModal() {
+    this.confirmModal.show('modal-lg');
   }
 
   close() {
@@ -65,10 +97,6 @@ export class StrategiesComponent implements OnInit {
 
   get formValue() {
     return this.strategiesForm.controls;
-  }
-
-  openConfirmModal() {
-    this.confirmModal.show('modal-lg');
   }
 
 }

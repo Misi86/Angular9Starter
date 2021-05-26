@@ -11,47 +11,47 @@
       <th class="hidden-column">BTC attuali</th>
       <th class="hidden-column">Buy Price</th>
       <th class="hidden-column">Sell Price</th>
-      <th >Dal</th>
+      <th >Data</th>
       <th>STOP</th>
     </tr>
     <tr   *ngFor="let str of activeStrategies; let $index =index; ">
       <td class="text-center">
         <span (click)="openConfirmModal($index)" class="d-sm-block d-md-none">INFO</span>
         <span class="d-none d-lg-block">
-        <span [ngClass]="{'run': str.is_active == 1 ,'stop':str.is_active == 0}"  class="dot"></span>
+        <span [ngClass]="{'run': str.status == 'ACTIVE' ,'stop':str.status != 'ACTIVE'}"  class="dot"></span>
       </span>
       </td>
       <td>{{str.name}}</td>
       <td class="hidden-column">{{str.coin_pair}}</td>
-      <td class="hidden-column">{{str.initial_budget}}</td>
-      <td class="hidden-column">{{str.current_budget}}</td>
-      <td class="hidden-column">{{str.buy_price}}</td>
-      <td class="hidden-column">{{str.sell_price}}</td>
-      <td >{{str.created_at}}</td>
+      <td class="hidden-column">{{str.capital}}</td>
+      <td class="hidden-column">{{str.capital}}</td>
+      <td class="hidden-column">{{str.buy_price.toFixed(8)}}</td>
+      <td class="hidden-column">{{str.sell_price.toFixed(8)}}</td>
+      <td >{{str.date | date}}</td>
       <td><button (click)="openStopModal($index)" class="btn btn-danger">STOP</button></td>
     </tr>
   </table>
   <modal id="edit-modal" #detailsModal>
-    <div class="app-modal-header"><h3>Dettaggli: {{checkMobileData.id}}</h3></div>
-    <div class="app-modal-body">
+    <div class="app-modal-header"><h3>Dettagli: </h3></div>
+    <div class="app-modal-body" *ngIf="checkMobileData">
       <p>{{checkMobileData.name}}</p>
       <p>{{checkMobileData.coin_pair}}</p>
-      <p>{{checkMobileData.initial_budget}}</p>
-      <p>{{checkMobileData.current_budget}}</p>
-      <p>{{checkMobileData.buy_price}}</p>
-      <p>{{checkMobileData.sell_price}}</p>
-      <p>{{checkMobileData.created_at}}</p>
+      <p>{{checkMobileData.capital}}</p>
+      <p>{{checkMobileData.capital}}</p>
+      <p>{{checkMobileData.buy_price.toFixed(8)}}</p>
+      <p>{{checkMobileData.sell_price.toFixed(8)}}</p>
+      <p>{{checkMobileData.date}}</p>
     </div>
   </modal>
   <modal id="stop-modal" #stopModal>
-      <div class="app-modal-header"><h3>STOP {{stopData.id}}</h3></div>
+      <div class="app-modal-header"><h3>STOP </h3></div>
       <div class="app-modal-body">
         <div class="text-center">
-          <h2>Stai fermando {{stopData.name}}</h2>
+          <h2 *ngIf="stopData">Stai fermando {{stopData.name}}</h2>
           <h2>Conferma !!</h2>
         </div>
         <button class="btn btn-danger float-left" (click)="closeStop()">CHIUDI</button>
-        <button class="btn start-btn float-right" (click)="closeStop()">STOP </button>
+        <button class="btn start-btn float-right" (click)="cancelStrategy(stopData.name)">STOP </button>
       </div>
   </modal>
 </div>
