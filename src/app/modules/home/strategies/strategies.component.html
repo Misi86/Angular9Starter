@@ -13,6 +13,7 @@
           <label for="select-pairs">Seleziona Scambio</label>
         </div>
         <div class="col-sm-9 form-group">
+<!--          <input type="checkbox" formControlName="small_cap"> <span style="font-size:14px"> Small Cap</span>-->
           <select (ngModelChange)="loadPrices()" formControlName="strategy_pairs" class="form-control" id="select-pairs">
             <option value=""></option>
             <option *ngFor="let p of pairs" [value]="p.name">{{p.name}}</option>

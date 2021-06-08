@@ -39,6 +39,12 @@ export class ActionService {
     }));
   }
 
+  updateStrategy(name: string, payload: any) {
+    return this.http.post<any>('api/strategy/' + name, payload).pipe(map(data => {
+      return data;
+    }));
+  }
+
   // set pairs(value:string){}
   set activeStartegy(value: any) {
 

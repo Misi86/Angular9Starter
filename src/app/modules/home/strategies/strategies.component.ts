@@ -5,6 +5,7 @@ import {AlertService} from '../../../shared/alert/alert.service';
 import {ActionService} from '../../../core/services/action.service';
 import {DatePipe} from '@angular/common';
 import * as _ from 'lodash';
+import {parse} from "@angular/compiler/src/render3/view/style_parser";
 
 declare var $: any;
 
@@ -27,6 +28,7 @@ export class StrategiesComponent implements OnInit {
 
     this.strategiesForm = this.fb.group({
       strategy_name: ['', Validators.required],
+      // small_cap: [false],
       strategy_pairs: ['', Validators.required],
       strategy_capital: ['', Validators.required],
       strategy_buy_price: ['', Validators.required],
@@ -42,18 +44,18 @@ export class StrategiesComponent implements OnInit {
 
   loadPairs() {
     this.actionService.getAllPairs().subscribe((resp) => {
-        this.pairs = resp;
+        this.pairs = _.filter(resp, (o) => {
+          return o.price < 0.00001;
+        });
       },
       (error) => {
       });
   }
 
   loadPrices() {
-    const val = this.formValue.strategy_pairs.value;
-    if (val) {
-      const price = _.find(this.pairs, {name: val});
-      // @ts-ignore
-      // console.log(price.price.toFixed(8), _.isNumber(price.price));
+    const pairs = this.formValue.strategy_pairs.value;
+    if (pairs) {
+      const price = _.find(this.pairs, {name: pairs});
       this.currentPrice = price.price;
       const formattedPrice = Math.floor(price.price.toFixed(8));
       this.formValue.strategy_buy_price.setValue(price.price.toFixed(8));
@@ -65,18 +67,19 @@ export class StrategiesComponent implements OnInit {
   initializeStrategy() {
     const quantity = this.formValue.strategy_capital.value / parseFloat(this.formValue.strategy_buy_price.value);
     const date = new Date();
-
     const payload = {
       name: this.formValue.strategy_name.value,
       coin_pair: this.formValue.strategy_pairs.value,
-      capital: Math.round(quantity),
-      current_capital: Math.round(quantity),
+      capital: this.formValue.strategy_capital.value,
+      quantity: Math.round(parseFloat(quantity.toFixed(3))),
+      current_capital: this.formValue.strategy_capital.value,
       current_status: 'BUY',
       buy_price: parseFloat(this.formValue.strategy_buy_price.value),
       sell_price: parseFloat(this.formValue.strategy_sell_price.value),
       date: this.datePipe.transform(date, 'yyyy-MM-dd'),
       status: 'ACTIVE',
     };
+    console.log(payload);
     this.actionService.setStrategy(payload).subscribe((resp) => {
       if (resp) {
         this.close();

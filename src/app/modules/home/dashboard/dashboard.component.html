@@ -13,22 +13,33 @@
       <th class="hidden-column">Sell Price</th>
       <th >Data</th>
       <th>STOP</th>
+      <th>CLOSE</th>
     </tr>
     <tr   *ngFor="let str of activeStrategies; let $index =index; ">
       <td class="text-center">
         <span (click)="openConfirmModal($index)" class="d-sm-block d-md-none">INFO</span>
         <span class="d-none d-lg-block">
-        <span [ngClass]="{'run': str.status == 'ACTIVE' ,'stop':str.status != 'ACTIVE'}"  class="dot"></span>
+        <span [ngClass]="{'run': str.current_status == 'BUY' ,'stop':str.current_status != 'BUY'}"  class="dot"></span>
       </span>
       </td>
       <td>{{str.name}}</td>
       <td class="hidden-column">{{str.coin_pair}}</td>
-      <td class="hidden-column">{{str.capital}}</td>
-      <td class="hidden-column">{{str.capital}}</td>
+      <td class="hidden-column">{{fromCoinToBTC(str.capital , 0.00000039 ).toFixed(8)}}</td>
+      <td class="hidden-column">{{str.current_capital}}</td>
       <td class="hidden-column">{{str.buy_price.toFixed(8)}}</td>
       <td class="hidden-column">{{str.sell_price.toFixed(8)}}</td>
       <td >{{str.date | date}}</td>
-      <td><button (click)="openStopModal($index)" class="btn btn-danger">STOP</button></td>
+      <td>
+        <button (click)="openStopModal($index)" class="btn" [ngClass]="{'btn-danger':str.status == 'ACTIVE','btn-success':str.status != 'ACTIVE'}">
+          <span *ngIf="str.status == 'ACTIVE'">STOP</span>
+          <span *ngIf="str.status != 'ACTIVE'">RESTART</span>
+        </button>
+      </td>
+      <td>
+        <button class="btn btn-dark" (click)="cancelStrategy(str.name)">
+          CLOSE
+        </button>
+      </td>
     </tr>
   </table>
   <modal id="edit-modal" #detailsModal>
@@ -47,11 +58,13 @@
       <div class="app-modal-header"><h3>STOP </h3></div>
       <div class="app-modal-body">
         <div class="text-center">
-          <h2 *ngIf="stopData">Stai fermando {{stopData.name}}</h2>
+          <h2 *ngIf="stopData"> <span *ngIf="stopData.status === 'ACTIVE'" >Stai fermando</span> <span *ngIf="stopData.status !== 'ACTIVE'" >Stai restartando</span>  {{stopData.name}}</h2>
           <h2>Conferma !!</h2>
         </div>
         <button class="btn btn-danger float-left" (click)="closeStop()">CHIUDI</button>
-        <button class="btn start-btn float-right" (click)="cancelStrategy(stopData.name)">STOP </button>
+        <button class="btn start-btn float-right" (click)="updateStrategy(stopData.name,stopData.status)">
+          CONTINUE
+        </button>
       </div>
   </modal>
 </div>

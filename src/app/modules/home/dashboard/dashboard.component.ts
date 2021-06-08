@@ -20,8 +20,6 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.loadActiveStrategy();
-    // this.stopData = this.activeStrategies[0];
-    // this.checkMobileData = this.activeStrategies[0];
   }
 
   closeStop() {
@@ -38,21 +36,33 @@ export class DashboardComponent implements OnInit {
     this.stopModal.show('modal-lg');
   }
 
+  fromCoinToBTC(amount: any, value: any) {
+    return amount * value;
+  }
+
   loadActiveStrategy() {
     this.actionService.getActiveStrategy().subscribe((resp) => {
-      console.log(resp);
       this.activeStrategies = resp;
       this.stopData = resp[0];
       this.checkMobileData = resp[0];
-      // console.log(this.stopData, 'sssss')
     });
   }
 
   cancelStrategy(name: string) {
     this.actionService.stopStrategy(name).subscribe((resp) => {
-    console.log(resp);
-    this.closeStop();
-    this.loadActiveStrategy();
+      this.closeStop();
+      this.loadActiveStrategy();
+    });
+  }
+
+  updateStrategy(name: string, status: string) {
+
+    const payload = {
+      status: status === 'ACTIVE' ? 'STOP' : 'ACTIVE',
+    };
+    this.actionService.updateStrategy(name, payload).subscribe((resp) => {
+      this.closeStop();
+      this.loadActiveStrategy();
     });
   }
 
