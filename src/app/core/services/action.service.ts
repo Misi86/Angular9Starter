@@ -9,6 +9,7 @@ import {map} from 'rxjs/operators';
 
 export class ActionService {
   private _active;
+  private _btcBalance;
 
   constructor(private http: HttpClient) {
   }
@@ -33,7 +34,14 @@ export class ActionService {
     }));
   }
 
-  stopStrategy(name: string) {
+  stopStrategy(orderId: number, pair: string) {
+    console.log(orderId, pair);
+    return this.http.get<any>('api/binance/cancelorder/single/' + orderId + '/' + pair).pipe(map(data => {
+      return data;
+    }));
+  }
+
+  deleteFromDb(name:string) {
     return this.http.delete<any>('api/strategy/' + name).pipe(map(data => {
       return data;
     }));
@@ -45,9 +53,19 @@ export class ActionService {
     }));
   }
 
-  // set pairs(value:string){}
-  set activeStartegy(value: any) {
+  getBtcBalance() {
+    return this.http.get<any>('api/binance/balance').pipe(map(data => {
+      this.balanceBtc = data.btc_balance;
+      return this.balanceBtc;
+    }));
+  }
 
+  set balanceBtc(value: number) {
+    this._btcBalance = value;
+  }
+
+  get balanceBtc(): number {
+    return this._btcBalance;
   }
 }
 

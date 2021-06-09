@@ -5,7 +5,6 @@ import {AlertService} from '../../../shared/alert/alert.service';
 import {ActionService} from '../../../core/services/action.service';
 import {DatePipe} from '@angular/common';
 import * as _ from 'lodash';
-import {parse} from "@angular/compiler/src/render3/view/style_parser";
 
 declare var $: any;
 
@@ -31,6 +30,7 @@ export class StrategiesComponent implements OnInit {
       // small_cap: [false],
       strategy_pairs: ['', Validators.required],
       strategy_capital: ['', Validators.required],
+      // strategy_capital_taxed: [''],
       strategy_buy_price: ['', Validators.required],
       strategy_sell_price: ['', Validators.required],
     });
@@ -98,6 +98,13 @@ export class StrategiesComponent implements OnInit {
 
   close() {
     this.confirmModal.dismiss();
+  }
+
+  addFees(value: any) {
+    console.log(value);
+    const taxed = value + ((value / 100) * 0.1);
+    console.log('value taxed', taxed);
+    this.formValue.strategy_capital_taxed.setValue(taxed);
   }
 
   get formValue() {
