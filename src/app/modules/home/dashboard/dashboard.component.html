@@ -86,6 +86,7 @@
           {{stopData.name}}</h2>
         <h2>Conferma !!</h2>
       </div>
+      <button class="btn btn-danger" (click)="closeCancel()">CHIUDI</button>
       <button class="btn start-btn float-right"
               (click)="cancelStrategy(stopData.order_id , stopData.coin_pair, stopData.name)">
         CONTINUE
