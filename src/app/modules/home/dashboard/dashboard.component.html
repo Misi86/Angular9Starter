@@ -3,7 +3,8 @@
 <div class="mt-5">
   <h2>Strategie attive</h2>
   <label for="filter-pair">Filtra</label>
-  <input type="text" id="filter-pair" class="ml-4" [(ngModel)]="searchFilter" (ngModelChange)="filterResult(searchFilter)">
+  <input type="text" id="filter-pair" class="ml-4" [(ngModel)]="searchFilter"
+         (ngModelChange)="filterResult(searchFilter)">
   <table class="table-responsive">
     <tr>
       <th class="text-center">Stato</th>
@@ -14,37 +15,39 @@
       <th class="hidden-column">Buy Price</th>
       <th class="hidden-column">Sell Price</th>
       <th>Data</th>
-      <th>STOP</th>
-      <th>CLOSE</th>
+      <th>PAUSA</th>
+      <th>CHIUDI</th>
     </tr>
-    <tr *ngFor="let str of activeStrategies; let $index =index; " (click)="openDetails(str)">
-      <td class="text-center">
+    <tr *ngFor="let str of activeStrategies; let $index =index; ">
+      <td style="cursor: pointer" class="text-center" (click)="openDetails($index)">
         <span (click)="openConfirmModal($index)" class="d-sm-block d-md-none">INFO</span>
         <span class="d-none d-lg-block">
-          <img *ngIf="str.current_status == 'BUY'" src="assets/icons/dollar-sign-solid.svg" alt="buy" width="20">
-          <img *ngIf="str.current_status != 'BUY'" src="assets/icons/dollar-sign.svg" alt="sell" width="20">
+          <img *ngIf="str.current_status == 'BUY'" src="assets/icons/dollar-sign-solid.svg" alt="buy" width="18">
+          <img *ngIf="str.current_status != 'BUY'" src="assets/icons/dollar-sign.svg" alt="sell" width="18">
       </span>
       </td>
       <td>{{str.name}}</td>
       <td class="hidden-column">{{str.coin_pair}}</td>
-      <td class="hidden-column">{{fromCoinToBTC(str.capital, 0.00000039).toFixed(8)}}</td>
-      <td class="hidden-column">{{str.current_capital}}</td>
+      <td class="hidden-column">{{str.capital}}</td>
+      <td class="hidden-column">{{(str.current_capital * str.sell_price).toFixed(8)}}</td>
       <td class="hidden-column">{{str.buy_price.toFixed(8)}}</td>
       <td class="hidden-column">{{str.sell_price.toFixed(8)}}</td>
       <td>{{str.date | date}}</td>
       <td>
         <button (click)="openStopModal($index)" class="btn"
-                [ngClass]="{'btn-danger':str.status == 'ACTIVE','btn-success':str.status != 'ACTIVE'}">
-          <span *ngIf="str.status == 'ACTIVE'">STOP</span>
-          <span *ngIf="str.status != 'ACTIVE'">RESTART</span>
+                [ngClass]="{'btn-dark':str.status == 'ACTIVE','btn-success':str.status != 'ACTIVE'}">
+          <span *ngIf="str.status == 'ACTIVE'"><img width="20" alt="pause"
+                                                    src="assets/icons/pause-circle-solid.svg"></span>
+          <span *ngIf="str.status != 'ACTIVE'"><img width="20" alt="play"
+                                                    src="assets/icons/play-circle-solid.svg"></span>
         </button>
       </td>
       <td>
-        <button class="btn btn-dark" (click)="cancelStrategy(str.order_id , str.coin_pair, str.name)">
-          CLOSE
+        <button class="btn btn-danger" (click)="openCancelModal($index)">
+          <img alt="stop" src="assets/icons/stop-circle-solid.svg" width="20">
         </button>
       </td>
-
+      <td *ngIf="str.transaction !== undefined " colspan="10">Bau</td>
     </tr>
 
   </table>
@@ -72,6 +75,38 @@
       <button class="btn start-btn float-right" (click)="updateStrategy(stopData.name,stopData.status)">
         CONTINUE
       </button>
+    </div>
+  </modal>
+  <modal id="cancel-modal" #cancelModal>
+    <div class="app-modal-header"><h3>CANCEL </h3></div>
+    <div class="app-modal-body">
+      <div class="text-center">
+        <h2 *ngIf="stopData">
+          <span >Stai cancellando la strategia</span>
+          {{stopData.name}}</h2>
+        <h2>Conferma !!</h2>
+      </div>
+      <button class="btn start-btn float-right"
+              (click)="cancelStrategy(stopData.order_id , stopData.coin_pair, stopData.name)">
+        CONTINUE
+      </button>
+    </div>
+  </modal>
+  <modal id="transaction-modal" #transactionsModal>
+    <div class="app-modal-header"><h3>TRANSAZIONI</h3></div>
+    <div class="app-modal-body">
+      <div class="text-center" *ngIf="stopData">
+        <table class="table">
+          <tr>
+            <th>Tipo</th>
+            <th>Data</th>
+          </tr>
+          <tr *ngFor="let tr of stopData.transactions">
+            <td>{{tr.type_transaction}}</td>
+            <td>{{tr.date | date }}</td>
+          </tr>
+        </table>
+      </div>
     </div>
   </modal>
 </div>

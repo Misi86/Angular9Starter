@@ -11,6 +11,8 @@ import * as _ from 'lodash';
 export class DashboardComponent implements OnInit {
   @ViewChild('detailsModal') detailsModal: ModalComponent;
   @ViewChild('stopModal') stopModal: ModalComponent;
+  @ViewChild('cancelModal') cancelModal: ModalComponent;
+  @ViewChild('transactionsModal') transactionsModal: ModalComponent;
   public activeStrategies: any;
   public stopData: any;
   public checkMobileData: any;
@@ -19,7 +21,9 @@ export class DashboardComponent implements OnInit {
   private clonedStrategy: any;
 
   constructor(private actionService: ActionService) {
-
+    setInterval(() => {
+      this.loadActiveStrategy();
+    }, 300000);
   }
 
   ngOnInit() {
@@ -30,6 +34,10 @@ export class DashboardComponent implements OnInit {
     this.stopModal.dismiss();
   }
 
+  closeCancel() {
+    this.cancelModal.dismiss();
+  }
+
   openConfirmModal(id) {
     this.checkMobileData = this.activeStrategies[id];
     this.detailsModal.show('modal-lg');
@@ -38,6 +46,11 @@ export class DashboardComponent implements OnInit {
   openStopModal(id) {
     this.stopData = this.activeStrategies[id];
     this.stopModal.show('modal-lg');
+  }
+
+  openCancelModal(id) {
+    this.stopData = this.activeStrategies[id];
+    this.cancelModal.show('modal-lg');
   }
 
   fromCoinToBTC(amount: any, value: any) {
@@ -57,6 +70,7 @@ export class DashboardComponent implements OnInit {
     console.log(orderId, pair);
     this.actionService.stopStrategy(orderId, pair).subscribe((resp) => {
       this.actionService.deleteFromDb(name).subscribe(() => {
+        this.closeCancel();
         this.loadActiveStrategy();
       });
     });
@@ -91,9 +105,11 @@ export class DashboardComponent implements OnInit {
 
   openDetails(data: any) {
     console.log(data);
-    if (data.transactions.length) {
-      this.details = true;
-    }
+    this.stopData = this.activeStrategies[data];
+    this.transactionsModal.show('modal-lg');
+    // if (data.transactions.length) {
+    //   this.details = true;
+    // }
   }
 }
 
