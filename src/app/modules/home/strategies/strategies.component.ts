@@ -83,6 +83,7 @@ export class StrategiesComponent implements OnInit {
     this.actionService.setStrategy(payload).subscribe((resp) => {
       if (resp) {
         this.close();
+        this.actionService.getBtcBalance().subscribe();
       }
     });
   }

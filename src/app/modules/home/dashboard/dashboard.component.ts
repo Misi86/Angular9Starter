@@ -17,6 +17,9 @@ export class DashboardComponent implements OnInit {
   public stopData: any;
   public checkMobileData: any;
   public searchFilter: any;
+  public searchName: any;
+  public searchDate: any;
+  public searchState = 'all';
   public details = false;
   private clonedStrategy: any;
 
@@ -67,11 +70,11 @@ export class DashboardComponent implements OnInit {
   }
 
   cancelStrategy(orderId: number, pair: string, name: string) {
-    console.log(orderId, pair);
     this.actionService.stopStrategy(orderId, pair).subscribe((resp) => {
       this.actionService.deleteFromDb(name).subscribe(() => {
         this.closeCancel();
         this.loadActiveStrategy();
+        this.actionService.getBtcBalance().subscribe();
       });
     });
   }
@@ -87,29 +90,64 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  filterResult(name: string) {
+  filterResult(name: string, type: string) {
 
     let data;
-    if (this.searchFilter !== undefined) {
-      data = _.filter(this.clonedStrategy, (o) => {
-        return o.coin_pair.includes(name.toUpperCase());
-      });
-    } else {
-      data = this.clonedStrategy;
-    }
 
-    console.log(data);
+    if (type === 'pairs') {
+      this.searchName = '';
+      this.searchDate = '';
+      this.searchState = 'all';
+      if (this.searchFilter !== undefined) {
+        data = _.filter(this.clonedStrategy, (o) => {
+          return o.coin_pair.includes(name.toUpperCase());
+        });
+      } else {
+        data = this.clonedStrategy;
+      }
+    } else if (type === 'name') {
+      this.searchFilter = '';
+      this.searchDate = '';
+      this.searchState = 'all';
+      if (this.searchName !== undefined) {
+        data = _.filter(this.clonedStrategy, (o) => {
+          return o.name.includes(name);
+        });
+      } else {
+        data = this.clonedStrategy;
+      }
+    } else if (type === 'date') {
+      this.searchFilter = '';
+      this.searchName = '';
+      this.searchState = 'all';
+      if (this.searchDate !== undefined) {
+        data = _.filter(this.clonedStrategy, (o) => {
+          return o.date.includes(name);
+        });
+      } else {
+        data = this.clonedStrategy;
+      }
+    } else if (type === 'state') {
+      this.searchFilter = '';
+      this.searchName = '';
+      this.searchDate = '';
+      const nameUp = name.toUpperCase();
+
+      if (this.searchState !== undefined && name !== 'all') {
+        data = _.filter(this.clonedStrategy, (o) => {
+          return o.current_status === nameUp;
+        });
+      } else {
+        data = this.clonedStrategy;
+      }
+    }
     this.activeStrategies = data;
 
   }
 
   openDetails(data: any) {
-    console.log(data);
     this.stopData = this.activeStrategies[data];
     this.transactionsModal.show('modal-lg');
-    // if (data.transactions.length) {
-    //   this.details = true;
-    // }
   }
 }
 

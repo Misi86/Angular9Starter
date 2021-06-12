@@ -2,21 +2,37 @@
 
 <div class="mt-5">
   <h2>Strategie attive</h2>
-  <label for="filter-pair">Filtra Scambio: </label>
-  <input type="text" id="filter-pair" class="ml-4" [(ngModel)]="searchFilter"
-         (ngModelChange)="filterResult(searchFilter)">
   <table class="table-responsive">
-    <tr>
-      <th class="text-center">Stato</th>
+    <tr class="text-center">
+      <th >Stato</th>
       <th>Nome</th>
-      <th class="hidden-column">Scambio</th>
+      <th class="hidden-column ">Scambio </th>
       <th class="hidden-column">BTC iniziali</th>
       <th class="hidden-column">BTC attuali</th>
-      <th class="hidden-column">Buy Price</th>
-      <th class="hidden-column">Sell Price</th>
+      <th class="hidden-column">Prezzo di compera</th>
+      <th class="hidden-column">Prezzo di vendita</th>
       <th>Data</th>
       <th>PAUSA</th>
       <th>CHIUDI</th>
+    </tr>
+    <tr>
+      <td>
+        <label></label>
+        <input id="all" type="radio" value="all" class="radio-dash all" [(ngModel)]="searchState" (ngModelChange)="filterResult(searchState,'state')">
+        <input id="buy" type="radio" value="buy" class="radio-dash buy" [(ngModel)]="searchState" (ngModelChange)="filterResult(searchState,'state')">
+        <input id="sell" type="radio" value="sell" class="radio-dash sell" [(ngModel)]="searchState" (ngModelChange)="filterResult(searchState,'state')">
+      </td>
+      <td>
+        <input type="text" id="filter-name" class="filter-dash" [(ngModel)]="searchName" (ngModelChange)="filterResult(searchName,'name')">
+      </td>
+      <td><input type="text" id="filter-pair" class="filter-dash" [(ngModel)]="searchFilter" (ngModelChange)="filterResult(searchFilter,'pairs')"></td>
+      <td><input type="text"  class="filter-dash" [disabled]="true"> </td>
+      <td><input type="text"  class="filter-dash" [disabled]="true"></td>
+      <td><input type="text"  class="filter-dash" [disabled]="true"></td>
+      <td><input type="text"  class="filter-dash" [disabled]="true"></td>
+      <td><input type="text" id="filter-date" class="filter-dash" [(ngModel)]="searchDate" (ngModelChange)="filterResult(searchDate,'date')"></td>
+      <td><input type="text"  class="filter-dash min" [disabled]="true"></td>
+      <td><input type="text"  class="filter-dash min" [disabled]="true"></td>
     </tr>
     <tr *ngFor="let str of activeStrategies; let $index =index; ">
       <td style="cursor: pointer" class="text-center" (click)="openDetails($index)">
@@ -99,12 +115,16 @@
       <div class="text-center" *ngIf="stopData">
         <table class="table">
           <tr>
+            <th>Id dell' Ordine</th>
             <th>Tipo</th>
             <th>Data</th>
+            <th>Quantita</th>
           </tr>
           <tr *ngFor="let tr of stopData.transactions">
+            <td>{{tr.order_id}}</td>
             <td>{{tr.type_transaction}}</td>
             <td>{{tr.date | date }}</td>
+            <td>{{tr.quantity ? tr.quantity : 'fake'}}</td>
           </tr>
         </table>
       </div>

@@ -25,6 +25,22 @@ td, th {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
+  .filter-dash{
+    max-width: 100px;
+      &.min{
+        max-width:48px;
+      }
+  }
+  .radio-dash{
+    margin-right: 5px;
+    &.buy{
+      color: green;
+    }
+    &.sell{
+      color: red;
+    }
+  }
+
 }
 
 tr:nth-child(even) {
