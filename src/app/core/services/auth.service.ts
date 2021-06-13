@@ -21,6 +21,7 @@ export class AuthService {
     // console.log(username, password );
     return this.http.get<any>('api/login/' + username + '/' + password)
       .pipe(map(resp => {
+        console.log(resp, '<<<<<<<<<<<<<<<')
         this.token = resp.token;
         this.user = resp.user;
         this.role = resp.role;
@@ -47,14 +48,19 @@ export class AuthService {
   set user(value: string) {
     localStorage.setItem('user', value);
     this._user = value;
+    console.log('<<<<', this._user);
   }
+
   get user(): string {
+    console.log('return', this._user, localStorage.getItem('user'));
     return this._user || localStorage.getItem('user');
   }
+
   set role(value: string) {
     localStorage.setItem('role', value);
     this._user = value;
   }
+
   get role(): string {
     return this._user || localStorage.getItem('role');
   }

@@ -18,10 +18,10 @@
           <div class="col-sm-3">Account name:</div>
           <div class="col-sm-9 mb-4"><input type="text" [disabled]="true" [readOnly]="true" [ngModel]="authService.user"></div>
           <div class="col-sm-3">New  password:</div>
-          <div class="col-sm-9  mb-4"><input type="text"></div>
+          <div class="col-sm-9  mb-4"><input [(ngModel)]="newPw" type="text"></div>
           <div class="col-sm-3"></div>
           <div class="col-sm-9">
-            <button class="btn start-btn">PROCEDI</button>
+            <button class="btn start-btn" (click)="update(authService.user , newPw)">PROCEDI</button>
           </div>
 
       </div>

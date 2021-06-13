@@ -149,5 +149,14 @@ export class DashboardComponent implements OnInit {
     this.stopData = this.activeStrategies[data];
     this.transactionsModal.show('modal-lg');
   }
+
+  parseDate(date: any) {
+    const data = date.split(/\D/);
+    console.log(data);
+    const result = data[2] + '/' + (data[1]) + '/' + data[0] + ' - ' + (data[3]) + ':' + data[4] + ':' + data[5];
+    // const result = new Date(data[0] , data[1] - 1 , data[2] , data[3] , data[4] , data[5]);
+    return result;
+  }
+
 }
 

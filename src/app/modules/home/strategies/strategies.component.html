@@ -4,13 +4,13 @@
     <form [formGroup]="strategiesForm" (ngSubmit)="openConfirmModal()" novalidate>
       <div class="row">
         <div class="col-sm-3 form-group">
-          <label for="strategy-name">Nome</label>
+          <label for="strategy-name">Nome:</label>
         </div>
         <div class="col-sm-9 form-group">
           <input formControlName="strategy_name" class="form-control" type="text"  id="strategy-name">
         </div>
         <div class="col-sm-3 form-group">
-          <label for="select-pairs">Seleziona Scambio</label>
+          <label for="select-pairs">Seleziona scambio:</label>
         </div>
         <div class="col-sm-9 form-group">
 <!--          <input type="checkbox" formControlName="small_cap"> <span style="font-size:14px"> Small Cap</span>-->
@@ -20,7 +20,7 @@
           </select>
         </div>
         <div class="col-sm-3 form-group">
-          <label for="buy-price">Capitale BTC<br>(fee escluse)</label>
+          <label for="buy-price">Capitale BTC:<br>(tasse escluse)</label>
         </div>
         <div class="col-sm-9 form-group">
           <input formControlName="strategy_capital" class="form-control inputStr" type="number" id="capital">
@@ -32,13 +32,13 @@
 <!--          <input readonly formControlName="strategy_capital_taxed" class="form-control inputStr" type="number" id="capital-taxed">-->
 <!--        </div>-->
         <div class="col-sm-3 form-group">
-          <label for="buy-price">Buy Price</label>
+          <label for="buy-price">Prezzo compera:</label>
         </div>
         <div class="col-sm-9 form-group">
           <input formControlName="strategy_buy_price" class="form-control inputStr" type="number" id="buy-price">
         </div>
         <div class="col-sm-3 form-group">
-          <label for="sell-price">Sell Price</label>
+          <label for="sell-price">Prezzo vendita:</label>
         </div>
         <div class="col-sm-9 form-group">
           <input formControlName="strategy_sell_price" class="form-control inputStr" type="number" id="sell-price">
@@ -46,7 +46,7 @@
         <div class="col-sm-3 form-group">
         </div>
         <div class="col-sm-9 form-group">
-          <button [disabled]="strategiesForm.invalid" class="btn start-btn float-right" >START</button>
+            <button [disabled]="strategiesForm.invalid" class="btn start-btn float-right" >AVVIA</button>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../../core/services/auth.service';
+import {ActionService} from "../../../core/services/action.service";
 
 declare var $: any;
 
@@ -10,12 +11,20 @@ declare var $: any;
 })
 export class SettingsComponent implements OnInit {
 
-  constructor(public authService: AuthService) {
+  public newPw: any;
+
+  constructor(public authService: AuthService,
+              public actionService: ActionService) {
   }
 
   ngOnInit() {
+
+
   }
 
+  update(name: string, pw: string) {
+    this.actionService.updatePassword(name, pw).subscribe();
+  }
 
 }
 
