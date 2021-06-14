@@ -3,14 +3,14 @@ import {ModalComponent} from '../../../shared/modal/modal.component';
 import {ActionService} from '../../../core/services/action.service';
 import * as _ from 'lodash';
 import {AlertService} from '../../../shared/alert/alert.service';
-import {AuthService} from "../../../core/services/auth.service";
+import {AuthService} from '../../../core/services/auth.service';
 
 @Component({
   selector: 'dashboard-component',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit, AfterContentInit {
+export class DashboardComponent implements OnInit {
   @ViewChild('detailsModal') detailsModal: ModalComponent;
   @ViewChild('stopModal') stopModal: ModalComponent;
   @ViewChild('cancelModal') cancelModal: ModalComponent;
@@ -35,14 +35,18 @@ export class DashboardComponent implements OnInit, AfterContentInit {
 
     if (this.authService.isLogged === '1') {
       setTimeout(() => {
-        this.loadActiveStrategy();
-        this.ngOnInit();
-      }, 20000);
+        this.reload();
+      }, 30000);
     }
   }
 
-  ngAfterContentInit() {
-
+  reload() {
+    this.closeStop();
+    this.closeCancel();
+    this.closeTransaction();
+    this.resetFilter();
+    this.loadActiveStrategy();
+    this.ngOnInit();
   }
 
   closeStop() {
@@ -51,6 +55,10 @@ export class DashboardComponent implements OnInit, AfterContentInit {
 
   closeCancel() {
     this.cancelModal.dismiss();
+  }
+
+  closeTransaction() {
+    this.transactionsModal.dismiss();
   }
 
   openConfirmModal(id) {
@@ -175,5 +183,11 @@ export class DashboardComponent implements OnInit, AfterContentInit {
     return data.getDate() + '/' + (data.getMonth() + 1) + '/' + data.getFullYear() + ' - ' + (data.getHours() < 10 ? '0' + data.getHours() : data.getHours()) + ':' + (data.getMinutes() < 10 ? '0' + data.getMinutes() : data.getMinutes());
   }
 
+  resetFilter() {
+    this.searchFilter = '';
+    this.searchState = 'all';
+    this.searchName = '';
+    this.searchDate = '';
+  }
 }
 

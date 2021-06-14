@@ -1349,15 +1349,20 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
           if (this.authService.isLogged === '1') {
             setTimeout(function () {
-              _this4.loadActiveStrategy();
-
-              _this4.ngOnInit();
-            }, 20000);
+              _this4.reload();
+            }, 30000);
           }
         }
       }, {
-        key: "ngAfterContentInit",
-        value: function ngAfterContentInit() {}
+        key: "reload",
+        value: function reload() {
+          this.closeStop();
+          this.closeCancel();
+          this.closeTransaction();
+          this.resetFilter();
+          this.loadActiveStrategy();
+          this.ngOnInit();
+        }
       }, {
         key: "closeStop",
         value: function closeStop() {
@@ -1367,6 +1372,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         key: "closeCancel",
         value: function closeCancel() {
           this.cancelModal.dismiss();
+        }
+      }, {
+        key: "closeTransaction",
+        value: function closeTransaction() {
+          this.transactionsModal.dismiss();
         }
       }, {
         key: "openConfirmModal",
@@ -1509,6 +1519,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           var data = new Date(date); // tslint:disable-next-line:max-line-length
 
           return data.getDate() + '/' + (data.getMonth() + 1) + '/' + data.getFullYear() + ' - ' + (data.getHours() < 10 ? '0' + data.getHours() : data.getHours()) + ':' + (data.getMinutes() < 10 ? '0' + data.getMinutes() : data.getMinutes());
+        }
+      }, {
+        key: "resetFilter",
+        value: function resetFilter() {
+          this.searchFilter = '';
+          this.searchState = 'all';
+          this.searchName = '';
+          this.searchDate = '';
         }
       }]);
 

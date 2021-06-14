@@ -679,18 +679,26 @@ class DashboardComponent {
     ngOnInit() {
         if (this.authService.isLogged === '1') {
             setTimeout(() => {
-                this.loadActiveStrategy();
-                this.ngOnInit();
-            }, 20000);
+                this.reload();
+            }, 30000);
         }
     }
-    ngAfterContentInit() {
+    reload() {
+        this.closeStop();
+        this.closeCancel();
+        this.closeTransaction();
+        this.resetFilter();
+        this.loadActiveStrategy();
+        this.ngOnInit();
     }
     closeStop() {
         this.stopModal.dismiss();
     }
     closeCancel() {
         this.cancelModal.dismiss();
+    }
+    closeTransaction() {
+        this.transactionsModal.dismiss();
     }
     openConfirmModal(id) {
         this.checkMobileData = this.activeStrategies[id];
@@ -805,6 +813,12 @@ class DashboardComponent {
         const data = new Date(date);
         // tslint:disable-next-line:max-line-length
         return data.getDate() + '/' + (data.getMonth() + 1) + '/' + data.getFullYear() + ' - ' + (data.getHours() < 10 ? '0' + data.getHours() : data.getHours()) + ':' + (data.getMinutes() < 10 ? '0' + data.getMinutes() : data.getMinutes());
+    }
+    resetFilter() {
+        this.searchFilter = '';
+        this.searchState = 'all';
+        this.searchName = '';
+        this.searchDate = '';
     }
 }
 DashboardComponent.ɵfac = function DashboardComponent_Factory(t) { return new (t || DashboardComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_core_services_action_service__WEBPACK_IMPORTED_MODULE_2__["ActionService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_shared_alert_alert_service__WEBPACK_IMPORTED_MODULE_3__["AlertService"]), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_core_services_auth_service__WEBPACK_IMPORTED_MODULE_4__["AuthService"])); };
