@@ -11,7 +11,8 @@ declare var $: any;
 })
 export class SettingsComponent implements OnInit {
 
-  public newPw: any;
+  public newPw: any = '';
+  public confirmPw: any = '';
 
   constructor(public authService: AuthService,
               public actionService: ActionService) {

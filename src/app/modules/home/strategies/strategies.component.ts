@@ -23,6 +23,7 @@ export class StrategiesComponent implements OnInit {
   constructor(private fb: FormBuilder,
               private alert: AlertService,
               private actionService: ActionService,
+              private alertService: AlertService,
               private datePipe: DatePipe) {
 
     this.strategiesForm = this.fb.group({
@@ -84,8 +85,12 @@ export class StrategiesComponent implements OnInit {
       if (resp) {
         this.close();
         this.actionService.getBtcBalance().subscribe();
+        this.alertService.addMessage('success', 'Strategia inizializzata con successo');
       }
-    });
+    },
+      (error) => {
+      this.close();
+      });
   }
 
   editStrategy() {

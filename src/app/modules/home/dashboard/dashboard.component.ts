@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {ModalComponent} from '../../../shared/modal/modal.component';
 import {ActionService} from '../../../core/services/action.service';
 import * as _ from 'lodash';
+import {AlertService} from "../../../shared/alert/alert.service";
 
 @Component({
   selector: 'dashboard-component',
@@ -23,10 +24,11 @@ export class DashboardComponent implements OnInit {
   public details = false;
   private clonedStrategy: any;
 
-  constructor(private actionService: ActionService) {
-    setInterval(() => {
+  constructor(private actionService: ActionService,
+              private alertService: AlertService) {
+    setTimeout(() => {
       this.loadActiveStrategy();
-    }, 300000);
+    }, 20000);
   }
 
   ngOnInit() {
@@ -70,13 +72,20 @@ export class DashboardComponent implements OnInit {
   }
 
   cancelStrategy(orderId: number, pair: string, name: string) {
-    this.actionService.stopStrategy(orderId, pair).subscribe((resp) => {
-      this.actionService.deleteFromDb(name).subscribe(() => {
-        this.closeCancel();
-        this.loadActiveStrategy();
-        this.actionService.getBtcBalance().subscribe();
+    if (orderId !== undefined) {
+
+      this.actionService.stopStrategy(orderId, pair).subscribe((resp) => {
+        this.actionService.deleteFromDb(name).subscribe(() => {
+          this.closeCancel();
+          this.loadActiveStrategy();
+          this.actionService.getBtcBalance().subscribe();
+          this.alertService.addMessage('success', 'Ordine cancellato con successo');
+        });
       });
-    });
+    } else {
+      this.closeCancel();
+      this.alertService.addMessage('danger', 'Ordine nn ancora aperto riprova fra poco');
+    }
   }
 
   updateStrategy(name: string, status: string) {

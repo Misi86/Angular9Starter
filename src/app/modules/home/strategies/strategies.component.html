@@ -58,10 +58,10 @@
       <h3>Conferma azione</h3>
     </div>
     <div class="app-modal-body text-center">
-      <p>Stai inizializzando "{{formValue.strategy_name.value}}" con i seguenti settaggi</p>
+      <p>Stai inizializzando "{{formValue.strategy_name.value}}" con i seguenti settaggi:</p>
       <p>Scambio: {{formValue.strategy_pairs.value}}</p>
-      <p>Buy Price: {{formValue.strategy_buy_price.value | number: '1.1-8'}} BTC </p>
-      <p>Sell Price: {{formValue.strategy_sell_price.value | number: '1.1-8'}} BTC </p>
+      <p>Prezzo di compera: {{formValue.strategy_buy_price.value | number: '1.1-8'}} BTC </p>
+      <p>Prezzo di vendita: {{formValue.strategy_sell_price.value | number: '1.1-8'}} BTC </p>
       <p>Capitale: {{formValue.strategy_capital.value}} BTC </p>
       <h3>CONFERMA</h3>
       <button class="btn btn-danger float-left" (click)="close()">DECLINA</button>

@@ -17,9 +17,9 @@ export class HomeComponent implements OnInit {
               private router: Router) {
 
 
-    setInterval(() => {
+    setTimeout(() => {
       this.getBalance();
-    }, 300000);
+    }, 20000);
   }
 
   ngOnInit() {
