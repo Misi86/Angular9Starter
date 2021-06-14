@@ -25,6 +25,12 @@ td, th {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
+  .label-custom{
+    width:10px;
+    padding-top: 6px;
+    margin-top: -25px;
+    height: 10px;
+  }
   .filter-dash{
     max-width: 80px;
       &.min{
@@ -46,7 +52,26 @@ td, th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+input[type="radio"] {
+    //position: absolute;
+    opacity: 0;
+  //display: none;
+}
 
+input[type="radio"] + path {
+  display: block;
+  margin-top: -24px;
+}
+
+input + svg {
+  cursor: pointer;
+}
+
+input[class="all"]:hover + svg,
+input[class="all"]:checked + svg,
+input[class="all"]:focus + svg {
+  fill: rgb(0, 109, 217);
+}
 @media screen and (max-width: 600px) {
   .table {
 
