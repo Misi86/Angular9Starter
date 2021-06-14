@@ -2142,8 +2142,8 @@ __webpack_require__.r(__webpack_exports__);
 const environment = {
     production: false,
     local: true,
-    api: 'http://127.0.0.1:3000/'
-    // api: 'http://ec2-15-160-2-188.eu-south-1.compute.amazonaws.com:3000/'
+    // api: 'http://127.0.0.1:3000/'
+    api: 'http://ec2-15-160-2-188.eu-south-1.compute.amazonaws.com:3000/'
 };
 /*
  * For easier debugging in development mode, you can import the following file
