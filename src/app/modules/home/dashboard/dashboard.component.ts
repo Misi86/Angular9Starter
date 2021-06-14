@@ -1,15 +1,16 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {AfterContentInit, Component, OnInit, ViewChild} from '@angular/core';
 import {ModalComponent} from '../../../shared/modal/modal.component';
 import {ActionService} from '../../../core/services/action.service';
 import * as _ from 'lodash';
-import {AlertService} from "../../../shared/alert/alert.service";
+import {AlertService} from '../../../shared/alert/alert.service';
+import {AuthService} from "../../../core/services/auth.service";
 
 @Component({
   selector: 'dashboard-component',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, AfterContentInit {
   @ViewChild('detailsModal') detailsModal: ModalComponent;
   @ViewChild('stopModal') stopModal: ModalComponent;
   @ViewChild('cancelModal') cancelModal: ModalComponent;
@@ -25,14 +26,23 @@ export class DashboardComponent implements OnInit {
   private clonedStrategy: any;
 
   constructor(private actionService: ActionService,
-              private alertService: AlertService) {
-    setTimeout(() => {
-      this.loadActiveStrategy();
-    }, 20000);
+              private alertService: AlertService,
+              private authService: AuthService) {
+    this.loadActiveStrategy();
   }
 
   ngOnInit() {
-    this.loadActiveStrategy();
+
+    if (this.authService.isLogged === '1') {
+      setTimeout(() => {
+        this.loadActiveStrategy();
+        this.ngOnInit();
+      }, 20000);
+    }
+  }
+
+  ngAfterContentInit() {
+
   }
 
   closeStop() {

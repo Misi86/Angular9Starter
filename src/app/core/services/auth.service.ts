@@ -11,7 +11,7 @@ export class AuthService {
 
   private _token;
   private _user = '';
-  private _role;
+  private _isLogged;
 
   constructor(private router: Router,
               private http: HttpClient) {
@@ -24,6 +24,7 @@ export class AuthService {
         this.token = resp.token;
         this.user = resp.user;
         this.role = resp.role;
+        this.isLogged = '1';
         return resp;
       }));
   }
@@ -33,6 +34,7 @@ export class AuthService {
     this.token = '';
     this.user = '';
     this.role = '';
+    this.isLogged = '0';
     localStorage.clear();
     this.router.navigate(['auth/login']).then();
   }
@@ -54,6 +56,16 @@ export class AuthService {
   get user(): string {
 
     return localStorage.getItem('user');
+  }
+
+  set isLogged(value: string) {
+    localStorage.setItem('isLogged', value);
+    this._isLogged = value;
+  }
+
+  get isLogged(): string {
+
+    return localStorage.getItem('isLogged');
   }
 
   set role(value: string) {

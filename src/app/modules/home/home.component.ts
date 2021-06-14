@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterContentInit, Component, OnInit} from '@angular/core';
 import {AuthService} from '../../core/services/auth.service';
 import {Router} from '@angular/router';
-import {ActionService} from "../../core/services/action.service";
+import {ActionService} from '../../core/services/action.service';
 
 // import {ActivatedRoute, Route, Router} from "@angular/router";
 @Component({
@@ -9,23 +9,29 @@ import {ActionService} from "../../core/services/action.service";
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, AfterContentInit {
   public user: any;
 
   constructor(public authService: AuthService,
               public actionService: ActionService,
               private router: Router) {
 
-
-    setTimeout(() => {
-      this.getBalance();
-    }, 20000);
+    this.getBalance();
+    this.user = this.authService.user;
   }
 
   ngOnInit() {
-    this.user = this.authService.user;
-    this.getBalance();
+
     // console.log('user', this.user);
+    if (this.authService.isLogged === '1') {
+      setTimeout(() => {
+        this.getBalance();
+        this.ngOnInit();
+      }, 20000);
+    }
+  }
+
+  ngAfterContentInit() {
 
   }
 
