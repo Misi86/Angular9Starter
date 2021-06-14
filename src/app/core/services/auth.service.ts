@@ -10,7 +10,7 @@ import {HttpClient} from '@angular/common/http';
 export class AuthService {
 
   private _token;
-  private _user;
+  private _user = '';
   private _role;
 
   constructor(private router: Router,
@@ -21,7 +21,6 @@ export class AuthService {
     // console.log(username, password );
     return this.http.get<any>('api/login/' + username + '/' + password)
       .pipe(map(resp => {
-        console.log(resp, '<<<<<<<<<<<<<<<')
         this.token = resp.token;
         this.user = resp.user;
         this.role = resp.role;
@@ -31,8 +30,10 @@ export class AuthService {
 
   logout() {
     // remove user from local storage to log user out
-    localStorage.clear();
     this.token = '';
+    this.user = '';
+    this.role = '';
+    localStorage.clear();
     this.router.navigate(['auth/login']).then();
   }
 
@@ -48,12 +49,11 @@ export class AuthService {
   set user(value: string) {
     localStorage.setItem('user', value);
     this._user = value;
-    console.log('<<<<', this._user);
   }
 
   get user(): string {
-    console.log('return', this._user, localStorage.getItem('user'));
-    return this._user || localStorage.getItem('user');
+
+    return localStorage.getItem('user');
   }
 
   set role(value: string) {

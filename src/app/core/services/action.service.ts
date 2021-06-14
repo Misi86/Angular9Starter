@@ -13,7 +13,7 @@ export class ActionService {
   private _btcBalance;
 
   constructor(private http: HttpClient,
-              private alertService:AlertService) {
+              private alertService: AlertService) {
   }
 
 
@@ -25,7 +25,6 @@ export class ActionService {
 
   setStrategy(payload: any) {
     return this.http.post<any>('api/strategy/' + payload.name, payload).pipe(map(data => {
-      console.log('data', data);
       return data;
     }));
   }
@@ -64,12 +63,12 @@ export class ActionService {
   updatePassword(name: string, pw: string) {
     const payload = {
       username: name,
-      password:pw,
+      password: pw,
       role: 'admin'
-    }
-    return this.http.post<any>('api/user/' + name, payload).pipe(map(data => {
-      this.alertService.addMessage('succes','Password cambiata correttamente')
-      return data
+    };
+    return this.http.post<any>('api/users/' + name, payload).pipe(map(data => {
+      this.alertService.addMessage('success', 'Password cambiata correttamente')
+      return data;
     }));
   }
 

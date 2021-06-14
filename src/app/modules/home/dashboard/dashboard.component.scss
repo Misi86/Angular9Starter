@@ -26,7 +26,7 @@ td, th {
   text-align: left;
   padding: 8px;
   .filter-dash{
-    max-width: 100px;
+    max-width: 80px;
       &.min{
         max-width:48px;
       }
@@ -49,8 +49,12 @@ tr:nth-child(even) {
 
 @media screen and (max-width: 600px) {
   .table {
+
   }
   .hidden-column{
     display: none !important;
+  }
+  .filter-dash{
+    max-width: 60px !important;
   }
 }

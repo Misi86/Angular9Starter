@@ -10,20 +10,26 @@ import {ActionService} from "../../core/services/action.service";
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
+  public user: any;
 
   constructor(public authService: AuthService,
               public actionService: ActionService,
               private router: Router) {
 
 
-    setInterval(() => { this.getBalance(); } , 300000);
+    setInterval(() => {
+      this.getBalance();
+    }, 300000);
   }
 
   ngOnInit() {
+    this.user = this.authService.user;
     this.getBalance();
+    // console.log('user', this.user);
+
   }
 
-  getBalance(){
+  getBalance() {
     this.actionService.getBtcBalance().subscribe();
   }
 }

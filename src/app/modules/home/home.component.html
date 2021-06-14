@@ -1,12 +1,12 @@
 <div class="site-wrapper">
   <header class="navbar-crypto">
     <nav class="navbar  navbar-expand-md">
-      <a class="navbar-brand" href="#">Ciao <span class="text-capitalize">{{authService.user}} </span></a>
+      <a class="navbar-brand" href="#">Ciao <span class="text-capitalize">{{user}} </span></a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon">O</span>
+        <span class="navbar-toggler-icon"><img alt="" width="24" src="assets/icons/bars-solid.svg"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse" style="justify-content: flex-end">
-        <div class="pr-3" style="color: #f2f2f2">BILANCIO: {{actionService.balanceBtc}} BTC </div>
+      <div class="collapse navbar-collapse mobile-menu" id="navbarCollapse" style="justify-content: flex-end">
+        <div class="pr-3 balance" style="color: #f2f2f2">BILANCIO: {{actionService.balanceBtc}} BTC </div>
         <div class="d-sm-block d-md-none">
           <ul class="nav flex-column">
             <li class="nav-item">
@@ -15,9 +15,6 @@
             <li class="nav-item">
               <a class="nav-link" [routerLink]="['strategies']"><img width="22" src="assets/icons/tasks-solid.svg"> <span>  Strategie</span></a>
             </li>
-            <!--          <li class="nav-item">-->
-            <!--            <a class="nav-link" [routerLink]="['indicators']"><img width="22" src="assets/icons/chart-line-solid.svg"> <span>  Indicator</span></a>-->
-            <!--          </li>-->
             <li class="nav-item" >
               <a class="nav-link" [routerLink]="['settings']"><img width="22" src="assets/icons/folder-open-solid.svg"> <span>  Settaggi</span></a>
             </li>

@@ -16,8 +16,13 @@
   .navbar-crypto{
     z-index:1;
     background-color: #F49419;
+
     a{
       color: white;
+    }
+    .mobile-menu{
+      background: #F49419;
+
     }
   }
   main.main-content{
@@ -71,10 +76,21 @@
     opacity: 0.8;
   }
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 512px) {
  .site-wrapper{
    .panel-side {
      margin-left: 0%;
    }
  }
+  .mobile-menu{
+    background: #183153 !important;
+    margin-left: -16px;
+    margin-bottom: -8px;
+    margin-right: -16px;
+    opacity: 0.8;
+    .balance{
+      text-align: center;
+      padding-top: 15px;
+    }
+  }
 }

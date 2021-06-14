@@ -79,7 +79,7 @@ export class StrategiesComponent implements OnInit {
       date: this.datePipe.transform(date, 'yyyy-MM-dd'),
       status: 'ACTIVE',
     };
-    console.log(payload);
+    // console.log(payload);
     this.actionService.setStrategy(payload).subscribe((resp) => {
       if (resp) {
         this.close();
@@ -102,9 +102,9 @@ export class StrategiesComponent implements OnInit {
   }
 
   addFees(value: any) {
-    console.log(value);
+    // console.log(value);
     const taxed = value + ((value / 100) * 0.1);
-    console.log('value taxed', taxed);
+    // console.log('value taxed', taxed);
     this.formValue.strategy_capital_taxed.setValue(taxed);
   }
 

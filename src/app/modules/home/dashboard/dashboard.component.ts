@@ -151,11 +151,9 @@ export class DashboardComponent implements OnInit {
   }
 
   parseDate(date: any) {
-    const data = date.split(/\D/);
-    console.log(data);
-    const result = data[2] + '/' + (data[1]) + '/' + data[0] + ' - ' + (data[3]) + ':' + data[4] + ':' + data[5];
-    // const result = new Date(data[0] , data[1] - 1 , data[2] , data[3] , data[4] , data[5]);
-    return result;
+    const data = new Date(date);
+    // tslint:disable-next-line:max-line-length
+    return data.getDate() + '/' + (data.getMonth() + 1) + '/' + data.getFullYear() + ' - ' + (data.getHours() < 10 ? '0' + data.getHours() : data.getHours()) + ':' + (data.getMinutes() < 10 ? '0' + data.getMinutes() : data.getMinutes());
   }
 
 }
