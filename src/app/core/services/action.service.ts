@@ -60,6 +60,12 @@ export class ActionService {
     }));
   }
 
+  getCurrentStatus(orderId: any, pair: any) {
+    return this.http.get<any>('api/binance/orderstatus/' + orderId + '/' + pair).pipe(map(data => {
+     return JSON.parse(data.success);
+    }));
+  }
+
   updatePassword(name: string, pw: string) {
     const payload = {
       username: name,

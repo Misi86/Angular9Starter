@@ -25,6 +25,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public details = false;
   private clonedStrategy: any;
   public reloadStuff: any;
+  public currentState: any;
 
   constructor(private actionService: ActionService,
               private alertService: AlertService,
@@ -35,7 +36,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.reloadStuff = setInterval(() => {
       this.reload();
-    }, 20000);
+    }, 30000);
 
   }
 
@@ -44,9 +45,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   reload() {
-    this.closeStop();
-    this.closeCancel();
-    this.closeTransaction();
     this.resetFilter();
     this.loadActiveStrategy();
   }
@@ -86,8 +84,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.actionService.getActiveStrategy().subscribe((resp) => {
       this.clonedStrategy = _.cloneDeep(resp);
       this.activeStrategies = this.clonedStrategy;
-      this.stopData = resp[0];
+      if (this.stopData === undefined) {
+        this.stopData = resp[0];
+      }
       this.checkMobileData = resp[0];
+    });
+  }
+
+  getSpecificStatus(orderId: any, pair: any) {
+    this.actionService.getCurrentStatus(orderId, pair).subscribe((resp) => {
+      const state  = resp.status === 'NEW' ? 'APERTO' : 'CHIUSO';
+      this.alertService.addMessage('info', 'Stato dell ordine: ' + state);
+      return resp;
     });
   }
 
