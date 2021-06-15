@@ -3,6 +3,7 @@ import {Router} from '@angular/router';
 import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -18,7 +19,6 @@ export class AuthService {
   }
 
   login(username: string, password: string) {
-    // console.log(username, password );
     return this.http.get<any>('api/login/' + username + '/' + password)
       .pipe(map(resp => {
         this.token = resp.token;
@@ -35,6 +35,7 @@ export class AuthService {
     this.user = '';
     this.role = '';
     this.isLogged = '0';
+
     localStorage.clear();
     this.router.navigate(['auth/login']).then();
   }

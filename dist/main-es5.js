@@ -616,7 +616,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         value: function login(username, password) {
           var _this3 = this;
 
-          // console.log(username, password );
           return this.http.get('api/login/' + username + '/' + password).pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["map"])(function (resp) {
             _this3.token = resp.token;
             _this3.user = resp.user;
@@ -1387,11 +1386,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         value: function ngOnInit() {
           var _this4 = this;
 
-          if (this.authService.isLogged === '1') {
-            setTimeout(function () {
-              _this4.reload();
-            }, 30000);
-          }
+          this.reloadStuff = setInterval(function () {
+            _this4.reload();
+          }, 20000);
+        }
+      }, {
+        key: "ngOnDestroy",
+        value: function ngOnDestroy() {
+          clearInterval(this.reloadStuff);
         }
       }, {
         key: "reload",
@@ -1401,7 +1403,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           this.closeTransaction();
           this.resetFilter();
           this.loadActiveStrategy();
-          this.ngOnInit();
         }
       }, {
         key: "closeStop",
@@ -2219,15 +2220,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         value: function ngOnInit() {
           var _this8 = this;
 
-          if (this.authService.isLogged === '1') {
-            setTimeout(function () {
-              _this8.getBalance();
+          this.updateBalance = setInterval(function () {
+            _this8.getBalance();
 
-              _this8.updatedAt = new Date();
-
-              _this8.ngOnInit();
-            }, 20000);
-          }
+            _this8.updatedAt = new Date();
+          }, 20000);
+        }
+      }, {
+        key: "ngOnDestroy",
+        value: function ngOnDestroy() {
+          clearInterval(this.updateBalance);
         }
       }, {
         key: "getBalance",

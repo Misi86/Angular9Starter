@@ -1,4 +1,4 @@
-import {AfterContentInit, Component, OnInit, ViewChild} from '@angular/core';
+import {AfterContentInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {ModalComponent} from '../../../shared/modal/modal.component';
 import {ActionService} from '../../../core/services/action.service';
 import * as _ from 'lodash';
@@ -10,7 +10,7 @@ import {AuthService} from '../../../core/services/auth.service';
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent implements OnInit, OnDestroy {
   @ViewChild('detailsModal') detailsModal: ModalComponent;
   @ViewChild('stopModal') stopModal: ModalComponent;
   @ViewChild('cancelModal') cancelModal: ModalComponent;
@@ -24,6 +24,7 @@ export class DashboardComponent implements OnInit {
   public searchState = 'all';
   public details = false;
   private clonedStrategy: any;
+  public reloadStuff: any;
 
   constructor(private actionService: ActionService,
               private alertService: AlertService,
@@ -32,12 +33,14 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.reloadStuff = setInterval(() => {
+      this.reload();
+    }, 20000);
 
-    if (this.authService.isLogged === '1') {
-      setTimeout(() => {
-        this.reload();
-      }, 30000);
-    }
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.reloadStuff);
   }
 
   reload() {
@@ -46,7 +49,6 @@ export class DashboardComponent implements OnInit {
     this.closeTransaction();
     this.resetFilter();
     this.loadActiveStrategy();
-    this.ngOnInit();
   }
 
   closeStop() {

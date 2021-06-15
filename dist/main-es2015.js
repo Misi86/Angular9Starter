@@ -316,7 +316,6 @@ class AuthService {
         this._user = '';
     }
     login(username, password) {
-        // console.log(username, password );
         return this.http.get('api/login/' + username + '/' + password)
             .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_1__["map"])(resp => {
             this.token = resp.token;
@@ -692,11 +691,12 @@ class DashboardComponent {
         this.loadActiveStrategy();
     }
     ngOnInit() {
-        if (this.authService.isLogged === '1') {
-            setTimeout(() => {
-                this.reload();
-            }, 30000);
-        }
+        this.reloadStuff = setInterval(() => {
+            this.reload();
+        }, 20000);
+    }
+    ngOnDestroy() {
+        clearInterval(this.reloadStuff);
     }
     reload() {
         this.closeStop();
@@ -704,7 +704,6 @@ class DashboardComponent {
         this.closeTransaction();
         this.resetFilter();
         this.loadActiveStrategy();
-        this.ngOnInit();
     }
     closeStop() {
         this.stopModal.dismiss();
@@ -1137,13 +1136,13 @@ class HomeComponent {
         this.user = this.authService.user;
     }
     ngOnInit() {
-        if (this.authService.isLogged === '1') {
-            setTimeout(() => {
-                this.getBalance();
-                this.updatedAt = new Date();
-                this.ngOnInit();
-            }, 20000);
-        }
+        this.updateBalance = setInterval(() => {
+            this.getBalance();
+            this.updatedAt = new Date();
+        }, 20000);
+    }
+    ngOnDestroy() {
+        clearInterval(this.updateBalance);
     }
     getBalance() {
         this.actionService.getBtcBalance().subscribe();
