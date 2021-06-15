@@ -43,7 +43,7 @@
       <td class="hidden-column"><input type="text" class="filter-dash " [disabled]="true"></td>
       <td class="hidden-column"><input type="text" class="filter-dash " [disabled]="true"></td>
       <td class="hidden-column"><input type="text" class="filter-dash " [disabled]="true"></td>
-      <td><input type="text" id="filter-date" class="filter-dash" [(ngModel)]="searchDate"
+      <td><input [disabled]="true" type="text" id="filter-date" class="filter-dash" [(ngModel)]="searchDate"
                  (ngModelChange)="filterResult(searchDate,'date')"></td>
       <td><input type="text" class="filter-dash min" [disabled]="true"></td>
       <td><input type="text" class="filter-dash min" [disabled]="true"></td>
@@ -51,7 +51,7 @@
     <tr *ngFor="let str of activeStrategies; let $index =index; ">
       <td style="cursor: pointer" class="text-center" (click)="openDetails($index)">
 <!--        <span (click)="openConfirmModal($index)" class="d-sm-block d-md-none">INFO</span>-->
-        <span class="">
+        <span data-toggle="tooltip" data-placement="top" title="Visualizza ordini">
           <img *ngIf="str.current_status == 'BUY'" src="assets/icons/dollar-sign-solid.svg" alt="buy" width="18">
           <img *ngIf="str.current_status != 'BUY'" src="assets/icons/dollar-sign.svg" alt="sell" width="18">
       </span>
@@ -127,6 +127,7 @@
     <div class="app-modal-header"><h3>TRANSAZIONI</h3></div>
     <div class="app-modal-body">
       <div class="text-center" *ngIf="stopData">
+        Strategia: <strong>{{stopData.name}}</strong>
         <table class="table">
           <tr>
             <th>Id dell' Ordine</th>
@@ -141,6 +142,7 @@
             <td>{{tr.quantity ? tr.quantity : 'fake'}}</td>
           </tr>
         </table>
+        <button class="btn btn-danger w-100" (click)="closeTransaction()" >CHIUDI</button>
       </div>
     </div>
   </modal>

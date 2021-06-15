@@ -11,6 +11,7 @@ import {TokenInterceptor} from './shared/http-resources/token.interceptor';
 import {AlertService} from './shared/alert/alert.service';
 import {HomeModule} from './modules/home/home.module';
 import {ActionService} from './core/services/action.service';
+import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import {ActionService} from './core/services/action.service';
     {provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true},
+    {provide: LocationStrategy, useClass: HashLocationStrategy},
     AuthService,
     AlertService,
     ActionService,
