@@ -1,13 +1,25 @@
 <h1 class="sub-header">Strategie</h1>
-
+<div class="row">
+  <div class="col-sm-2">
+    <label  for="single-order">
+      <input value="single" type="radio"  id="single-order" [(ngModel)]="strategyType" (ngModelChange)="manageValidators(strategyType)">
+      Ordine singolo</label>
+  </div>
+  <div class="col-sm-3">
+    <label  for="multiple-order">
+      <input type="radio" value="multi"  id="multiple-order" [(ngModel)]="strategyType" (ngModelChange)="manageValidators(strategyType)">
+      Ordine multiplo</label>
+  </div>
+  <div class="col-sm-7"></div>
+</div>
   <div class="strategies-container ">
     <form [formGroup]="strategiesForm" (ngSubmit)="openConfirmModal()" novalidate>
       <div class="row">
-        <div class="col-sm-3 form-group">
+        <div class="col-sm-3 form-group" *ngIf="strategyType === 'single'">
           <label for="strategy-name">Nome:</label>
         </div>
-        <div class="col-sm-9 form-group">
-          <input formControlName="strategy_name" class="form-control" type="text"  id="strategy-name">
+        <div class="col-sm-9 form-group" *ngIf="strategyType === 'single'">
+          <input (blur)="checkIfExist(formValue.strategy_name.value)"  formControlName="strategy_name" class="form-control" type="text"  id="strategy-name">
         </div>
         <div class="col-sm-3 form-group">
           <label for="select-pairs">Seleziona scambio:</label>
@@ -37,16 +49,31 @@
         <div class="col-sm-9 form-group">
           <input formControlName="strategy_buy_price" class="form-control inputStr" type="number" id="buy-price">
         </div>
-        <div class="col-sm-3 form-group">
+        <div class="col-sm-3 form-group" *ngIf="strategyType === 'single'">
           <label for="sell-price">Prezzo vendita:</label>
         </div>
-        <div class="col-sm-9 form-group">
+        <div class="col-sm-9 form-group" *ngIf="strategyType === 'single'">
           <input formControlName="strategy_sell_price" class="form-control inputStr" type="number" id="sell-price">
+        </div>
+        <div class="col-sm-3 form-group" *ngIf="strategyType === 'multi'">
+          <label for="direction">Direzione:</label>
+        </div>
+        <div class="col-sm-9 form-group" *ngIf="strategyType === 'multi'">
+          <select formControlName="strategy_direction" class="form-control inputStr" type="number" id="direction">
+            <option value="up">Crescente</option>
+            <option value="down">Decrescente</option>
+          </select>
+        </div>
+      <div class="col-sm-3 form-group" *ngIf="strategyType === 'multi'">
+          <label for="sell-price">Numero ordini:</label>
+        </div>
+        <div class="col-sm-9 form-group" *ngIf="strategyType === 'multi'">
+          <input formControlName="strategy_size" class="form-control inputStr" type="number" [maxLength]="50" id="size">
         </div>
         <div class="col-sm-3 form-group">
         </div>
         <div class="col-sm-9 form-group">
-            <button [disabled]="strategiesForm.invalid" class="btn start-btn float-right" >AVVIA</button>
+            <button [disabled]="strategiesForm.invalid || isStrPresent" class="btn start-btn float-right" >AVVIA</button>
         </div>
       </div>
 
@@ -58,14 +85,16 @@
       <h3>Conferma azione</h3>
     </div>
     <div class="app-modal-body text-center">
-      <p>Stai inizializzando "{{formValue.strategy_name.value}}" con i seguenti settaggi:</p>
+      <p>Stai inizializzando "{{strategyType === 'single' ? formValue.strategy_name.value : 'un ordine Multiplo'}}" con i seguenti settaggi:</p>
       <p>Scambio: {{formValue.strategy_pairs.value}}</p>
       <p>Prezzo di compera: {{formValue.strategy_buy_price.value | number: '1.1-8'}} BTC </p>
-      <p>Prezzo di vendita: {{formValue.strategy_sell_price.value | number: '1.1-8'}} BTC </p>
-      <p>Capitale: {{formValue.strategy_capital.value}} BTC </p>
+      <p *ngIf="strategyType === 'single'">Prezzo di vendita: {{formValue.strategy_sell_price.value | number: '1.1-8'}} BTC </p>
+      <p>Capitale: {{formValue.strategy_capital.value}} BTC <span *ngIf="strategyType ==='multi'">per strategia</span></p>
+     <p *ngIf="strategyType === 'multi'">Ordine: {{formValue.strategy_direction.value === 'up' ? 'Crescente' : 'Decrescente'}}</p>
+     <p *ngIf="strategyType === 'multi'">N° Ordini: {{formValue.strategy_size.value}}</p>
       <h3>CONFERMA</h3>
       <button class="btn btn-danger float-left" (click)="close()">DECLINA</button>
-      <button class="btn start-btn float-right" (click)="initializeStrategy()">CONFERMA</button>
+      <button class="btn start-btn float-right" (click)="strategyType === 'single' ? initializeStrategy() : initializeStrategies()">CONFERMA</button>
     </div>
   </modal>
 

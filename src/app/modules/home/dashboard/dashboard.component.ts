@@ -26,6 +26,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   private clonedStrategy: any;
   public reloadStuff: any;
   public currentState: any;
+  public strNumber: any;
 
   constructor(private actionService: ActionService,
               private alertService: AlertService,
@@ -88,12 +89,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.stopData = resp[0];
       }
       this.checkMobileData = resp[0];
+      this.strNumber = this.clonedStrategy.length;
+
     });
   }
 
   getSpecificStatus(orderId: any, pair: any) {
     this.actionService.getCurrentStatus(orderId, pair).subscribe((resp) => {
-      const state  = resp.status === 'NEW' ? 'APERTO' : 'CHIUSO';
+      const state = resp.status === 'NEW' ? 'APERTO' : 'CHIUSO';
       this.alertService.addMessage('info', 'Stato dell ordine: ' + state);
       return resp;
     });

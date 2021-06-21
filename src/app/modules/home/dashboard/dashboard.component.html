@@ -1,7 +1,9 @@
-<h1 class="sub-header">Riepilogo</h1>
+<div class="sub-header">
+  <div class="h1">Riepilogo <span class="float-right" style="font-size: 14px">Strategie attive: {{strNumber}}</span></div>
+</div>
 
 <div class="mt-5">
-  <h2>Strategie attive</h2>
+
   <table class="table-responsive">
     <tr class="text-center">
       <th>Stato</th>
@@ -76,7 +78,7 @@
       <td>{{str.coin_pair}}</td>
       <td class="hidden-column">{{str.capital}}</td>
       <td
-        class="hidden-column">{{str.current_status == 'BUY' ? str.current_capital : (str.current_capital * str.sell_price).toFixed(8) }}</td>
+        class="hidden-column">{{(str.current_capital * str.sell_price).toFixed(8) }}</td>
       <td class="hidden-column">{{str.buy_price.toFixed(8)}}</td>
       <td class="hidden-column">{{str.sell_price.toFixed(8)}}</td>
       <td>{{str.date | date:'dd/MM/yyyy'}}</td>
@@ -94,7 +96,7 @@
           <img alt="stop" src="assets/icons/stop-circle-solid.svg" width="20">
         </button>
       </td>
-      <td *ngIf="str.transaction !== undefined " colspan="10">Bau</td>
+
     </tr>
 
   </table>

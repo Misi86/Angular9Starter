@@ -8,7 +8,7 @@ import {HttpClient} from '@angular/common/http';
   providedIn: 'root'
 })
 
-export class AuthService {
+export class AuthService{
 
   private _token;
   private _user = '';
@@ -17,6 +17,7 @@ export class AuthService {
   constructor(private router: Router,
               private http: HttpClient) {
   }
+
 
   login(username: string, password: string) {
     return this.http.get<any>('api/login/' + username + '/' + password)

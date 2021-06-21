@@ -29,6 +29,12 @@ export class ActionService {
     }));
   }
 
+  setStrategies(payload: any) {
+    return this.http.post<any>('api/strategies', payload).pipe(map(data => {
+      return data;
+    }));
+  }
+
   getActiveStrategy() {
     return this.http.get<any>('api/strategy/all').pipe(map(data => {
       return data;
@@ -62,7 +68,7 @@ export class ActionService {
 
   getCurrentStatus(orderId: any, pair: any) {
     return this.http.get<any>('api/binance/orderstatus/' + orderId + '/' + pair).pipe(map(data => {
-     return JSON.parse(data.success);
+      return JSON.parse(data.success);
     }));
   }
 
@@ -74,6 +80,13 @@ export class ActionService {
     };
     return this.http.post<any>('api/users/' + name, payload).pipe(map(data => {
       this.alertService.addMessage('success', 'Password cambiata correttamente')
+      return data;
+    }));
+  }
+
+
+  checkStrategy(name: any) {
+    return this.http.get<any>('api/strategy/' + name).pipe(map(data => {
       return data;
     }));
   }

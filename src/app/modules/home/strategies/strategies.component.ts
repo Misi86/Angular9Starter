@@ -19,6 +19,8 @@ export class StrategiesComponent implements OnInit {
   @ViewChild('confirmModal') confirmModal: ModalComponent;
   public pairs: any;
   private currentPrice: number;
+  public strategyType = 'single';
+  public isStrPresent: boolean;
 
   constructor(private fb: FormBuilder,
               private alert: AlertService,
@@ -27,15 +29,15 @@ export class StrategiesComponent implements OnInit {
               private datePipe: DatePipe) {
 
     this.strategiesForm = this.fb.group({
-      strategy_name: ['', Validators.required],
-      // small_cap: [false],
+      strategy_name: [''],
       strategy_pairs: ['', Validators.required],
       strategy_capital: ['', Validators.required],
-      // strategy_capital_taxed: [''],
       strategy_buy_price: ['', Validators.required],
-      strategy_sell_price: ['', Validators.required],
+      strategy_sell_price: [''],
+      strategy_direction: [''],
+      strategy_size: [''],
     });
-
+    this.manageValidators(this.strategyType);
   }
 
   ngOnInit() {
@@ -43,10 +45,51 @@ export class StrategiesComponent implements OnInit {
     this.loadPairs();
   }
 
+  manageValidators(str: any) {
+    if (str === 'single') {
+      this.formValue.strategy_name.setValidators([Validators.required]);
+      this.formValue.strategy_sell_price.setValidators([Validators.required]);
+      this.formValue.strategy_direction.clearValidators();
+      this.formValue.strategy_size.clearValidators();
+      this.updateFormStatus();
+    } else {
+      this.formValue.strategy_name.clearValidators();
+      this.formValue.strategy_sell_price.clearValidators();
+      this.formValue.strategy_direction.setValidators([Validators.required]);
+      this.formValue.strategy_size.setValidators([Validators.required]);
+      this.updateFormStatus();
+    }
+
+  }
+
+  updateFormStatus() {
+    this.formValue.strategy_name.updateValueAndValidity();
+    this.formValue.strategy_sell_price.updateValueAndValidity();
+    this.formValue.strategy_direction.updateValueAndValidity();
+    this.formValue.strategy_size.updateValueAndValidity();
+  }
+
+  checkIfExist(name) {
+    if (name !== '' && this.strategyType === 'single') {
+      this.actionService.checkStrategy(name).subscribe((resp) => {
+        // console.log(resp, _.isEmpty(resp));
+        if (_.isEmpty(resp)) {
+          this.isStrPresent = false;
+        } else {
+          this.isStrPresent = true;
+          this.alertService.addMessage('danger', 'Nome strategia presente');
+        }
+        return this.isStrPresent;
+      }, (error) => {
+        this.alertService.addMessage('success', 'Nome strategia disponibile');
+      });
+    }
+  }
+
   loadPairs() {
     this.actionService.getAllPairs().subscribe((resp) => {
         this.pairs = _.filter(resp, (o) => {
-          return o.price < 0.00001;
+          return o.price < 0.000002;
         });
       },
       (error) => {
@@ -82,14 +125,39 @@ export class StrategiesComponent implements OnInit {
     };
     // console.log(payload);
     this.actionService.setStrategy(payload).subscribe((resp) => {
-      if (resp) {
-        this.close();
-        this.actionService.getBtcBalance().subscribe();
-        this.alertService.addMessage('success', 'Strategia inizializzata con successo');
-      }
-    },
+        if (resp) {
+          this.close();
+          this.actionService.getBtcBalance().subscribe();
+          this.alertService.addMessage('success', 'Strategia inizializzata con successo');
+        }
+      },
       (error) => {
-      this.close();
+        this.close();
+      });
+  }
+
+  initializeStrategies() {
+    const quantity = this.formValue.strategy_capital.value / parseFloat(this.formValue.strategy_buy_price.value);
+    const payload = {
+      coin_pair: this.formValue.strategy_pairs.value,
+      capital: this.formValue.strategy_capital.value,
+      quantity: Math.round(parseFloat(quantity.toFixed(3))),
+      price: parseFloat(this.formValue.strategy_buy_price.value),
+      n_strategy: this.formValue.strategy_size.value,
+      order: this.formValue.strategy_direction.value
+    };
+    // console.log(payload);
+    this.actionService.setStrategies(payload).subscribe((resp) => {
+        if (resp) {
+          this.close();
+          this.actionService.getBtcBalance().subscribe();
+          this.alertService.addMessage('success', resp.success);
+        }
+      },
+      (error) => {
+        this.close();
+        this.alertService.addMessage('danger', error.error);
+
       });
   }
 
