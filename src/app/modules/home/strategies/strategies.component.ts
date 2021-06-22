@@ -47,12 +47,15 @@ export class StrategiesComponent implements OnInit {
 
   manageValidators(str: any) {
     if (str === 'single') {
+      this.strategiesForm.reset();
       this.formValue.strategy_name.setValidators([Validators.required]);
       this.formValue.strategy_sell_price.setValidators([Validators.required]);
       this.formValue.strategy_direction.clearValidators();
       this.formValue.strategy_size.clearValidators();
       this.updateFormStatus();
     } else {
+      this.isStrPresent = false;
+      this.strategiesForm.reset();
       this.formValue.strategy_name.clearValidators();
       this.formValue.strategy_sell_price.clearValidators();
       this.formValue.strategy_direction.setValidators([Validators.required]);
@@ -72,8 +75,7 @@ export class StrategiesComponent implements OnInit {
   checkIfExist(name) {
     if (name !== '' && this.strategyType === 'single') {
       this.actionService.checkStrategy(name).subscribe((resp) => {
-        // console.log(resp, _.isEmpty(resp));
-        if (_.isEmpty(resp)) {
+        if (_.isString(resp.success) ) {
           this.isStrPresent = false;
         } else {
           this.isStrPresent = true;
@@ -81,7 +83,7 @@ export class StrategiesComponent implements OnInit {
         }
         return this.isStrPresent;
       }, (error) => {
-        this.alertService.addMessage('success', 'Nome strategia disponibile');
+
       });
     }
   }

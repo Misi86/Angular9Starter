@@ -37,14 +37,8 @@
         <div class="col-sm-9 form-group">
           <input formControlName="strategy_capital" class="form-control inputStr" type="number" id="capital">
         </div>
-<!--        <div class="col-sm-3 form-group" [ngClass]="{'d-none': formValue.strategy_capital.invalid , 'd-block': !formValue.strategy_capital.invalid }">-->
-<!--          <label for="buy-price">Capitale BTC + Tasse</label>-->
-<!--        </div>-->
-<!--        <div class="col-sm-9 form-group" [ngClass]="{'d-none': formValue.strategy_capital.invalid , 'd-block': !formValue.strategy_capital.invalid }">-->
-<!--          <input readonly formControlName="strategy_capital_taxed" class="form-control inputStr" type="number" id="capital-taxed">-->
-<!--        </div>-->
         <div class="col-sm-3 form-group">
-          <label for="buy-price">Prezzo compera:</label>
+          <label for="buy-price">Prezzo<span *ngIf="strategyType === 'single'"> compera</span>:</label>
         </div>
         <div class="col-sm-9 form-group">
           <input formControlName="strategy_buy_price" class="form-control inputStr" type="number" id="buy-price">
