@@ -79,7 +79,7 @@
       </td>
       <td>{{str.name}}</td>
       <td>{{str.coin_pair}}</td>
-      <td class="hidden-column">{{str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity :  str.capital}}</td>
+      <td class="hidden-column">{{str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity :  str.capital}}</td>
       <td
         class="hidden-column">{{(str.current_capital * str.sell_price).toFixed(8) }}</td>
       <td class="hidden-column">{{str.buy_price.toFixed(8)}}</td>

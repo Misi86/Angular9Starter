@@ -548,7 +548,7 @@ function DashboardComponent_tr_64_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](str_r9.coin_pair);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](str_r9.transactions[0].cumulative_quantity ? str_r9.transactions[0].cumulative_quantity : str_r9.capital);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](str_r9.transactions[0] && str_r9.transactions[0].cumulative_quantity ? str_r9.transactions[0].cumulative_quantity : str_r9.capital);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"]((str_r9.current_capital * str_r9.sell_price).toFixed(8));
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
