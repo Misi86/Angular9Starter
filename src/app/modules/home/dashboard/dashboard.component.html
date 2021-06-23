@@ -75,6 +75,9 @@
         <span data-toggle="tooltip" data-placement="top" title="Visualizza ordini">
           <img *ngIf="str.current_status == 'BUY'" src="assets/icons/dollar-sign-solid.svg" alt="buy" width="18">
           <img *ngIf="str.current_status != 'BUY'" src="assets/icons/dollar-sign.svg" alt="sell" width="18">
+          <img class="status-icon play" *ngIf="str.status == 'ACTIVE'" src="assets/icons/play-circle-solid.svg" alt="play" width="18">
+          <img class="status-icon pause" *ngIf="str.status != 'ACTIVE'" src="assets/icons/pause-circle-solid.svg" alt="pause" width="18">
+
       </span>
       </td>
       <td>{{str.name}}</td>

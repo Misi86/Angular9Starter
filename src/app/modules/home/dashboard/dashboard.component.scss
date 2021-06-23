@@ -47,6 +47,17 @@ td, th {
     }
   }
 
+  .status-icon{
+    margin-top: 18px;
+    border-radius: 16px;
+    &.play{
+      background-color: green;
+    }
+    &.pause{
+      background-color: black;
+    }
+  }
+
 }
 
 tr:nth-child(even) {
