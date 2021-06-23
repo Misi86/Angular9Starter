@@ -5,6 +5,8 @@ import {AlertService} from '../../../shared/alert/alert.service';
 import {ActionService} from '../../../core/services/action.service';
 import {DatePipe} from '@angular/common';
 import * as _ from 'lodash';
+import {Options} from '@angular-slider/ngx-slider';
+import {parse} from "@angular/compiler/src/render3/view/style_parser";
 
 declare var $: any;
 
@@ -21,6 +23,10 @@ export class StrategiesComponent implements OnInit {
   private currentPrice: number;
   public strategyType = 'single';
   public isStrPresent: boolean;
+  public options: Options;
+  public optionsStr: Options;
+  public pairSize: any;
+  public strLength = 0;
 
   constructor(private fb: FormBuilder,
               private alert: AlertService,
@@ -34,9 +40,21 @@ export class StrategiesComponent implements OnInit {
       strategy_capital: ['', Validators.required],
       strategy_buy_price: ['', Validators.required],
       strategy_sell_price: [''],
+      strategy_pairs_size: [''],
       strategy_direction: [''],
       strategy_size: [''],
     });
+
+    this.options = {
+      floor: 2,
+      ceil: 50,
+      step: 1
+    };
+    this.optionsStr = {
+      floor: 0,
+      ceil: 200,
+      step: 1
+    };
     this.manageValidators(this.strategyType);
   }
 
@@ -75,7 +93,7 @@ export class StrategiesComponent implements OnInit {
   checkIfExist(name) {
     if (name !== '' && this.strategyType === 'single') {
       this.actionService.checkStrategy(name).subscribe((resp) => {
-        if (_.isString(resp.success) ) {
+        if (_.isString(resp.success)) {
           this.isStrPresent = false;
         } else {
           this.isStrPresent = true;
@@ -90,9 +108,20 @@ export class StrategiesComponent implements OnInit {
 
   loadPairs() {
     this.actionService.getAllPairs().subscribe((resp) => {
-        this.pairs = _.filter(resp, (o) => {
-          return o.price < 0.000002;
-        });
+        if (this.formValue.strategy_pairs_size.value === 0) {
+          this.pairs = _.filter(resp, (o) => {
+            return o.price < 0.000002;
+          });
+          this.formValue.strategy_pairs_size.setValue(200);
+          this.strLength = this.pairs.length;
+        } else {
+          const value = this.formValue.strategy_pairs_size.value < 100 ? '0.000000' + this.formValue.strategy_pairs_size.value.toString() : '0.00000' + this.formValue.strategy_pairs_size.value.toString();
+          this.pairs = _.filter(resp, (o) => {
+            return o.price < parseFloat(value);
+          });
+          this.strLength = this.pairs.length;
+        }
+
       },
       (error) => {
       });

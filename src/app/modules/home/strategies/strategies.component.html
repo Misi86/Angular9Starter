@@ -22,7 +22,14 @@
           <input (blur)="checkIfExist(formValue.strategy_name.value)"  formControlName="strategy_name" class="form-control" type="text"  id="strategy-name">
         </div>
         <div class="col-sm-3 form-group">
-          <label for="select-pairs">Seleziona scambio:</label>
+          <label for="size_pairs">Satoshi max:</label>
+        </div>
+        <div class="col-sm-9 form-group custom-slider">
+          <ngx-slider  (ngModelChange)="loadPairs()" formControlName="strategy_pairs_size"  id="size_pairs" [options]="optionsStr"></ngx-slider>
+        </div>
+        <div class="col-sm-3 form-group">
+          <label for="select-pairs">Seleziona scambio: <br>(N° {{strLength}})</label>
+
         </div>
         <div class="col-sm-9 form-group">
 <!--          <input type="checkbox" formControlName="small_cap"> <span style="font-size:14px"> Small Cap</span>-->
@@ -30,6 +37,8 @@
             <option value=""></option>
             <option *ngFor="let p of pairs" [value]="p.name">{{p.name}}</option>
           </select>
+
+
         </div>
         <div class="col-sm-3 form-group">
           <label for="buy-price">Capitale BTC:<br>(tasse escluse)</label>
@@ -61,8 +70,9 @@
       <div class="col-sm-3 form-group" *ngIf="strategyType === 'multi'">
           <label for="sell-price">Numero ordini:</label>
         </div>
-        <div class="col-sm-9 form-group" *ngIf="strategyType === 'multi'">
-          <input formControlName="strategy_size" class="form-control inputStr" type="number" [maxLength]="50" id="size">
+        <div class="col-sm-9 form-group custom-slider" *ngIf="strategyType === 'multi'">
+        <ngx-slider formControlName="strategy_size" [options]="options"></ngx-slider>
+          <!--          <input formControlName="strategy_size" class="form-control inputStr" type="number" [maxLength]="50" id="size">-->
         </div>
         <div class="col-sm-3 form-group">
         </div>

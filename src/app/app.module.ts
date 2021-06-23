@@ -12,6 +12,8 @@ import {AlertService} from './shared/alert/alert.service';
 import {HomeModule} from './modules/home/home.module';
 import {ActionService} from './core/services/action.service';
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
+import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
+import {NgxSliderModule} from "@angular-slider/ngx-slider";
 
 @NgModule({
   declarations: [
@@ -21,7 +23,9 @@ import {HashLocationStrategy, LocationStrategy} from '@angular/common';
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    HomeModule
+    HomeModule,
+    NgbModule,
+    NgxSliderModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true},
@@ -32,6 +36,10 @@ import {HashLocationStrategy, LocationStrategy} from '@angular/common';
     AlertService,
     ActionService,
   ],
+  exports: [
+    NgbModule
+  ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

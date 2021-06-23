@@ -50,12 +50,18 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.loadActiveStrategy();
   }
 
+  getFloor(value: any) {
+    return Math.floor(value);
+  }
+
   closeStop() {
     this.stopModal.dismiss();
+    // this.openDetails(this.stopData);
   }
 
   closeCancel() {
     this.cancelModal.dismiss();
+    // this.openDetails(this.stopData);
   }
 
   closeTransaction() {
@@ -67,13 +73,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.detailsModal.show('modal-lg');
   }
 
-  openStopModal(id) {
-    this.stopData = this.activeStrategies[id];
+  openStopModal() {
+    this.closeTransaction();
     this.stopModal.show('modal-lg');
   }
 
-  openCancelModal(id) {
-    this.stopData = this.activeStrategies[id];
+  openCancelModal() {
+    this.closeTransaction();
     this.cancelModal.show('modal-lg');
   }
 
@@ -96,8 +102,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getSpecificStatus(orderId: any, pair: any) {
     this.actionService.getCurrentStatus(orderId, pair).subscribe((resp) => {
-      const state = resp.status === 'NEW' ? 'APERTO' : 'CHIUSO';
-      this.alertService.addMessage('info', 'Stato dell ordine: ' + state);
+      if (_.isEmpty(resp)) {
+        this.alertService.addMessage('info', 'Stato dell ordine chiuso bilancio insufficente');
+      } else {
+        const state = resp.status === 'NEW' ? 'APERTO' : 'CHIUSO';
+        this.alertService.addMessage('info', 'Stato dell ordine: ' + state);
+      }
       return resp;
     });
   }
@@ -151,7 +161,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.searchState = 'all';
       if (this.searchName !== undefined) {
         data = _.filter(this.clonedStrategy, (o) => {
-          return o.name.includes(name);
+          return o.name.includes(name.toUpperCase());
         });
       } else {
         data = this.clonedStrategy;

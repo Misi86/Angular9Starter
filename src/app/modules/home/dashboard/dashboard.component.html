@@ -1,5 +1,6 @@
 <div class="sub-header">
-  <div class="h1">Riepilogo <span class="float-right" style="font-size: 14px">Strategie attive: {{strNumber}}</span></div>
+  <div class="h1">Riepilogo <span class="float-right" style="font-size: 16px">Strategie attive: {{strNumber}}</span>
+  </div>
 </div>
 
 <div class="mt-5">
@@ -14,8 +15,9 @@
       <th class="hidden-column">Prezzo di compera</th>
       <th class="hidden-column">Prezzo di vendita</th>
       <th>Data</th>
-      <th>PAUSA</th>
-      <th>CHIUDI</th>
+      <th class="d-none">PAUSA</th>
+      <th class="d-none">CHIUDI</th>
+      <th>Cicli eseguiti</th>
     </tr>
     <tr>
       <td>
@@ -63,11 +65,12 @@
       <td class="hidden-column"><input type="text" class="filter-dash " [disabled]="true"></td>
       <td><input [disabled]="true" type="text" id="filter-date" class="filter-dash" [(ngModel)]="searchDate"
                  (ngModelChange)="filterResult(searchDate,'date')"></td>
-      <td><input type="text" class="filter-dash min" [disabled]="true"></td>
-      <td><input type="text" class="filter-dash min" [disabled]="true"></td>
+      <td class="d-none"><input type="text" class="filter-dash min" [disabled]="true"></td>
+      <td class="d-none"><input type="text" class="filter-dash min" [disabled]="true"></td>
+      <td ><input type="text" class="filter-dash " [disabled]="true"></td>
     </tr>
-    <tr *ngFor="let str of activeStrategies; let $index =index; ">
-      <td style="cursor: pointer" class="text-center" (click)="openDetails($index)">
+    <tr *ngFor="let str of activeStrategies; let $index =index; " (click)="openDetails($index)" style="cursor: pointer">
+      <td class="text-center">
         <!--        <span (click)="openConfirmModal($index)" class="d-sm-block d-md-none">INFO</span>-->
         <span data-toggle="tooltip" data-placement="top" title="Visualizza ordini">
           <img *ngIf="str.current_status == 'BUY'" src="assets/icons/dollar-sign-solid.svg" alt="buy" width="18">
@@ -76,14 +79,14 @@
       </td>
       <td>{{str.name}}</td>
       <td>{{str.coin_pair}}</td>
-      <td class="hidden-column">{{str.capital}}</td>
+      <td class="hidden-column">{{str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity :  str.capital}}</td>
       <td
         class="hidden-column">{{(str.current_capital * str.sell_price).toFixed(8) }}</td>
       <td class="hidden-column">{{str.buy_price.toFixed(8)}}</td>
       <td class="hidden-column">{{str.sell_price.toFixed(8)}}</td>
       <td>{{str.date | date:'dd/MM/yyyy'}}</td>
-      <td>
-        <button (click)="openStopModal($index)" class="btn"
+      <td class="d-none">
+        <button (click)="openStopModal()" class="btn"
                 [ngClass]="{'btn-dark':str.status == 'ACTIVE','btn-success':str.status != 'ACTIVE'}">
           <span *ngIf="str.status == 'ACTIVE'"><img width="20" alt="pause"
                                                     src="assets/icons/pause-circle-solid.svg"></span>
@@ -91,14 +94,13 @@
                                                     src="assets/icons/play-circle-solid.svg"></span>
         </button>
       </td>
-      <td>
-        <button class="btn btn-danger" (click)="openCancelModal($index)">
+      <td class="d-none">
+        <button class="btn btn-danger" (click)="openCancelModal()">
           <img alt="stop" src="assets/icons/stop-circle-solid.svg" width="20">
         </button>
       </td>
-
+      <td class="text-center"> {{str.transactions.length % 2 == 0 ? str.transactions.length / 2 : getFloor(str.transactions.length / 2)}} </td>
     </tr>
-
   </table>
   <modal id="edit-modal" #detailsModal>
     <div class="app-modal-header"><h3>Dettagli: </h3></div>
@@ -146,7 +148,8 @@
     <div class="app-modal-header"><h3>TRANSAZIONI</h3></div>
     <div class="app-modal-body">
       <div class="text-center" *ngIf="stopData">
-        Strategia: <strong>{{stopData.name}}</strong><div>
+        Strategia: <strong>{{stopData.name}}</strong>
+        <div>
           <table class="table-responsive-lg  ">
             <tr>
               <th>Id dell' Ordine</th>
@@ -154,6 +157,7 @@
               <th>Data</th>
               <th>Quantità</th>
               <th>Stato Ordine</th>
+              <th>Pausa Ordine</th>
               <th>Ferma Ordine</th>
             </tr>
             <tr *ngFor="let tr of stopData.transactions; let lst = last">
@@ -162,10 +166,26 @@
               <td>{{parseDate(tr.date)  }}</td>
               <td>{{tr.quantity ? tr.quantity : 'fake'}}</td>
               <td>
-                <button *ngIf="lst" class="btn btn-dark w-100" (click)="getSpecificStatus(tr.order_id,stopData.coin_pair)">STATO</button>
+                <button *ngIf="lst" class="btn btn-dark w-100"
+                        (click)="getSpecificStatus(tr.order_id,stopData.coin_pair)">STATO
+                </button>
               </td>
               <td>
-                <button *ngIf="lst" class="btn btn-danger w-100" (click)="cancelStrategy(tr.order_id , stopData.coin_pair, stopData.name)"> <img alt="stop" src="assets/icons/stop-circle-solid.svg" width="20"></button>
+                <button *ngIf="lst" (click)="openStopModal()" class="btn w-100"
+                        [ngClass]="{'btn-dark':stopData.status == 'ACTIVE','btn-success':stopData.status != 'ACTIVE'}">
+          <span *ngIf="stopData.status == 'ACTIVE'"><img width="20" alt="pause"
+                                                         src="assets/icons/pause-circle-solid.svg"></span>
+                  <span *ngIf="stopData.status != 'ACTIVE'"><img width="20" alt="play"
+                                                                 src="assets/icons/play-circle-solid.svg"></span>
+                </button>
+              </td>
+              <td>
+                <button *ngIf="lst" class="btn btn-danger w-100"
+                        (click)="openCancelModal()">
+                  <img alt="stop"
+                       src="assets/icons/stop-circle-solid.svg"
+                       width="20">
+                </button>
               </td>
             </tr>
           </table>

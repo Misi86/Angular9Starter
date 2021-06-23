@@ -18,4 +18,22 @@
     -moz-appearance: textfield;
   }
 
+
+
+
 }
+.custom-slider{
+  .ngx-slider{
+    &.ngx-slider-pointer{
+      width: 22px !important;
+      height: 22px !important;
+      background-color: #183153 !important;
+      opacity:0.8;
+    }
+  }
+}
+
+
+
+
+
