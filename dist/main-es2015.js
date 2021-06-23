@@ -2591,7 +2591,8 @@ const environment = {
     local: true,
     // api: 'http://127.0.0.1:3000/'
     // api: 'http://ec2-15-160-2-188.eu-south-1.compute.amazonaws.com:3000/' -- Andrea
-    api: 'http://ec2-35-152-50-80.eu-south-1.compute.amazonaws.com:3000/'
+    // api: 'http://ec2-35-152-50-80.eu-south-1.compute.amazonaws.com:3000/' -- Mattia
+    api: 'http://ec2-35-152-99-6.eu-south-1.compute.amazonaws.com:3000/'
 };
 /*
  * For easier debugging in development mode, you can import the following file
