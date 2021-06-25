@@ -119,6 +119,7 @@ export class StrategiesComponent implements OnInit {
           this.pairs = _.filter(resp, (o) => {
             return o.price < parseFloat(value);
           });
+          // console.log(this.pairs, this.pairs.length)
           this.strLength = this.pairs.length;
         }
 

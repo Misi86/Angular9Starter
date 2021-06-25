@@ -6,7 +6,7 @@
         <span class="navbar-toggler-icon"><img alt="" width="24" src="assets/icons/bars-solid.svg"></span>
       </button>
       <div class="collapse navbar-collapse mobile-menu" id="navbarCollapse" style="justify-content: flex-end">
-        <div class="pr-3 balance" style="color: #f2f2f2"><strong>ULTIMO AGGIORNAMENTO:</strong> {{parseDate(updatedAt)}}  |  <strong>BILANCIO:</strong> {{actionService.balanceBtc}} BTC | <strong>TASSE:</strong> {{calculateFees(actionService.balanceBtc)}}</div>
+        <div class="pr-3 balance" style="color: #f2f2f2"><strong>ULTIMO AGGIORNAMENTO:</strong> {{parseDate(updatedAt)}}  |  <strong>BILANCIO:</strong> {{actionService.balanceBtc}} BTC | <strong>BILANCIO SENZA TASSE:</strong> {{balanceWoFees(actionService.balanceBtc, calculateFees(actionService.balanceBtc))}} | <strong>TASSE:</strong> {{calculateFees(actionService.balanceBtc)}}</div>
         <div class="d-sm-block d-md-none">
           <ul class="nav flex-column">
             <li class="nav-item">

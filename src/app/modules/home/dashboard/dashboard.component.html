@@ -67,24 +67,27 @@
                  (ngModelChange)="filterResult(searchDate,'date')"></td>
       <td class="d-none"><input type="text" class="filter-dash min" [disabled]="true"></td>
       <td class="d-none"><input type="text" class="filter-dash min" [disabled]="true"></td>
-      <td ><input type="text" class="filter-dash " [disabled]="true"></td>
+      <td><input type="text" class="filter-dash " [disabled]="true"></td>
     </tr>
-    <tr *ngFor="let str of activeStrategies; let $index =index; " (click)="openDetails($index)" style="cursor: pointer">
+    <tr *ngFor="let str of activeStrategies; let $index =index; let $last=last" (click)="openDetails($index)" style="cursor: pointer">
       <td class="text-center">
         <!--        <span (click)="openConfirmModal($index)" class="d-sm-block d-md-none">INFO</span>-->
         <span data-toggle="tooltip" data-placement="top" title="Visualizza ordini">
           <img *ngIf="str.current_status == 'BUY'" src="assets/icons/dollar-sign-solid.svg" alt="buy" width="18">
           <img *ngIf="str.current_status != 'BUY'" src="assets/icons/dollar-sign.svg" alt="sell" width="18">
-          <img class="status-icon play" *ngIf="str.status == 'ACTIVE'" src="assets/icons/play-circle-solid.svg" alt="play" width="18">
-          <img class="status-icon pause" *ngIf="str.status != 'ACTIVE'" src="assets/icons/pause-circle-solid.svg" alt="pause" width="18">
+          <img class="status-icon play" *ngIf="str.status == 'ACTIVE'" src="assets/icons/play-circle-solid.svg"
+               alt="play" width="18">
+          <img class="status-icon pause" *ngIf="str.status != 'ACTIVE'" src="assets/icons/pause-circle-solid.svg"
+               alt="pause" width="18">
 
       </span>
       </td>
       <td>{{str.name}}</td>
       <td>{{str.coin_pair}}</td>
-      <td class="hidden-column">{{str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity :  str.capital}}</td>
       <td
-        class="hidden-column">{{(str.current_capital * str.sell_price).toFixed(8) }}</td>
+        class="hidden-column">{{str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital}}</td>
+      <td
+        class="hidden-column">{{calculateCurrentCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status)}}</td>
       <td class="hidden-column">{{str.buy_price.toFixed(8)}}</td>
       <td class="hidden-column">{{str.sell_price.toFixed(8)}}</td>
       <td>{{str.date | date:'dd/MM/yyyy'}}</td>
@@ -102,7 +105,8 @@
           <img alt="stop" src="assets/icons/stop-circle-solid.svg" width="20">
         </button>
       </td>
-      <td class="text-center"> {{str.transactions.length % 2 == 0 ? str.transactions.length / 2 : getFloor(str.transactions.length / 2)}} </td>
+      <td
+        class="text-center"> {{calculateTransactions(str.status ,str.transactions, str.transactions.length)}}</td>
     </tr>
   </table>
   <modal id="edit-modal" #detailsModal>

@@ -46,6 +46,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     return data.getDate() + '/' + (data.getMonth() + 1) + '/' + data.getFullYear() + ' - ' + (data.getHours() < 10 ? '0' + data.getHours() : data.getHours()) + ':' + (data.getMinutes() < 10 ? '0' + data.getMinutes() : data.getMinutes()) + ':' + (data.getSeconds() < 10 ? '0' + data.getSeconds() : data.getSeconds());
   }
 
+
+  balanceWoFees(bal: any, tax: any) {
+    return bal - tax;
+  }
+
   calculateFees(value: any) {
     const tax = value - ((value / 100) * 0.1);
     return (value - tax).toFixed(8);

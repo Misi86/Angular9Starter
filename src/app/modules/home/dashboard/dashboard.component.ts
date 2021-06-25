@@ -54,14 +54,55 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return Math.floor(value);
   }
 
+  calculateCurrentCapital(capital: any, sellPrice: any, currentCapital: any, buyPrice: any, status: any) {
+    const ccS = Number((currentCapital * sellPrice).toFixed(8));
+    const ccB = Number((currentCapital * buyPrice).toFixed(8));
+
+    switch (status) {
+      case'BUY':
+        if (ccB === 0) {
+          return capital;
+        }
+        return ccB;
+        break;
+      case'SELL':
+        return ccS;
+        break;
+      default:
+        return capital;
+    }
+
+
+  }
+
+  calculateTransactions(status: any, transactions: any, length: any) {
+    const lastTransaction = transactions[length - 1];
+    const type = lastTransaction.type_transaction;
+    let result = length % 2 === 0 ? length / 2 : this.getFloor(length / 2);
+    if (length >= 3) {
+      if (type === 'SELL' && status === 'ACTIVE') {
+        result = result - 1;
+      }
+      return result;
+    } else {
+      if (type === 'SELL' && status === 'ACTIVE') {
+        result = result - 1;
+      }
+      return result;
+    }
+  }
+
+  getCeil(value: any) {
+    return Math.ceil(value);
+  }
+
+
   closeStop() {
     this.stopModal.dismiss();
-    // this.openDetails(this.stopData);
   }
 
   closeCancel() {
     this.cancelModal.dismiss();
-    // this.openDetails(this.stopData);
   }
 
   closeTransaction() {
