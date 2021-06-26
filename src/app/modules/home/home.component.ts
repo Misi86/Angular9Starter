@@ -48,7 +48,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   balanceWoFees(bal: any, tax: any) {
-    return bal - tax;
+    return (bal - tax).toFixed(8);
   }
 
   calculateFees(value: any) {
