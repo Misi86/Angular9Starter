@@ -36,6 +36,9 @@ td, th {
       &.min{
         max-width:48px;
       }
+    &.tot{
+      max-width: 100px;
+    }
   }
   .radio-dash{
     margin-right: 5px;

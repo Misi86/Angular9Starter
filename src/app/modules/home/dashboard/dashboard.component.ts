@@ -5,6 +5,8 @@ import * as _ from 'lodash';
 import {AlertService} from '../../../shared/alert/alert.service';
 import {AuthService} from '../../../core/services/auth.service';
 
+declare var $: any;
+
 @Component({
   selector: 'dashboard-component',
   templateUrl: './dashboard.component.html',
@@ -27,6 +29,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public reloadStuff: any;
   public currentState: any;
   public strNumber: any;
+  public selectAll = false;
+  public executeTransaction = 0;
+  public selectedBox = [{order: 0, nm: '0', st: '0'}];
 
   constructor(private actionService: ActionService,
               private alertService: AlertService,
@@ -38,8 +43,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.reloadStuff = setInterval(() => {
       this.reload();
     }, 30000);
-
   }
+
 
   ngOnDestroy() {
     clearInterval(this.reloadStuff);
@@ -48,6 +53,29 @@ export class DashboardComponent implements OnInit, OnDestroy {
   reload() {
     this.resetFilter();
     this.loadActiveStrategy();
+  }
+
+  manageAll(event: any) {
+    if (event === true) {
+      _.forEach(this.activeStrategies, (o) => {
+        this.selectedBox.push({order: o.orderId, nm: o.name, st: o.status});
+      });
+      $('.check-dash').prop('checked', true);
+    } else {
+      this.selectedBox = [{order: 0, nm: '0', st: '0'}];
+      $('.check-dash').prop('checked', false);
+    }
+  }
+
+  updateSelectStatus(event: any, orderId: any, name: any, status: any) {
+    if (event.target.checked === true) {
+      this.selectedBox.push({order: orderId, nm: name, st: status});
+    } else {
+      this.selectedBox = _.remove(this.selectedBox, (n) => {
+        return n.order !== orderId;
+      });
+    }
+
   }
 
   getFloor(value: any) {
@@ -77,25 +105,25 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   calculateTransactions(status: any, transactions: any, length: any) {
     const lastTransaction = transactions[length - 1];
-    const type = lastTransaction.type_transaction;
+    const type = lastTransaction && lastTransaction.type_transaction ? lastTransaction.type_transaction : 'BUY';
     let result = length % 2 === 0 ? length / 2 : this.getFloor(length / 2);
     if (length >= 3) {
       if (type === 'SELL' && status === 'ACTIVE') {
         result = result - 1;
       }
-      return result;
     } else {
       if (type === 'SELL' && status === 'ACTIVE') {
         result = result - 1;
       }
-      return result;
     }
+    return result;
   }
+
+
 
   getCeil(value: any) {
     return Math.ceil(value);
   }
-
 
   closeStop() {
     this.stopModal.dismiss();
@@ -237,8 +265,32 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   openDetails(data: any) {
+    // $('.showD').click(() => {
     this.stopData = this.activeStrategies[data];
     this.transactionsModal.show('modal-lg');
+    // });
+  }
+
+  calculateCapital(start: boolean) {
+    let startCapital = 0;
+    let currentCapital = 0;
+
+    if (start) {
+      _.forEach(this.activeStrategies, (str) => {
+        if (str.transactions[0] && str.transactions[0].cumulative_quantity) {
+          startCapital += str.transactions[0].cumulative_quantity;
+        } else {
+          startCapital += str.capital;
+        }
+      });
+      return startCapital.toFixed(8);
+
+    } else {
+      _.forEach(this.activeStrategies, (str) => {
+        currentCapital += this.calculateCurrentCapital(str.capital, str.sell_price, str.current_capital, str.buy_price, str.current_status)
+      });
+      return currentCapital.toFixed(8);
+    }
   }
 
   parseDate(date: any) {
@@ -248,10 +300,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   resetFilter() {
-    this.searchFilter = '';
-    this.searchState = 'all';
-    this.searchName = '';
-    this.searchDate = '';
+    // this.executeTransaction = 0;
+    this.searchFilter = _.isEmpty(this.searchFilter) ? '' : this.searchFilter;
+    this.searchState = this.searchFilter === 'all' ? 'all' : this.searchState;
+    this.searchName = _.isEmpty(this.searchName) ? '' : this.searchName;
+    this.searchDate = _.isEmpty(this.searchDate) ? '' : this.searchDate;
   }
 }
 

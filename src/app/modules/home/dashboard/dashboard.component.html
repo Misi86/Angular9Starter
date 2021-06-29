@@ -7,6 +7,7 @@
 
   <table class="table-responsive">
     <tr class="text-center">
+      <th class="d-none"></th>
       <th>Stato</th>
       <th>Nome</th>
       <th>Scambio</th>
@@ -20,6 +21,9 @@
       <th>Cicli eseguiti</th>
     </tr>
     <tr>
+      <td class="d-none">
+        <input type="checkbox" id="selectAll" [(ngModel)]="selectAll" (ngModelChange)="manageAll($event)">
+      </td>
       <td>
         <label class="mr-1 label-custom" for="all" data-toggle="tooltip" data-placement="top" title="Tutti gli ordini">
           <input id="all" type="radio" value="all" class="radio-dash all" [(ngModel)]="searchState"
@@ -59,8 +63,8 @@
       </td>
       <td><input type="text" id="filter-pair" class="filter-dash" [(ngModel)]="searchFilter"
                  (ngModelChange)="filterResult(searchFilter,'pairs')"></td>
-      <td class="hidden-column"><input type="text" class="filter-dash " [disabled]="true"></td>
-      <td class="hidden-column"><input type="text" class="filter-dash " [disabled]="true"></td>
+      <td class="hidden-column"><input [value]="calculateCapital(true)" type="text" class="filter-dash tot" [disabled]="true"></td>
+      <td class="hidden-column"><input [value]="calculateCapital(false)" type="text" class="filter-dash tot" [disabled]="true"></td>
       <td class="hidden-column"><input type="text" class="filter-dash " [disabled]="true"></td>
       <td class="hidden-column"><input type="text" class="filter-dash " [disabled]="true"></td>
       <td><input [disabled]="true" type="text" id="filter-date" class="filter-dash" [(ngModel)]="searchDate"
@@ -69,8 +73,11 @@
       <td class="d-none"><input type="text" class="filter-dash min" [disabled]="true"></td>
       <td><input type="text" class="filter-dash " [disabled]="true"></td>
     </tr>
-    <tr *ngFor="let str of activeStrategies; let $index =index; let $last=last" (click)="openDetails($index)" style="cursor: pointer">
-      <td class="text-center">
+    <tr *ngFor="let str of activeStrategies; let $index = index; let $last=last" (click)="openDetails($index)" style="cursor: pointer">
+      <td class="d-none">
+        <input class="check-dash" type="checkbox" [value]="str.order_id" [name]="str.name" (change)="updateSelectStatus($event, str.order_id, str.name, str.status)" id="{{'select'+ $index}}">
+      </td>
+      <td class="text-center showD">
         <!--        <span (click)="openConfirmModal($index)" class="d-sm-block d-md-none">INFO</span>-->
         <span data-toggle="tooltip" data-placement="top" title="Visualizza ordini">
           <img *ngIf="str.current_status == 'BUY'" src="assets/icons/dollar-sign-solid.svg" alt="buy" width="18">
@@ -82,16 +89,16 @@
 
       </span>
       </td>
-      <td>{{str.name}}</td>
-      <td>{{str.coin_pair}}</td>
+      <td class="showD">{{str.name}}</td>
+      <td class="showD">{{str.coin_pair}}</td>
       <td
-        class="hidden-column">{{str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital}}</td>
+        class="hidden-column showD">{{str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital}}</td>
       <td
-        class="hidden-column">{{calculateCurrentCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status)}}</td>
-      <td class="hidden-column">{{str.buy_price.toFixed(8)}}</td>
-      <td class="hidden-column">{{str.sell_price.toFixed(8)}}</td>
-      <td>{{str.date | date:'dd/MM/yyyy'}}</td>
-      <td class="d-none">
+        class="hidden-column showD">{{calculateCurrentCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status)}}</td>
+      <td class="hidden-column showD">{{str.buy_price.toFixed(8)}}</td>
+      <td class="hidden-column showD">{{str.sell_price.toFixed(8)}}</td>
+      <td class="showD">{{str.date | date:'dd/MM/yyyy'}}</td>
+      <td class="showD d-none">
         <button (click)="openStopModal()" class="btn"
                 [ngClass]="{'btn-dark':str.status == 'ACTIVE','btn-success':str.status != 'ACTIVE'}">
           <span *ngIf="str.status == 'ACTIVE'"><img width="20" alt="pause"
@@ -100,13 +107,13 @@
                                                     src="assets/icons/play-circle-solid.svg"></span>
         </button>
       </td>
-      <td class="d-none">
+      <td class="showD d-none">
         <button class="btn btn-danger" (click)="openCancelModal()">
           <img alt="stop" src="assets/icons/stop-circle-solid.svg" width="20">
         </button>
       </td>
       <td
-        class="text-center"> {{calculateTransactions(str.status ,str.transactions, str.transactions.length)}}</td>
+        class="text-center showD"> {{calculateTransactions(str.status ,str.transactions, str.transactions.length)}} <span *ngIf="str.current_status === 'SELL' && str.status === 'STOP'" data-toggle="tooltip" data-placement="top" title="A transazione conclusa">*</span></td>
     </tr>
   </table>
   <modal id="edit-modal" #detailsModal>

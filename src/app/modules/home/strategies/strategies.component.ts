@@ -19,7 +19,7 @@ declare var $: any;
 export class StrategiesComponent implements OnInit {
   public strategiesForm: FormGroup;
   @ViewChild('confirmModal') confirmModal: ModalComponent;
-  public pairs: any;
+  public pairs: any = [];
   private currentPrice: number;
   public strategyType = 'single';
   public isStrPresent: boolean;
@@ -27,6 +27,282 @@ export class StrategiesComponent implements OnInit {
   public optionsStr: Options;
   public pairSize: any;
   public strLength = 0;
+  private activeList = [
+    {pair: 'BNBBTC'},
+    {pair: 'NULSBTC'},
+    {pair: 'NEOBTC'},
+    {pair: 'LINKBTC'},
+    {pair: 'IOTABTC'},
+    {pair: 'ETCBTC'},
+    {pair: 'KNCBTC'},
+    {pair: 'WTCBTC'},
+    {pair: 'SNGLSBTC'},
+    {pair: 'GASBTC'},
+    {pair: 'SNMBTC'},
+    {pair: 'BQXBTC'},
+    {pair: 'QTUMBTC'},
+    {pair: 'LTCBTC'},
+    {pair: 'ETHBTC'},
+    {pair: 'ZRXBTC'},
+    {pair: 'OMGBTC'},
+    {pair: '1INCHBTC'},
+    {pair: 'AAVEBTC'},
+    {pair: 'ACMBTC'},
+    {pair: 'ADABTC'},
+    {pair: 'ADXBTC'},
+    {pair: 'AERGOBTC'},
+    {pair: 'AIONBTC'},
+    {pair: 'AKROBTC'},
+    {pair: 'ALGOBTC'},
+    {pair: 'ALICEBTC'},
+    {pair: 'ALPHABTC'},
+    {pair: 'AMBBTC'},
+    {pair: 'ANKRBTC'},
+    {pair: 'APPCBTC'},
+    {pair: 'ARBTC'},
+    {pair: 'ARDRBTC'},
+    {pair: 'ARKBTC'},
+    {pair: 'ARPABTC'},
+    {pair: 'ASRBTC'},
+    {pair: 'ASTBTC'},
+    {pair: 'ATABTC'},
+    {pair: 'ATMBTC'},
+    {pair: 'ATOMBTC'},
+    {pair: 'AUCTIONBTC'},
+    {pair: 'AUDIOBTC'},
+    {pair: 'AUTOBTC'},
+    {pair: 'AVABTC'},
+    {pair: 'AVAXBTC'},
+    {pair: 'AXSBTC'},
+    {pair: 'BADGERBTC'},
+    {pair: 'BAKEBTC'},
+    {pair: 'BANDBTC'},
+    {pair: 'BARBTC'},
+    {pair: 'BATBTC'},
+    {pair: 'BCDBTC'},
+    {pair: 'BCHBTC'},
+    {pair: 'BEAMBTC'},
+    {pair: 'BELBTC'},
+    {pair: 'BLZBTC'},
+    {pair: 'BNTBTC'},
+    {pair: 'BRDBTC'},
+    {pair: 'BTCSTBTC'},
+    {pair: 'BTGBTC'},
+    {pair: 'BTSBTC'},
+    {pair: 'BZRXBTC'},
+    {pair: 'CAKEBTC'},
+    {pair: 'CDTBTC'},
+    {pair: 'CELOBTC'},
+    {pair: 'CELRBTC'},
+    {pair: 'CFXBTC'},
+    {pair: 'CHRBTC'},
+    {pair: 'CHZBTC'},
+    {pair: 'CKBBTC'},
+    {pair: 'CNDBTC'},
+    {pair: 'COMPBTC'},
+    {pair: 'COSBTC'},
+    {pair: 'COTIBTC'},
+    {pair: 'CRVBTC'},
+    {pair: 'CTKBTC'},
+    {pair: 'CTSIBTC'},
+    {pair: 'CTXCBTC'},
+    {pair: 'CVCBTC'},
+    {pair: 'DASHBTC'},
+    {pair: 'DATABTC'},
+    {pair: 'DCRBTC'},
+    {pair: 'DEGOBTC'},
+    {pair: 'DIABTC'},
+    {pair: 'DLTBTC'},
+    {pair: 'DNTBTC'},
+    {pair: 'DOCKBTC'},
+    {pair: 'DODOBTC'},
+    {pair: 'DOGEBTC'},
+    {pair: 'DOTBTC'},
+    {pair: 'DREPBTC'},
+    {pair: 'DUSKBTC'},
+    {pair: 'EGLDBTC'},
+    {pair: 'ELFBTC'},
+    {pair: 'ENJBTC'},
+    {pair: 'EOSBTC'},
+    {pair: 'EPSBTC'},
+    {pair: 'EVXBTC'},
+    {pair: 'EZBTC'},
+    {pair: 'FETBTC'},
+    {pair: 'FILBTC'},
+    {pair: 'FIOBTC'},
+    {pair: 'FIROBTC'},
+    {pair: 'FISBTC'},
+    {pair: 'FLMBTC'},
+    {pair: 'FORBTC'},
+    {pair: 'FORTHBTC'},
+    {pair: 'FRONTBTC'},
+    {pair: 'FTMBTC'},
+    {pair: 'FTTBTC'},
+    {pair: 'FUNBTC'},
+    {pair: 'FXSBTC'},
+    {pair: 'GLMBTC'},
+    {pair: 'GOBTC'},
+    {pair: 'GRSBTC'},
+    {pair: 'GRTBTC'},
+    {pair: 'GTCBTC'},
+    {pair: 'GTOBTC'},
+    {pair: 'GVTBTC'},
+    {pair: 'GXSBTC'},
+    {pair: 'HARDBTC'},
+    {pair: 'HBARBTC'},
+    {pair: 'HIVEBTC'},
+    {pair: 'HNTBTC'},
+    {pair: 'ICPBTC'},
+    {pair: 'ICXBTC'},
+    {pair: 'IDEXBTC'},
+    {pair: 'INJBTC'},
+    {pair: 'IOSTBTC'},
+    {pair: 'IOTXBTC'},
+    {pair: 'IRISBTC'},
+    {pair: 'JSTBTC'},
+    {pair: 'JUVBTC'},
+    {pair: 'KAVABTC'},
+    {pair: 'KEEPBTC'},
+    {pair: 'KLAYBTC'},
+    {pair: 'KMDBTC'},
+    {pair: 'LINABTC'},
+    {pair: 'LITBTC'},
+    {pair: 'LOOMBTC'},
+    {pair: 'LPTBTC'},
+    {pair: 'LRCBTC'},
+    {pair: 'LSKBTC'},
+    {pair: 'LTOBTC'},
+    {pair: 'LUNABTC'},
+    {pair: 'MANABTC'},
+    {pair: 'MATICBTC'},
+    {pair: 'MDABTC'},
+    {pair: 'MDTBTC'},
+    {pair: 'MDXBTC'},
+    {pair: 'MIRBTC'},
+    {pair: 'MITHBTC'},
+    {pair: 'MKRBTC'},
+    {pair: 'MTHBTC'},
+    {pair: 'MTLBTC'},
+    {pair: 'NANOBTC'},
+    {pair: 'NASBTC'},
+    {pair: 'NAVBTC'},
+    {pair: 'NBSBTC'},
+    {pair: 'NEARBTC'},
+    {pair: 'NEBLBTC'},
+    {pair: 'NKNBTC'},
+    {pair: 'NMRBTC'},
+    {pair: 'NUBTC'},
+    {pair: 'NXSBTC'},
+    {pair: 'OAXBTC'},
+    {pair: 'OCEANBTC'},
+    {pair: 'OGBTC'},
+    {pair: 'OGNBTC'},
+    {pair: 'OMBTC'},
+    {pair: 'ONEBTC'},
+    {pair: 'ONGBTC'},
+    {pair: 'ONTBTC'},
+    {pair: 'ORNBTC'},
+    {pair: 'OXTBTC'},
+    {pair: 'PAXGBTC'},
+    {pair: 'PERLBTC'},
+    {pair: 'PERPBTC'},
+    {pair: 'PHABTC'},
+    {pair: 'PHBBTC'},
+    {pair: 'PIVXBTC'},
+    {pair: 'PNTBTC'},
+    {pair: 'POABTC'},
+    {pair: 'POLSBTC'},
+    {pair: 'POLYBTC'},
+    {pair: 'PONDBTC'},
+    {pair: 'POWRBTC'},
+    {pair: 'PPTBTC'},
+    {pair: 'PSGBTC'},
+    {pair: 'QKCBTC'},
+    {pair: 'QLCBTC'},
+    {pair: 'QSPBTC'},
+    {pair: 'RAMPBTC'},
+    {pair: 'RCNBTC'},
+    {pair: 'RDNBTC'},
+    {pair: 'REEFBTC'},
+    {pair: 'RENBTC'},
+    {pair: 'RENBTCBTC'},
+    {pair: 'REPBTC'},
+    {pair: 'REQBTC'},
+    {pair: 'RIFBTC'},
+    {pair: 'RLCBTC'},
+    {pair: 'ROSEBTC'},
+    {pair: 'RSRBTC'},
+    {pair: 'RUNEBTC'},
+    {pair: 'RVNBTC'},
+    {pair: 'SANDBTC'},
+    {pair: 'SCBTC'},
+    {pair: 'SCRTBTC'},
+    {pair: 'SFPBTC'},
+    {pair: 'SKLBTC'},
+    {pair: 'SKYBTC'},
+    {pair: 'SNTBTC'},
+    {pair: 'SNXBTC'},
+    {pair: 'SOLBTC'},
+    {pair: 'SRMBTC'},
+    {pair: 'STEEMBTC'},
+    {pair: 'STMXBTC'},
+    {pair: 'STORJBTC'},
+    {pair: 'STPTBTC'},
+    {pair: 'STRAXBTC'},
+    {pair: 'STXBTC'},
+    {pair: 'SUPERBTC'},
+    {pair: 'SUSDBTC'},
+    {pair: 'SUSHIBTC'},
+    {pair: 'SXPBTC'},
+    {pair: 'SYSBTC'},
+    {pair: 'TCTBTC'},
+    {pair: 'TFUELBTC'},
+    {pair: 'THETABTC'},
+    {pair: 'TKOBTC'},
+    {pair: 'TLMBTC'},
+    {pair: 'TOMOBTC'},
+    {pair: 'TORNBTC'},
+    {pair: 'TRBBTC'},
+    {pair: 'TROYBTC'},
+    {pair: 'TRUBTC'},
+    {pair: 'TRXBTC'},
+    {pair: 'TVKBTC'},
+    {pair: 'TWTBTC'},
+    {pair: 'UMABTC'},
+    {pair: 'UNFIBTC'},
+    {pair: 'UNIBTC'},
+    {pair: 'UTKBTC'},
+    {pair: 'VETBTC'},
+    {pair: 'VIABTC'},
+    {pair: 'VIBBTC'},
+    {pair: 'VIDTBTC'},
+    {pair: 'VITEBTC'},
+    {pair: 'WABIBTC'},
+    {pair: 'WANBTC'},
+    {pair: 'WAVESBTC'},
+    {pair: 'WBTCBTC'},
+    {pair: 'WINGBTC'},
+    {pair: 'WNXMBTC'},
+    {pair: 'WPRBTC'},
+    {pair: 'WRXBTC'},
+    {pair: 'XEMBTC'},
+    {pair: 'XLMBTC'},
+    {pair: 'XMRBTC'},
+    {pair: 'XRPBTC'},
+    {pair: 'XTZBTC'},
+    {pair: 'XVGBTC'},
+    {pair: 'XVSBTC'},
+    {pair: 'YFIBTC'},
+    {pair: 'YFIIBTC'},
+    {pair: 'YOYOBTC'},
+    {pair: 'ZECBTC'},
+    {pair: 'ZENBTC'},
+    {pair: 'ZILBTC'},
+    {pair: 'DGBBTC'},
+    {pair: 'BALBTC'},
+    {pair: 'ANTBTC'},
+    {pair: 'KSMBTC'},
+    {pair: 'AGIXBTC'}];
 
   constructor(private fb: FormBuilder,
               private alert: AlertService,
@@ -74,6 +350,11 @@ export class StrategiesComponent implements OnInit {
     } else {
       this.isStrPresent = false;
       this.strategiesForm.reset();
+      _.forEach(this.formValue, (s) => {
+        if (s.name !== 'strategy_pairs_size') {
+          s.setValue('');
+        }
+      });
       this.formValue.strategy_name.clearValidators();
       this.formValue.strategy_sell_price.clearValidators();
       this.formValue.strategy_direction.setValidators([Validators.required]);
@@ -109,15 +390,35 @@ export class StrategiesComponent implements OnInit {
   loadPairs() {
     this.actionService.getAllPairs().subscribe((resp) => {
         if (this.formValue.strategy_pairs_size.value === 0) {
-          this.pairs = _.filter(resp, (o) => {
-            return o.price < 0.000002;
+          let result;
+          result = _.filter(resp, (o) => {
+            return o.price <= 0.000002;
+          });
+          this.pairs = [];
+          _.forEach(this.activeList, (o) => {
+            _.forEach(result, (p) => {
+              if (o.pair === p.name) {
+                this.pairs.push(p);
+              }
+            });
+
           });
           this.formValue.strategy_pairs_size.setValue(200);
           this.strLength = this.pairs.length;
         } else {
-          const value = this.formValue.strategy_pairs_size.value < 100 ? '0.000000' + this.formValue.strategy_pairs_size.value.toString() : '0.00000' + this.formValue.strategy_pairs_size.value.toString();
-          this.pairs = _.filter(resp, (o) => {
-            return o.price < parseFloat(value);
+          const value = this.formValue.strategy_pairs_size.value < 100 ? this.formValue.strategy_pairs_size.value < 10 ? '0.0000000' + this.formValue.strategy_pairs_size.value.toString() : '0.000000' + this.formValue.strategy_pairs_size.value.toString() : '0.00000' + this.formValue.strategy_pairs_size.value.toString();
+          let result2;
+          result2 = _.filter(resp, (o) => {
+            return o.price <= parseFloat(value);
+          });
+          this.pairs = [];
+          _.forEach(this.activeList, (o) => {
+            _.forEach(result2, (p) => {
+              if (o.pair === p.name) {
+                this.pairs.push(p);
+              }
+            });
+
           });
           // console.log(this.pairs, this.pairs.length)
           this.strLength = this.pairs.length;
@@ -147,7 +448,7 @@ export class StrategiesComponent implements OnInit {
       name: this.formValue.strategy_name.value,
       coin_pair: this.formValue.strategy_pairs.value,
       capital: this.formValue.strategy_capital.value,
-      quantity: Math.round(parseFloat(quantity.toFixed(3))),
+      quantity: Math.floor(parseFloat(quantity.toFixed(3))),
       current_capital: this.formValue.strategy_capital.value,
       current_status: 'BUY',
       buy_price: parseFloat(this.formValue.strategy_buy_price.value),
