@@ -5,10 +5,10 @@
 export const environment = {
   production: false,
   local: true,
-  // api: 'http://127.0.0.1:3000/'
+  api: 'http://127.0.0.1:3000/'
   // api: 'http://ec2-15-160-2-188.eu-south-1.compute.amazonaws.com:3000/' --Andrea
   // api: 'http://ec2-35-152-50-80.eu-south-1.compute.amazonaws.com:3000/' -- MAttia
-  api: 'http://ec2-35-152-99-6.eu-south-1.compute.amazonaws.com:3000/'
+  // api: 'http://ec2-35-152-99-6.eu-south-1.compute.amazonaws.com:3000/' -- Leo
   // api: 'http://ec2-15-161-232-210.eu-south-1.compute.amazonaws.com:3000/' --Misi
 
 };

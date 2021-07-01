@@ -1,4 +1,13 @@
-import {AfterContentInit, Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterContentChecked,
+  AfterContentInit,
+  AfterViewChecked,
+  AfterViewInit, ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild
+} from '@angular/core';
 import {ModalComponent} from '../../../shared/modal/modal.component';
 import {ActionService} from '../../../core/services/action.service';
 import * as _ from 'lodash';
@@ -12,7 +21,7 @@ declare var $: any;
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecked {
   @ViewChild('detailsModal') detailsModal: ModalComponent;
   @ViewChild('stopModal') stopModal: ModalComponent;
   @ViewChild('cancelModal') cancelModal: ModalComponent;
@@ -30,21 +39,29 @@ export class DashboardComponent implements OnInit, OnDestroy {
   public currentState: any;
   public strNumber: any;
   public selectAll = false;
-  public executeTransaction = 0;
+  public executedTransaction = 0;
   public selectedBox = [{order: 0, nm: '0', st: '0'}];
+  public loaded = false;
 
   constructor(private actionService: ActionService,
               private alertService: AlertService,
+              private cdFref: ChangeDetectorRef,
               private authService: AuthService) {
     this.loadActiveStrategy();
+
   }
 
   ngOnInit() {
     this.reloadStuff = setInterval(() => {
       this.reload();
     }, 30000);
+
   }
 
+  ngAfterContentChecked() {
+    this.calculateTotalTransactions();
+    this.cdFref.detectChanges();
+  }
 
   ngOnDestroy() {
     clearInterval(this.reloadStuff);
@@ -53,6 +70,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   reload() {
     this.resetFilter();
     this.loadActiveStrategy();
+    this.executedTransaction = 0;
+    this.calculateTotalTransactions();
   }
 
   manageAll(event: any) {
@@ -83,8 +102,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   calculateCurrentCapital(capital: any, sellPrice: any, currentCapital: any, buyPrice: any, status: any) {
-    const ccS = Number((currentCapital * sellPrice).toFixed(8));
-    const ccB = Number((currentCapital * buyPrice).toFixed(8));
+    const ccS = parseFloat((currentCapital * sellPrice).toFixed(8));
+    const ccB = parseFloat((currentCapital * buyPrice).toFixed(8));
 
     switch (status) {
       case'BUY':
@@ -119,6 +138,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return result;
   }
 
+  calculateTotalTransactions() {
+    let partial = 0;
+    _.forEach(this.activeStrategies, (str) => {
+      const lastTransaction = str.transactions[str.transactions.length - 1];
+      const type = lastTransaction && lastTransaction.type_transaction ? lastTransaction.type_transaction : 'BUY';
+      let result = str.transactions.length % 2 === 0 ? str.transactions.length / 2 : this.getFloor(str.transactions.length / 2);
+      if (str.transactions.length >= 3) {
+        if (type === 'SELL' && str.status === 'ACTIVE') {
+          result = result - 1;
+        }
+      } else {
+        if (type === 'SELL' && str.status === 'ACTIVE') {
+          result = result - 1;
+        }
+      }
+      partial += result;
+    });
+    this.executedTransaction = partial;
+    this.loaded = true;
+  }
 
 
   getCeil(value: any) {
@@ -165,7 +204,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       }
       this.checkMobileData = resp[0];
       this.strNumber = this.clonedStrategy.length;
-
     });
   }
 
@@ -189,6 +227,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
           this.closeCancel();
           this.loadActiveStrategy();
           this.actionService.getBtcBalance().subscribe();
+          this.calculateTotalTransactions();
           this.alertService.addMessage('success', 'Ordine cancellato con successo');
         });
       });
@@ -206,6 +245,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.actionService.updateStrategy(name, payload).subscribe((resp) => {
       this.closeStop();
       this.loadActiveStrategy();
+      this.calculateTotalTransactions();
     });
   }
 
