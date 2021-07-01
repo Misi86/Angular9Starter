@@ -42,6 +42,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   public executedTransaction = 0;
   public selectedBox = [{order: 0, nm: '0', st: '0'}];
   public loaded = false;
+  public selecteFilter = [];
 
   constructor(private actionService: ActionService,
               private alertService: AlertService,
@@ -54,7 +55,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   ngOnInit() {
     this.reloadStuff = setInterval(() => {
       this.reload();
-    }, 30000);
+    }, 20000);
 
   }
 
@@ -159,7 +160,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     this.loaded = true;
   }
 
-
   getCeil(value: any) {
     return Math.ceil(value);
   }
@@ -204,6 +204,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
       }
       this.checkMobileData = resp[0];
       this.strNumber = this.clonedStrategy.length;
+      _.forEach(this.selecteFilter, (sf) => {
+        if (sf.name !== 'all' && sf.name !== '') {
+          this.filterResult(sf.name, sf.type);
+        }
+      });
     });
   }
 
@@ -250,7 +255,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   }
 
   filterResult(name: string, type: string) {
-
+    this.loaded = false;
     let data;
 
     if (type === 'pairs') {
@@ -301,6 +306,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
       }
     }
     this.activeStrategies = data;
+    this.loaded = true;
 
   }
 
@@ -340,11 +346,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   }
 
   resetFilter() {
-    // this.executeTransaction = 0;
+    const result = [];
     this.searchFilter = _.isEmpty(this.searchFilter) ? '' : this.searchFilter;
-    this.searchState = this.searchFilter === 'all' ? 'all' : this.searchState;
+    result.push({name: this.searchFilter, type: 'pairs'});
+    this.searchState = this.searchState === 'all' ? 'all' : this.searchState;
+    result.push({name: this.searchState, type: 'state'});
     this.searchName = _.isEmpty(this.searchName) ? '' : this.searchName;
-    this.searchDate = _.isEmpty(this.searchDate) ? '' : this.searchDate;
+    result.push({name: this.searchName, type: 'name'});
+    // this.searchDate = _.isEmpty(this.searchDate) ? '' : this.searchDate;
+    this.selecteFilter = result;
+
   }
 }
 
