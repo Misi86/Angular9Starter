@@ -103,12 +103,14 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   }
 
   calculateCurrentCapital(capital: any, sellPrice: any, currentCapital: any, buyPrice: any, status: any) {
-    const ccS = parseFloat((currentCapital * sellPrice).toFixed(8));
-    const ccB = parseFloat((currentCapital * buyPrice).toFixed(8));
+    const parseSellPrice = sellPrice.toFixed(8);
+    const parseBuyPrice = buyPrice.toFixed(8);
+    const ccS = parseFloat((currentCapital * parseSellPrice).toFixed(8));
+    const ccB = parseFloat((currentCapital * parseBuyPrice).toFixed(8));
 
     switch (status) {
       case'BUY':
-        if (ccB === 0) {
+        if (Math.floor(ccB) === 0) {
           return capital;
         }
         return ccB;
@@ -198,7 +200,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   loadActiveStrategy() {
     this.actionService.getActiveStrategy().subscribe((resp) => {
       this.clonedStrategy = _.cloneDeep(resp);
-      this.activeStrategies = this.clonedStrategy;
+      this.activeStrategies = _.orderBy(this.clonedStrategy, 'name', 'asc');
       if (this.stopData === undefined) {
         this.stopData = resp[0];
       }
@@ -305,7 +307,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
         data = this.clonedStrategy;
       }
     }
-    this.activeStrategies = data;
+    this.activeStrategies = _.orderBy(data, 'name', 'asc');
     this.loaded = true;
 
   }
