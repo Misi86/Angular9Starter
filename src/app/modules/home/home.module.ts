@@ -11,7 +11,7 @@ import {CommonModule} from '@angular/common';
 import {ModalComponent} from '../../shared/modal/modal.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AlertComponent} from '../../shared/alert/alert.component';
-import {NgxSliderModule} from "@angular-slider/ngx-slider";
+import {NgxSliderModule} from '@angular-slider/ngx-slider';
 // import {Ng5SliderModule} from 'ng5-slider';
 // import {BrowserModule} from "@angular/platform-browser";
 // import {HttpClientModule} from "@angular/common/http";

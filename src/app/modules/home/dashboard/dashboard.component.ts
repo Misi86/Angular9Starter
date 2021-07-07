@@ -43,13 +43,26 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   public selectedBox = [{order: 0, nm: '0', st: '0'}];
   public loaded = false;
   public selecteFilter = [];
+  public selectedCoin = [];
+  public minSlide = 0;
+  public maxSlide = 3;
+  public user:any;
 
   constructor(private actionService: ActionService,
               private alertService: AlertService,
               private cdFref: ChangeDetectorRef,
-              private authService: AuthService) {
+              private authService: AuthService
+             ) {
     this.loadActiveStrategy();
-
+    this.user= this.authService.user;
+    console.log(this.user)
+    this.selectedCoin = [
+      {name: 'CKBBTC', price: 0.00000038, volume: 12},
+      {name: 'ARPABTC', price: 0.00000088, volume: 18},
+      {name: 'POABTC', price: 0.00000070, volume: 19},
+      {name: 'COSBTC', price: 0.00000035, volume: 25},
+      {name: 'XVGBTC', price: 0.00000070, volume: 50},
+    ];
   }
 
   ngOnInit() {
@@ -84,6 +97,20 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     } else {
       this.selectedBox = [{order: 0, nm: '0', st: '0'}];
       $('.check-dash').prop('checked', false);
+    }
+  }
+
+  manageSlider(action: boolean) {
+    if (action) {
+      if (this.maxSlide < this.selectedCoin.length - 1) {
+        this.minSlide++;
+        this.maxSlide++;
+      }
+    } else {
+      if (this.minSlide > 0) {
+        this.minSlide--;
+        this.maxSlide--;
+      }
     }
   }
 

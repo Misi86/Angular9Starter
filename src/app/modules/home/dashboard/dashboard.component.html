@@ -2,9 +2,23 @@
   <div class="h1">Riepilogo <span class="float-right" style="font-size: 16px">Strategie attive: {{strNumber}}</span>
   </div>
 </div>
-
-<div class="mt-5" *ngIf="loaded">
-
+<div class="mt-3" *ngIf="loaded">
+  <div *ngIf="selectedCoin.length && user === 'admin'">
+    <span  class="arrow left " (click)="manageSlider(false)"><img src="assets/icons/arrow-left-solid.svg" width="16"></span>
+    <div class="row mb-3">
+      <div [ngClass]="{'d-none': $i < minSlide || $i >maxSlide }" class="col-sm-3" *ngFor="let c of selectedCoin; let $i = index">
+        <div  class="coin-card">
+          <p>Name: {{c.name}}</p>
+          <p>Price: {{c.price.toFixed(8)}}</p>
+          <span>Volume: {{c.volume}}</span>
+        </div>
+      </div>
+    </div>
+    <span class="arrow right" (click)="manageSlider(true)"> <img src="assets/icons/arrow-right-solid.svg" width="16"></span>
+  </div>
+  <div class="text-center"  *ngIf="!selectedCoin.length && user === 'admin'">
+    <h2>Inizializza le tue stategie</h2>
+  </div>
   <table id="dash-table" class="table-responsive">
     <tr class="text-center">
       <th class="d-none"></th>
