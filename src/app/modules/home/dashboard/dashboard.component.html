@@ -3,19 +3,19 @@
   </div>
 </div>
 <div class="mt-3" *ngIf="loaded">
-  <div *ngIf="selectedCoin.length && user === 'admin'">
-    <span  class="arrow left " (click)="manageSlider(false)"><img src="assets/icons/arrow-left-solid.svg" width="16"></span>
-    <div class="row mb-3">
-      <div [ngClass]="{'d-none': $i < minSlide || $i >maxSlide }" class="col-sm-3" *ngFor="let c of selectedCoin; let $i = index">
-        <div  class="coin-card">
-          <p>Name: {{c.name}}</p>
-          <p>Price: {{c.price.toFixed(8)}}</p>
-          <span>Volume: {{c.volume}}</span>
-        </div>
-      </div>
-    </div>
-    <span class="arrow right" (click)="manageSlider(true)"> <img src="assets/icons/arrow-right-solid.svg" width="16"></span>
-  </div>
+<!--  <div *ngIf="selectedCoin.length && user === 'admin'">-->
+<!--    <span  class="arrow left " (click)="manageSlider(false)"><img src="assets/icons/arrow-left-solid.svg" width="16"></span>-->
+<!--    <div class="row mb-3">-->
+<!--      <div [ngClass]="{'d-none': $i < minSlide || $i >maxSlide }" class="col-sm-3" *ngFor="let c of selectedCoin; let $i = index">-->
+<!--        <div  class="coin-card">-->
+<!--          <p>Name: {{c.name}}</p>-->
+<!--          <p>Price: {{c.price.toFixed(8)}}</p>-->
+<!--          <span>Volume: {{c.volume}}</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--    <span class="arrow right" (click)="manageSlider(true)"> <img src="assets/icons/arrow-right-solid.svg" width="16"></span>-->
+<!--  </div>-->
   <div class="text-center"  *ngIf="!selectedCoin.length && user === 'admin'">
     <h2>Inizializza le tue stategie</h2>
   </div>
@@ -26,7 +26,10 @@
       <th>Nome</th>
       <th>Scambio</th>
       <th class="hidden-column">BTC iniziali</th>
-      <th class="hidden-column">BTC attuali</th>
+      <th class="hidden-column" data-toggle="tooltip" data-placement="top" title="Totale BTC alla fine di tutte le vendite">BTC alla vendita</th>
+      <th class="hidden-column" data-toggle="tooltip" data-placement="top" title="Differenza % tra BTC iniziali e BTC vendita">&#9650; % vendita</th>
+      <th class="hidden-column" data-toggle="tooltip" data-placement="top" title="Totale BTC al valore attuale di mercato">BTC correnti</th>
+      <th class="hidden-column" data-toggle="tooltip" data-placement="top" title="Differenza % tra BTC iniziali e BTC correnti">% correnti</th>
       <th class="hidden-column">Prezzo di compera</th>
       <th class="hidden-column">Prezzo di vendita</th>
       <th>Data</th>
@@ -77,8 +80,11 @@
       </td>
       <td><input type="text" id="filter-pair" class="filter-dash" [(ngModel)]="searchFilter"
                  (ngModelChange)="filterResult(searchFilter,'pairs')"></td>
-      <td class="hidden-column"><input [value]="calculateCapital(true)" type="text" class="filter-dash tot" [disabled]="true"></td>
-      <td class="hidden-column"><input [value]="calculateCapital(false)" type="text" class="filter-dash tot" [disabled]="true"></td>
+      <td class="hidden-column"><input [value]="calculateCapital('initial')" type="text" class="filter-dash tot" [disabled]="true"></td>
+      <td class="hidden-column"><input [value]="calculateCapital('selled')" type="text" class="filter-dash tot" [disabled]="true"></td>
+      <td class="hidden-column"><input [value]="calculateDelta(btcInitialTotal, btcSelledTotal, true) + '%'" type="text" class="filter-dash tot text-center" [disabled]="true"></td>
+      <td class="hidden-column"><input [value]="calculateCapital('current')" type="text" class="filter-dash tot" [disabled]="true"></td>
+      <td class="hidden-column"><input [value]="calculateDelta(btcInitialTotal, btcCurrentTotal, true)  + '%'" type="text" class="filter-dash tot text-center" [disabled]="true"></td>
       <td class="hidden-column"><input type="text" class="filter-dash " [disabled]="true"></td>
       <td class="hidden-column"><input type="text" class="filter-dash " [disabled]="true"></td>
       <td><input [disabled]="true" type="text" id="filter-date" class="filter-dash" [(ngModel)]="searchDate"
@@ -107,8 +113,10 @@
       <td class="showD">{{str.coin_pair}}</td>
       <td
         class="hidden-column showD">{{str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital}}</td>
-      <td
-        class="hidden-column showD">{{calculateCurrentCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status)}}</td>
+      <td class="hidden-column showD">{{calculateSelledCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status)}}</td>
+      <td class="hidden-column showD text-center">{{calculateDelta(str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital , calculateSelledCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status), false )}}%</td>
+      <td class="hidden-column showD">{{calculateCurrentCapital(str.current_capital ,str.coin_pair)}}</td>
+      <td class="hidden-column showD text-center">{{calculateDelta(str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital , calculateCurrentCapital(str.current_capital ,str.coin_pair) , false)}}%</td>
       <td class="hidden-column showD">{{str.buy_price.toFixed(8)}}</td>
       <td class="hidden-column showD">{{str.sell_price.toFixed(8)}}</td>
       <td class="showD">{{str.date | date:'dd/MM/yyyy'}}</td>
@@ -176,6 +184,7 @@
     <div class="app-modal-body">
       <div class="text-center" *ngIf="stopData">
         Strategia: <strong>{{stopData.name}}</strong>
+        {{stopData.transactions.length}}
         <div>
           <table class="table-responsive-lg  ">
             <tr>
@@ -214,6 +223,15 @@
                        width="20">
                 </button>
               </td>
+            </tr>
+            <tr *ngIf="stopData.transactions.length === 0">
+              <td></td>
+              <td></td>
+              <td colspan="3">
+                <button class="btn btn-danger" (click)="deleteFromDb(stopData.name)">CANCELLA STRATEGIA</button>
+              </td>
+              <td></td>
+              <td></td>
             </tr>
           </table>
         </div>

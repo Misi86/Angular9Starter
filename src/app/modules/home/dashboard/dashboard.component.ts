@@ -46,23 +46,28 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   public selectedCoin = [];
   public minSlide = 0;
   public maxSlide = 3;
-  public user:any;
+  public user: any;
+  public currentPrices = [];
+  public btcInitialTotal: any;
+  public btcSelledTotal: any;
+  public btcCurrentTotal: any;
 
   constructor(private actionService: ActionService,
               private alertService: AlertService,
               private cdFref: ChangeDetectorRef,
               private authService: AuthService
-             ) {
+  ) {
     this.loadActiveStrategy();
-    this.user= this.authService.user;
-    console.log(this.user)
-    this.selectedCoin = [
-      {name: 'CKBBTC', price: 0.00000038, volume: 12},
-      {name: 'ARPABTC', price: 0.00000088, volume: 18},
-      {name: 'POABTC', price: 0.00000070, volume: 19},
-      {name: 'COSBTC', price: 0.00000035, volume: 25},
-      {name: 'XVGBTC', price: 0.00000070, volume: 50},
-    ];
+    // this.specificPair(this.selectedCoin);
+    this.user = this.authService.user;
+    // console.log(this.user)
+    // this.selectedCoin = [
+    //   {name: 'CKBBTC', price: 0.00000038, volume: 12},
+    //   {name: 'ARPABTC', price: 0.00000088, volume: 18},
+    //   {name: 'POABTC', price: 0.00000070, volume: 19},
+    //   {name: 'COSBTC', price: 0.00000035, volume: 25},
+    //   {name: 'XVGBTC', price: 0.00000070, volume: 50},
+    // ];
   }
 
   ngOnInit() {
@@ -129,7 +134,35 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     return Math.floor(value);
   }
 
-  calculateCurrentCapital(capital: any, sellPrice: any, currentCapital: any, buyPrice: any, status: any) {
+  specificPair(pairs: any) {
+    _.forEach(pairs, (p) => {
+      this.actionService.getSpecificPairs(p.coin_pair).subscribe((resp) => {
+          resp.name = p.coin_pair;
+          this.currentPrices.push(resp);
+        },
+        (error) => {
+        });
+    });
+  }
+
+
+  calculateCurrentCapital(currentCapital: any, pair: any) {
+    let selectedPairPrice;
+    _.forEach(this.currentPrices, (cp) => {
+      if (cp.name === pair) {
+        selectedPairPrice = cp.price;
+      }
+    });
+    return (currentCapital * selectedPairPrice).toFixed(8);
+
+  }
+
+  calculateDelta(p1: any, p2: any, total: boolean) {
+    const partial = (p2 - p1) / p1;
+    return (partial * 100).toFixed(2);
+  }
+
+  calculateSelledCapital(capital: any, sellPrice: any, currentCapital: any, buyPrice: any, status: any) {
     const parseSellPrice = sellPrice.toFixed(8);
     const parseBuyPrice = buyPrice.toFixed(8);
     const ccS = parseFloat((currentCapital * parseSellPrice).toFixed(8));
@@ -231,6 +264,12 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
       if (this.stopData === undefined) {
         this.stopData = resp[0];
       }
+      this.selectedCoin = [];
+      this.selectedCoin = _.uniqBy(this.activeStrategies, (e) => {
+        return e.coin_pair;
+      });
+      this.specificPair(this.selectedCoin);
+      // console.log(this.selectedCoin)
       this.checkMobileData = resp[0];
       this.strNumber = this.clonedStrategy.length;
       _.forEach(this.selecteFilter, (sf) => {
@@ -250,6 +289,16 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
         this.alertService.addMessage('info', 'Stato dell ordine: ' + state);
       }
       return resp;
+    });
+  }
+
+  deleteFromDb(name: string) {
+    this.actionService.deleteFromDb(name).subscribe(() => {
+      this.closeCancel();
+      this.loadActiveStrategy();
+      this.actionService.getBtcBalance().subscribe();
+      this.calculateTotalTransactions();
+      this.alertService.addMessage('success', 'Ordine cancellato con successo');
     });
   }
 
@@ -346,25 +395,34 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     // });
   }
 
-  calculateCapital(start: boolean) {
+  calculateCapital(type: string) {
     let startCapital = 0;
     let currentCapital = 0;
+    let realCurrentCapital = 0;
 
-    if (start) {
-      _.forEach(this.activeStrategies, (str) => {
-        if (str.transactions[0] && str.transactions[0].cumulative_quantity) {
-          startCapital += str.transactions[0].cumulative_quantity;
-        } else {
-          startCapital += str.capital;
-        }
-      });
-      return startCapital.toFixed(8);
-
-    } else {
-      _.forEach(this.activeStrategies, (str) => {
-        currentCapital += this.calculateCurrentCapital(str.capital, str.sell_price, str.current_capital, str.buy_price, str.current_status)
-      });
-      return currentCapital.toFixed(8);
+    switch (type) {
+      case 'initial':
+        _.forEach(this.activeStrategies, (str) => {
+          if (str.transactions[0] && str.transactions[0].cumulative_quantity) {
+            startCapital += str.transactions[0].cumulative_quantity;
+          } else {
+            startCapital += str.capital;
+          }
+        });
+        this.btcInitialTotal = startCapital.toFixed(8);
+        return startCapital.toFixed(8);
+      case 'selled':
+        _.forEach(this.activeStrategies, (str) => {
+          currentCapital += this.calculateSelledCapital(str.capital, str.sell_price, str.current_capital, str.buy_price, str.current_status);
+        });
+        this.btcSelledTotal = currentCapital.toFixed(8);
+        return currentCapital.toFixed(8);
+      case 'current' :
+        _.forEach(this.activeStrategies, (str) => {
+          realCurrentCapital += parseFloat(this.calculateCurrentCapital(str.current_capital, str.coin_pair));
+        });
+        this.btcCurrentTotal = realCurrentCapital.toFixed(8);
+        return realCurrentCapital.toFixed(8);
     }
   }
 

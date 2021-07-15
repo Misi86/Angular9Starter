@@ -23,6 +23,12 @@ export class ActionService {
     }));
   }
 
+  getSpecificPairs(pair: any) {
+    return this.http.get<any>('api/btcprice/' + pair).pipe(map(resp => {
+      return resp;
+    }));
+  }
+
   setStrategy(payload: any) {
     return this.http.post<any>('api/strategy/' + payload.name, payload).pipe(map(data => {
       return data;
