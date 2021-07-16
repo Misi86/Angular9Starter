@@ -135,10 +135,14 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   }
 
   specificPair(pairs: any) {
+
     _.forEach(pairs, (p) => {
       this.actionService.getSpecificPairs(p.coin_pair).subscribe((resp) => {
           resp.name = p.coin_pair;
           this.currentPrices.push(resp);
+          this.currentPrices = _.uniqBy(this.currentPrices, (e) => {
+            return e.name;
+          });
         },
         (error) => {
         });
@@ -153,12 +157,20 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
         selectedPairPrice = cp.price;
       }
     });
-    return (currentCapital * selectedPairPrice).toFixed(8);
+    const result = (currentCapital * selectedPairPrice).toFixed(8);
+    if (parseFloat(result) === 0) {
+      return currentCapital;
+    }
+    return parseFloat(result);
 
   }
 
   calculateDelta(p1: any, p2: any, total: boolean) {
-    const partial = (p2 - p1) / p1;
+    if (parseFloat(p2) === 0) {
+      return 0;
+    }
+
+    const partial = (parseFloat(p2) - p1) / p1;
     return (partial * 100).toFixed(2);
   }
 

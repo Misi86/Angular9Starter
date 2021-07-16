@@ -36,16 +36,16 @@
         </div>
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="['dashboard']"><img alt="riepilogo" width="22" src="assets/icons/tachometer-alt-solid.svg"><span class="d-none d-sm-none d-lg-block">  Riepilogo</span></a>
+            <a class="nav-link text-uppercase text-white" [routerLink]="['dashboard']"><img alt="riepilogo" width="22" src="assets/icons/tachometer-alt-solid.svg"> Riepilogo</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" [routerLink]="['strategies']"><img alt="strategie" width="22" src="assets/icons/tasks-solid.svg"> <span class="d-none d-sm-none d-lg-block">  Strategie</span></a>
+            <a class="nav-link text-uppercase text-white" [routerLink]="['strategies']"><img alt="strategie" width="22" src="assets/icons/tasks-solid.svg"> Strategie</a>
           </li>
 <!--          <li class="nav-item">-->
 <!--            <a class="nav-link" [routerLink]="['indicators']"><img width="22" src="assets/icons/chart-line-solid.svg"> <span>  Indicator</span></a>-->
 <!--          </li>-->
           <li class="nav-item" *ngIf="authService.role == 'admin'">
-            <a class="nav-link" [routerLink]="['settings']"><img alt="opzioni" width="22" src="assets/icons/folder-open-solid.svg"> <span class="d-none d-sm-none d-lg-block">  Opzioni</span></a>
+            <a class="nav-link text-uppercase text-white" [routerLink]="['settings']"><img alt="opzioni" width="22" src="assets/icons/folder-open-solid.svg"> Opzioni</a>
           </li>
         </ul>
       </div>
