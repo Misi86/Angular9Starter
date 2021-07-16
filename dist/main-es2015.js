@@ -1234,7 +1234,7 @@ class DashboardComponent {
         const ccB = parseFloat((currentCapital * parseBuyPrice).toFixed(8));
         switch (status) {
             case 'BUY':
-                if (Math.floor(ccB) === 0) {
+                if (ccB <= 0.00000001) {
                     return capital;
                 }
                 return ccB;

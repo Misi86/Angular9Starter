@@ -182,7 +182,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
 
     switch (status) {
       case'BUY':
-        if (Math.floor(ccB) === 0) {
+        if (ccB <= 0.00000001) {
           return capital;
         }
         return ccB;

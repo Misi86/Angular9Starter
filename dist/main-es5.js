@@ -2516,7 +2516,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
           switch (status) {
             case 'BUY':
-              if (Math.floor(ccB) === 0) {
+              if (ccB <= 0.00000001) {
                 return capital;
               }
 
