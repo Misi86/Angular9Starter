@@ -6,10 +6,15 @@ export const environment = {
   production: false,
   local: true,
   // api: 'http://127.0.0.1:3000/'
-  // api: 'http://ec2-15-160-2-188.eu-south-1.compute.amazonaws.com:3000/' --Andrea
+  // api: 'http://ec2-15-160-2-188.eu-south-1.compute.amazonaws.com:3000/' --AndreaP
   api: 'http://ec2-35-152-50-80.eu-south-1.compute.amazonaws.com:3000/'
-  // api: 'http://ec2-35-152-99-6.eu-south-1.compute.amazonaws.com:3000/' -- Leo
+  // api: 'http://ec2-35-152-99-6.eu-south-1.compute.amazonaws.com:3000/' -- LeoNardo Ancellotti
   // api: 'http://ec2-15-161-232-210.eu-south-1.compute.amazonaws.com:3000/' -- Misi86
+  // api: 'http://ec2-15-160-23-179.eu-south-1.compute.amazonaws.com:3000/' -- MarcoP
+  // api: 'http://ec2-15-161-58-222.eu-south-1.compute.amazonaws.com:3000/' -- AnnalisaP
+  // api: 'http://ec2-15-161-134-114.eu-south-1.compute.amazonaws.com:3000/' -- CapocciaMarco
+  // api: 'http://ec2-15-161-146-7.eu-south-1.compute.amazonaws.com:3000/' -- AlessiaRoberti
+  // api: 'http://ec2-35-152-51-132.eu-south-1.compute.amazonaws.com:3000/' -- DanieleRotella
 
 };
 

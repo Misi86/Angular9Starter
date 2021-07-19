@@ -165,11 +165,14 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
 
   }
 
-  calculateDelta(p1: any, p2: any, total: boolean) {
+  calculateDelta(p1: any, p2: any, status?: any, str?: any) {
     if (parseFloat(p2) === 0) {
       return 0;
     }
-
+    if (status === 'BUY') {
+      // tslint:disable-next-line:max-line-length
+      return this.calculateDelta(p1, this.calculateSelledCapital(str.capital, str.sell_price, str.current_capital, str.buy_price, str.current_status));
+    }
     const partial = (parseFloat(p2) - p1) / p1;
     return (partial * 100).toFixed(2);
   }
