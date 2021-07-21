@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {map} from 'rxjs/operators';
 import {AlertService} from "../../shared/alert/alert.service";
 
@@ -55,6 +55,24 @@ export class ActionService {
 
   deleteFromDb(name: string) {
     return this.http.delete<any>('api/strategy/' + name).pipe(map(data => {
+      return data;
+    }));
+  }
+
+  multipleCancel(payload: any) {
+    const options = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      body: payload,
+    };
+    return this.http.delete<any>('api/strategy/deletestrategies' , options).pipe(map(data => {
+      return data;
+    }));
+  }
+
+  multipleUpdate(payload: any) {
+    return this.http.put<any>('api/strategy/updatestrategies' , payload).pipe(map(data => {
       return data;
     }));
   }

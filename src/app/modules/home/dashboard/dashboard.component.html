@@ -16,12 +16,31 @@
 <!--    </div>-->
 <!--    <span class="arrow right" (click)="manageSlider(true)"> <img src="assets/icons/arrow-right-solid.svg" width="16"></span>-->
 <!--  </div>-->
-  <div class="text-center"  *ngIf="!selectedCoin.length && user === 'admin'">
-    <h2>Inizializza le tue stategie</h2>
+<!--  <div class="text-center"  *ngIf="!activeStrategies.length && user === 'admin'">-->
+<!--    <h2>Inizializza le tue stategie</h2>-->
+<!--  </div>-->
+  <div id="accordion">
+    <div>
+      <div id="headingOne">
+        <h5 class=" mb-3">
+          <button class="btn start-btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+            AZIONI MULTIPLE
+          </button>
+        </h5>
+      </div>
+
+      <div id="collapseOne" class="collapse " aria-labelledby="headingOne" data-parent="#accordion">
+        <div class="float-left multi-container">
+          <button class="btn btn-dark" (click)="openMultiple('pp')">PAUSE/PLAY</button> &nbsp;&nbsp;
+          <button class="btn btn-danger" (click)="openMultiple('cancel')">CANCELLA</button>
+          <span class="float-right">Strategie selezionate: {{selectedStrategy.length}}</span>
+        </div>
+      </div>
+    </div>
   </div>
   <table id="dash-table" class="table-responsive">
     <tr class="text-center">
-      <th class="d-none"></th>
+      <th></th>
       <th>Stato</th>
       <th>Nome</th>
       <th>Scambio</th>
@@ -38,7 +57,7 @@
       <th>Cicli eseguiti</th>
     </tr>
     <tr>
-      <td class="d-none">
+      <td >
         <input type="checkbox" id="selectAll" [(ngModel)]="selectAll" (ngModelChange)="manageAll($event)">
       </td>
       <td>
@@ -94,8 +113,8 @@
       <td><input [(ngModel)]="executedTransaction"  type="text" class="filter-dash text-center" [disabled]="true"></td>
     </tr>
     <tr *ngFor="let str of activeStrategies; let $index = index; let $last=last" (click)="openDetails($index)" style="cursor: pointer">
-      <td class="d-none">
-        <input class="check-dash" type="checkbox" [value]="str.order_id" [name]="str.name" (change)="updateSelectStatus($event, str.order_id, str.name, str.status)" id="{{'select'+ $index}}">
+      <td >
+        <input class="check-dash" type="checkbox" [checked]="isChecked[$index]" [name]="str.name" (change)="updateSelectStatus($event, str.order_id, str.name, str.status, str.coin_pair, $index)" id="{{'select'+ $index}}">
       </td>
       <td class="text-center showD">
         <!--        <span (click)="openConfirmModal($index)" class="d-sm-block d-md-none">INFO</span>-->
@@ -236,6 +255,18 @@
         </div>
         <button class="btn btn-danger mt-3 w-100" (click)="closeTransaction()">CHIUDI</button>
       </div>
+    </div>
+  </modal>
+  <modal id="multiple-action" #multipleAction>
+    <div class="app-modal-header"><h3>Azione multipla : </h3></div>
+    <div class="app-modal-body " *ngIf="selectedStrategy">
+       <h3 class="text-center"> Stai eseguendo una {{multipleType === 'pp' ? 'PLAY/PAUSE' : 'CANCELLAZIONE'}} multipla per le seguenti startegie:</h3>
+      <ul class="text-center">
+        <li style="  list-style-type: none;" *ngFor="let s of selectedStrategy">{{s.nm}}</li>
+      </ul>
+      <h2 class="text-center">Conferma !!</h2>
+      <button class="btn btn-danger" (click)="closeMultiple()" >CHIUDI</button>
+      <button class="btn start-btn float-right" (click)="manageMultipleAction(multipleType)" >CONTINUA</button>
     </div>
   </modal>
 </div>

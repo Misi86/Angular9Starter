@@ -13,6 +13,7 @@ import {ActionService} from '../../../core/services/action.service';
 import * as _ from 'lodash';
 import {AlertService} from '../../../shared/alert/alert.service';
 import {AuthService} from '../../../core/services/auth.service';
+import {newArray} from "@angular/compiler/src/util";
 
 declare var $: any;
 
@@ -26,6 +27,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   @ViewChild('stopModal') stopModal: ModalComponent;
   @ViewChild('cancelModal') cancelModal: ModalComponent;
   @ViewChild('transactionsModal') transactionsModal: ModalComponent;
+  @ViewChild('multipleAction') multipleAction: ModalComponent;
   public activeStrategies: any;
   public stopData: any;
   public checkMobileData: any;
@@ -51,6 +53,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   public btcInitialTotal: any;
   public btcSelledTotal: any;
   public btcCurrentTotal: any;
+  public selectedStrategy: any = [];
+  public isChecked: any = [];
+  public multipleType = '';
 
   constructor(private actionService: ActionService,
               private alertService: AlertService,
@@ -58,6 +63,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
               private authService: AuthService
   ) {
     this.loadActiveStrategy();
+
+
     // this.specificPair(this.selectedCoin);
     this.user = this.authService.user;
     // console.log(this.user)
@@ -77,6 +84,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
 
   }
 
+
   ngAfterContentChecked() {
     this.calculateTotalTransactions();
     this.cdFref.detectChanges();
@@ -91,18 +99,41 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     this.loadActiveStrategy();
     this.executedTransaction = 0;
     this.calculateTotalTransactions();
+    this.reloadCheckBox();
+
+  }
+
+
+  reloadCheckBox() {
+    if (this.selectAll) {
+      this.isChecked = _.fill(this.isChecked, true);
+    } else if (!this.selectAll && !_.isEmpty(this.selectedStrategy)) {
+      _.forEach(this.selectedStrategy, (s, i) => {
+        this.isChecked[s.id] = true;
+      });
+    } else if (!this.selectAll && _.isEmpty(this.selectedStrategy)) {
+      this.uncheckAll();
+    }
   }
 
   manageAll(event: any) {
     if (event === true) {
-      _.forEach(this.activeStrategies, (o) => {
-        this.selectedBox.push({order: o.orderId, nm: o.name, st: o.status});
+      _.forEach(this.activeStrategies, (o, i) => {
+        this.selectedStrategy.push({order: o.order_id, nm: o.name, st: o.status, pair: o.coin_pair});
+        this.isChecked[i] = true;
       });
-      $('.check-dash').prop('checked', true);
+      // $('.check-dash').prop('checked', true);
     } else {
-      this.selectedBox = [{order: 0, nm: '0', st: '0'}];
-      $('.check-dash').prop('checked', false);
+      this.selectedStrategy = [];
+      _.forEach(this.activeStrategies, (o, i) => {
+        this.isChecked[i] = false;
+      });
+      // $('.check-dash').prop('checked', false);
     }
+    this.selectedStrategy = _.uniqBy(this.selectedStrategy, (o) => {
+      return o.order;
+    });
+
   }
 
   manageSlider(action: boolean) {
@@ -119,15 +150,18 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     }
   }
 
-  updateSelectStatus(event: any, orderId: any, name: any, status: any) {
+  updateSelectStatus(event: any, orderId: any, name: any, status: any, pair: any, index: any) {
+    this.selectAll = false;
     if (event.target.checked === true) {
-      this.selectedBox.push({order: orderId, nm: name, st: status});
+      this.selectedStrategy.push({order: orderId, nm: name, st: status, pair_c: pair, id: index});
+      this.isChecked[index] = true;
     } else {
-      this.selectedBox = _.remove(this.selectedBox, (n) => {
+      this.selectedStrategy = _.remove(this.selectedStrategy, (n) => {
         return n.order !== orderId;
       });
-    }
+      this.isChecked[index] = false;
 
+    }
   }
 
   getFloor(value: any) {
@@ -148,7 +182,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
         });
     });
   }
-
 
   calculateCurrentCapital(currentCapital: any, pair: any) {
     let selectedPairPrice;
@@ -185,7 +218,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
 
     switch (status) {
       case'BUY':
-        if (ccB <= 0.00000001) {
+        if (ccB <= 0.00000010) {
           return capital;
         }
         return ccB;
@@ -258,6 +291,79 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     this.detailsModal.show('modal-lg');
   }
 
+  openMultiple(type: any) {
+    if (this.selectedStrategy.length > 1) {
+
+      this.multipleAction.show('modal-lg');
+      switch (type) {
+        case 'pp':
+          this.multipleType = type;
+          break;
+        case 'cancel':
+          this.multipleType = type;
+          break;
+        default:
+          this.multipleType = '';
+      }
+    } else {
+      this.alertService.addMessage('danger', 'Devi selezionare almeno 2 strategie');
+    }
+  }
+
+  manageMultipleAction(type: any) {
+    const payload = [];
+    if (type === 'pp') {
+      _.forEach(this.selectedStrategy, (ss, i) => {
+        const stat = ss.st === 'STOP' ? 'ACTIVE' : 'STOP';
+        payload.push({name: ss.nm, status: stat});
+      });
+      this.actionService.multipleUpdate(payload).subscribe((resp) => {
+        if (resp) {
+          this.closeMultiple();
+          this.loadActiveStrategy();
+          this.actionService.getBtcBalance().subscribe();
+          this.calculateTotalTransactions();
+          this.uncheckAll();
+          this.selectedStrategy = [];
+          this.alertService.addMessage('success', resp.success);
+          this.clearFilter();
+        }
+      });
+    } else {
+      _.forEach(this.selectedStrategy, (ss, i) => {
+        payload.push({name: ss.nm, orderId: ss.order, pair: ss.pair});
+      });
+      this.actionService.multipleCancel(payload).subscribe((resp) => {
+        if (resp) {
+
+          this.closeMultiple();
+          this.loadActiveStrategy();
+          this.actionService.getBtcBalance().subscribe();
+          this.calculateTotalTransactions();
+          this.uncheckAll();
+          this.selectedStrategy = [];
+          this.alertService.addMessage('success', resp.success);
+          this.clearFilter();
+        }
+
+      });
+    }
+
+  }
+
+  uncheckAll() {
+    _.forEach(this.selectedStrategy, (as, i) => {
+    });
+    this.selectAll = false;
+    this.isChecked = _.fill(this.isChecked, false);
+    // console.log('endtro', _.isArray(this.isChecked), this.isChecked);
+  }
+
+  closeMultiple() {
+    this.multipleType = '';
+    this.multipleAction.dismiss();
+  }
+
   openStopModal() {
     this.closeTransaction();
     this.stopModal.show('modal-lg');
@@ -292,6 +398,11 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
           this.filterResult(sf.name, sf.type);
         }
       });
+      // const ll = this.activeStrategies.length;
+      // this.isChecked = Array(ll);
+      // this.isChecked = _.fill
+
+
     });
   }
 
@@ -404,10 +515,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   }
 
   openDetails(data: any) {
-    // $('.showD').click(() => {
-    this.stopData = this.activeStrategies[data];
-    this.transactionsModal.show('modal-lg');
-    // });
+    $('.showD').click(() => {
+      this.stopData = this.activeStrategies[data];
+      this.transactionsModal.show('modal-lg');
+    });
   }
 
   calculateCapital(type: string) {
@@ -457,7 +568,14 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     result.push({name: this.searchName, type: 'name'});
     // this.searchDate = _.isEmpty(this.searchDate) ? '' : this.searchDate;
     this.selecteFilter = result;
+    // this.selectedStrategy = [];
 
+  }
+
+  clearFilter() {
+    this.searchFilter = undefined;
+    this.searchState = 'all';
+    this.searchName = undefined;
   }
 }
 
