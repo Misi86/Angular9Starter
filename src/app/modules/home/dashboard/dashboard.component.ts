@@ -515,8 +515,8 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   }
 
   openDetails(data: any) {
+    this.stopData = this.activeStrategies[data];
     $(document).on('click', '.showD', () => {
-      this.stopData = this.activeStrategies[data];
       this.transactionsModal.show('modal-lg');
     });
   }

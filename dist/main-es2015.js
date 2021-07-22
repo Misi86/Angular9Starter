@@ -1622,8 +1622,8 @@ class DashboardComponent {
         this.loaded = true;
     }
     openDetails(data) {
+        this.stopData = this.activeStrategies[data];
         $(document).on('click', '.showD', () => {
-            this.stopData = this.activeStrategies[data];
             this.transactionsModal.show('modal-lg');
         });
     }

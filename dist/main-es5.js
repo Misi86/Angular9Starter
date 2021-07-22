@@ -3094,9 +3094,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         value: function openDetails(data) {
           var _this15 = this;
 
+          this.stopData = this.activeStrategies[data];
           $(document).on('click', '.showD', function () {
-            _this15.stopData = _this15.activeStrategies[data];
-
             _this15.transactionsModal.show('modal-lg');
           });
         }
