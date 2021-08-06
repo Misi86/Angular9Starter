@@ -134,8 +134,8 @@
         class="hidden-column showD">{{str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital}}</td>
       <td class="hidden-column showD">{{calculateSelledCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status)}}</td>
       <td class="hidden-column showD text-center">{{calculateDelta(str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital , calculateSelledCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status), false )}}%</td>
-      <td class="hidden-column showD">{{calculateCurrentCapital(str.current_capital ,str.coin_pair)}}</td>
-      <td class="hidden-column showD text-center">{{calculateDelta(str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital , calculateCurrentCapital(str.current_capital ,str.coin_pair) , str.current_status, str)}}%</td>
+      <td class="hidden-column showD">{{calculateCurrentCapital(str.current_capital ,str.coin_pair, str)}}</td>
+      <td class="hidden-column showD text-center">{{calculateDelta(str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital , calculateCurrentCapital(str.current_capital ,str.coin_pair, str), str.current_status, str)}}%</td>
       <td class="hidden-column showD">{{str.buy_price.toFixed(8)}}</td>
       <td class="hidden-column showD">{{str.sell_price.toFixed(8)}}</td>
       <td class="showD">{{str.date | date:'dd/MM/yyyy'}}</td>

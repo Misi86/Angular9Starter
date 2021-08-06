@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public user: any;
   public updatedAt: any;
   public updateBalance: any;
+  public isOpen = true;
 
   constructor(public authService: AuthService,
               public actionService: ActionService,
@@ -54,6 +55,17 @@ export class HomeComponent implements OnInit, OnDestroy {
   calculateFees(value: any) {
     const tax = value - ((value / 100) * 0.1);
     return (value - tax).toFixed(8);
+  }
+
+  openMenu() {
+    $(document).ready( () => {
+
+
+        $('#sidebar').toggleClass('active');
+        this.isOpen = !this.isOpen;
+      });
+
+
   }
 }
 

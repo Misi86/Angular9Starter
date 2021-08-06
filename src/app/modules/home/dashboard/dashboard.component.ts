@@ -183,7 +183,12 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     });
   }
 
-  calculateCurrentCapital(currentCapital: any, pair: any) {
+  calculateCurrentCapital(currentCapital: any, pair: any, str: any) {
+
+    if (str.current_status === 'BUY') {
+      return this.calculateSelledCapital(str.capital, str.sell_price, str.current_capital, str.buy_price, str.current_status);
+    }
+
     let selectedPairPrice;
     _.forEach(this.currentPrices, (cp) => {
       if (cp.name === pair) {
@@ -191,7 +196,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
       }
     });
     const result = (currentCapital * selectedPairPrice).toFixed(8);
-    if (parseFloat(result) === 0) {
+    if (parseFloat(result) <= 0.00000010) {
       return currentCapital;
     }
     return parseFloat(result);
@@ -545,7 +550,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
         return currentCapital.toFixed(8);
       case 'current' :
         _.forEach(this.activeStrategies, (str) => {
-          realCurrentCapital += parseFloat(this.calculateCurrentCapital(str.current_capital, str.coin_pair));
+          realCurrentCapital += parseFloat(this.calculateCurrentCapital(str.current_capital, str.coin_pair, str));
         });
         this.btcCurrentTotal = realCurrentCapital.toFixed(8);
         return realCurrentCapital.toFixed(8);

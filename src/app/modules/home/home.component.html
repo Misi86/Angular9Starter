@@ -2,25 +2,34 @@
   <header class="navbar-crypto">
     <nav class="navbar  navbar-expand-md">
       <a class="navbar-brand" href="#">Ciao <span class="text-capitalize">{{user}} </span></a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+              aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"><img alt="" width="24" src="assets/icons/bars-solid.svg"></span>
       </button>
       <div class="collapse navbar-collapse mobile-menu" id="navbarCollapse" style="justify-content: flex-end">
-        <div class="pr-3 balance" style="color: #f2f2f2"><strong>ULTIMO AGGIORNAMENTO:</strong> {{parseDate(updatedAt)}}  |  <strong>BILANCIO:</strong> {{actionService.balanceBtc}} BTC | <strong>BILANCIO SENZA TASSE:</strong> {{balanceWoFees(actionService.balanceBtc, calculateFees(actionService.balanceBtc))}} | <strong>TASSE:</strong> {{calculateFees(actionService.balanceBtc)}}</div>
+        <div class="pr-3 balance" style="color: #f2f2f2"><strong>ULTIMO AGGIORNAMENTO:</strong> {{parseDate(updatedAt)}}
+          | <strong>BILANCIO:</strong> {{actionService.balanceBtc}} BTC | <strong>BILANCIO SENZA
+            TASSE:</strong> {{balanceWoFees(actionService.balanceBtc, calculateFees(actionService.balanceBtc))}} |
+          <strong>TASSE:</strong> {{calculateFees(actionService.balanceBtc)}}</div>
         <div class="d-sm-block d-md-none">
           <ul class="nav flex-column">
             <li class="nav-item">
-              <a class="nav-link mobile" data-target=".navbar-collapse.show" data-toggle="collapse" [routerLink]="['dashboard']"><img width="22" src="assets/icons/tachometer-alt-solid.svg"><span>  Riepilogo</span></a>
+              <a class="nav-link mobile" data-target=".navbar-collapse.show" data-toggle="collapse"
+                 [routerLink]="['dashboard']"><img width="22" src="assets/icons/tachometer-alt-solid.svg"><span>  Riepilogo</span></a>
             </li>
             <li class="nav-item">
-              <a class="nav-link mobile" data-target=".navbar-collapse.show" data-toggle="collapse" [routerLink]="['strategies']"><img width="22" src="assets/icons/tasks-solid.svg"> <span>  Strategie</span></a>
+              <a class="nav-link mobile" data-target=".navbar-collapse.show" data-toggle="collapse"
+                 [routerLink]="['strategies']"><img width="22" src="assets/icons/tasks-solid.svg">
+                <span>  Strategie</span></a>
             </li>
-            <li class="nav-item" >
-              <a class="nav-link mobile" data-target=".navbar-collapse.show" data-toggle="collapse" [routerLink]="['settings']"><img width="22" src="assets/icons/folder-open-solid.svg"> <span>  Opzioni</span></a>
+            <li class="nav-item">
+              <a class="nav-link mobile" data-target=".navbar-collapse.show" data-toggle="collapse"
+                 [routerLink]="['settings']"><img width="22" src="assets/icons/folder-open-solid.svg">
+                <span>  Opzioni</span></a>
             </li>
           </ul>
         </div>
-        <button class="btn btn-lg" (click)="authService.logout()">
+        <button class="btn btn-lg d-sm-block d-md-none" (click)="authService.logout()">
           <span>
          <img src="../../../assets/icons/sign-out-alt-solid.svg" width="24" alt="logout">
           </span>
@@ -29,35 +38,43 @@
     </nav>
   </header>
   <main role="main" class="main-content container-fluid">
-    <div class="row">
-      <div class="d-none d-sm-block col-sm-2 side-menu" >
-        <div class="profile-img">
-          <img src="assets/bitcoin-brands.svg">
+    <div class="d-flex">
+      <div id="sidebar" class="side-menu">
+        <div (click)="openMenu()"  class="profile-img pointer">
+          <img data-toggle="tooltip" data-placement="top" title="Apri/Chiudi Menu" [width]="isOpen ? '135' : '30' " src="assets/bitcoin-brands.svg">
         </div>
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link text-uppercase text-white" [routerLink]="['dashboard']"><img alt="riepilogo" width="22" src="assets/icons/tachometer-alt-solid.svg"> Riepilogo</a>
+            <a data-toggle="tooltip" data-placement="top" title="Riepilogo" class="nav-link text-uppercase text-white" [routerLink]="['dashboard']"><img alt="riepilogo" width="22"
+                                                                                            src="assets/icons/tachometer-alt-solid.svg">
+             <span class="ml-1">Riepilogo</span> </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-uppercase text-white" [routerLink]="['strategies']"><img alt="strategie" width="22" src="assets/icons/tasks-solid.svg"> Strategie</a>
+            <a data-toggle="tooltip" data-placement="top" title="Strategie" class="nav-link text-uppercase text-white" [routerLink]="['strategies']"><img alt="strategie" width="22"
+                                                                                             src="assets/icons/tasks-solid.svg">
+              <span class="ml-1">Strategie</span></a>
           </li>
-<!--          <li class="nav-item">-->
-<!--            <a class="nav-link" [routerLink]="['indicators']"><img width="22" src="assets/icons/chart-line-solid.svg"> <span>  Indicator</span></a>-->
-<!--          </li>-->
           <li class="nav-item" *ngIf="authService.role == 'admin'">
-            <a class="nav-link text-uppercase text-white" [routerLink]="['settings']"><img alt="opzioni" width="22" src="assets/icons/folder-open-solid.svg"> Opzioni</a>
+            <a data-toggle="tooltip" data-placement="top" title="Opzioni" class="nav-link text-uppercase text-white" [routerLink]="['settings']"><img alt="opzioni" width="22"
+                                                                                           src="assets/icons/folder-open-solid.svg">
+              <span class="ml-1">Opzioni</span></a>
+          </li>
+          <li class="nav-item logout">
+            <button data-toggle="tooltip" data-placement="top" title="Log Out"  class="btn btn-lg" (click)="authService.logout()">
+             <img src="../../../assets/icons/sign-out-alt-solid.svg" width="24" alt="logout">
+            </button>
           </li>
         </ul>
       </div>
-      <div class="col-sm-10 panel-side">
+      <div class="sides" [ngStyle]="{'padding-left': isOpen ? '170px':'65px'}">
         <router-outlet></router-outlet>
       </div>
     </div>
 
   </main>
-<!--  <footer class="footer bg-dark">-->
-<!--    <div class="container">-->
-<!--      <span>Sticky footer content here.</span>-->
-<!--    </div>-->
-<!--  </footer>-->
+  <!--  <footer class="footer bg-dark">-->
+  <!--    <div class="container">-->
+  <!--      <span>Sticky footer content here.</span>-->
+  <!--    </div>-->
+  <!--  </footer>-->
 </div>
