@@ -11,7 +11,7 @@ export class ModalComponent{
 
   @ViewChild('myModal') myModal: ElementRef;
   @Output() closed = new EventEmitter<boolean>();
-  private data:any;
+  private data: any;
   constructor() {}
 
   show(optClass?){
@@ -30,8 +30,7 @@ export class ModalComponent{
   }
 
   dismiss(){
-    // close modal using jQuery
-    ($(this.myModal.nativeElement)).modal('hide');
+    $(this.myModal.nativeElement).modal('hide');
     this.closed.emit();
   }
 

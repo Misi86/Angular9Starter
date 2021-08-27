@@ -303,6 +303,7 @@ export class StrategiesComponent implements OnInit {
     {pair: 'ANTBTC'},
     {pair: 'KSMBTC'},
     {pair: 'AGIXBTC'}];
+  public capitalType = 'btc';
 
   constructor(private fb: FormBuilder,
               private alert: AlertService,
@@ -316,11 +317,11 @@ export class StrategiesComponent implements OnInit {
       strategy_capital: ['', Validators.required],
       strategy_buy_price: ['', Validators.required],
       strategy_sell_price: [''],
+      strategy_capitalType: ['btc'],
       strategy_pairs_size: [''],
       strategy_direction: [''],
       strategy_size: [''],
     });
-
     this.options = {
       floor: 2,
       ceil: 50,

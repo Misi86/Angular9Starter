@@ -16,6 +16,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public updatedAt: any;
   public updateBalance: any;
   public isOpen = true;
+  // public datePause: any;
 
   constructor(public authService: AuthService,
               public actionService: ActionService,
@@ -24,6 +25,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.getBalance();
     this.updatedAt = new Date();
     this.user = this.authService.user;
+
+    // document.addEventListener("visibilitychange", () => {
+    //   if (document.visibilityState === 'visible') {
+    //    console.log('entro');
+    //     if (Date.now() - this.datePause > 10000) {
+    //       alert('fuoru');
+    //     }
+    //   } else {
+    //     this.datePause = Date.now();
+    //     console.log('prendo tempo')
+    //   }
+    // });
   }
 
   ngOnInit() {
@@ -58,12 +71,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   openMenu() {
-    $(document).ready( () => {
+    $(document).ready(() => {
 
 
-        $('#sidebar').toggleClass('active');
-        this.isOpen = !this.isOpen;
-      });
+      $('#sidebar').toggleClass('active');
+      this.isOpen = !this.isOpen;
+    });
 
 
   }
