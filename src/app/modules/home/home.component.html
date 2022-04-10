@@ -1,16 +1,43 @@
 <div class="site-wrapper">
-  <header class="navbar-crypto">
+  <header class="navbar-crypto " [ngClass]="{'light':isLightMode,'dark': !isLightMode}">
     <nav class="navbar  navbar-expand-md">
       <a class="navbar-brand" href="#">Ciao <span class="text-capitalize">{{user}} </span></a>
+      <label class="switch">
+        <input type="checkbox" [checked]="isLightMode" (change)="setModeCss()">
+        <span class="slider round"></span>
+        <span class="absolute-no">
+          <img src="assets/icons/sun-solid.svg" width="28">
+        </span>
+      </label>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
               aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"><img alt="" width="24" src="assets/icons/bars-solid.svg"></span>
       </button>
-      <div class="collapse navbar-collapse mobile-menu" id="navbarCollapse" style="justify-content: flex-end">
-        <div class="pr-3 balance" style="color: #f2f2f2"><strong>ULTIMO AGGIORNAMENTO:</strong> {{parseDate(updatedAt)}}
-          | <strong>BILANCIO:</strong> {{actionService.balanceBtc}} BTC | <strong>BILANCIO SENZA
-            TASSE:</strong> {{balanceWoFees(actionService.balanceBtc, calculateFees(actionService.balanceBtc))}} |
-          <strong>TASSE:</strong> {{calculateFees(actionService.balanceBtc)}}</div>
+      <div class="collapse navbar-collapse mobile-menu" [ngClass]="{'light':isLightMode,'dark': !isLightMode}" id="navbarCollapse" >
+        <div class="pr-3 balance ml-1" >
+          <div style="font-size: 17px">
+            <span class="navbar-recap" (click)="openChart()">
+              <span class="wallet">
+
+               <img data-toggle="tooltip" data-placement="bottom" title="Grafico" alt="" width="18" class="pointer" src="../../../assets/icons/chart-line-solid.svg">
+              </span>
+            </span>
+            <span  class="navbar-recap" >
+              <span class="wallet">
+               <img alt=""  class="pointer" src="../../../assets/icons/wallet-solid.svg" width="18" (click)="openWallet()">
+              </span>
+            </span>
+            <!--          <img *ngIf="!isLightMode" class="pointer" src="../../../assets/icons/wallet-solid-dark.svg" width="18" (click)="openWallet()">-->
+           <span class="navbar-recap">
+            <img data-toggle="tooltip" data-placement="bottom" title="Ultimo aggiornamento" alt="" width="32" src="../../../assets/icons/clock-solid.svg"> {{parseDate(updatedAt)}}
+           </span>
+           <span class="navbar-recap">
+               <img src="../../../assets/icons/bitcoin-brand-custom.svg" data-toggle="tooltip" data-placement="bottom" title="Bilancio BTC" alt="" width="32"> {{actionService.balanceBtc}} BTC
+               <span id="no-tax"> - <strong>SENZA TASSE:</strong> {{balanceWoFees(actionService.balanceBtc, calculateFees(actionService.balanceBtc))}} BTC</span>
+<!--            | <strong>TASSE:</strong> {{calculateFees(actionService.balanceBtc)}}-->
+           </span>
+          </div>
+        </div>
         <div class="d-sm-block d-md-none">
           <ul class="nav flex-column">
             <li class="nav-item">
@@ -21,6 +48,11 @@
               <a class="nav-link mobile" data-target=".navbar-collapse.show" data-toggle="collapse"
                  [routerLink]="['strategies']"><img width="22" src="assets/icons/tasks-solid.svg">
                 <span>  Strategie</span></a>
+            </li>
+            <li class="nav-item" *ngIf="authService.role === 'admin'">
+              <a class="nav-link mobile" data-target=".navbar-collapse.show" data-toggle="collapse"
+                 [routerLink]="['indicators']"><img width="22" src="assets/icons/chart-line-solid-b.svg">
+                <span>  Proiezioni</span></a>
             </li>
             <li class="nav-item">
               <a class="nav-link mobile" data-target=".navbar-collapse.show" data-toggle="collapse"
@@ -37,31 +69,37 @@
       </div>
     </nav>
   </header>
-  <main role="main" class="main-content container-fluid">
-    <div class="d-flex">
+  <main role="main" class="main-content container-fluid" [ngClass]="{'light':isLightMode,'dark': !isLightMode}">
+    <div >
       <div id="sidebar" class="side-menu">
         <div (click)="openMenu()"  class="profile-img pointer">
           <img data-toggle="tooltip" data-placement="top" title="Apri/Chiudi Menu" [width]="isOpen ? '135' : '30' " src="assets/bitcoin-brands.svg">
         </div>
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a data-toggle="tooltip" data-placement="top" title="Riepilogo" class="nav-link text-uppercase text-white" [routerLink]="['dashboard']"><img alt="riepilogo" width="22"
-                                                                                            src="assets/icons/tachometer-alt-solid.svg">
+            <a data-toggle="tooltip" data-placement="top" title="Riepilogo" class="nav-link  text-white" [routerLink]="['dashboard']">
+                <img alt="riepilogo" width="22" src="assets/icons/tachometer-alt-solid.svg">
              <span class="ml-1">Riepilogo</span> </a>
           </li>
           <li class="nav-item">
-            <a data-toggle="tooltip" data-placement="top" title="Strategie" class="nav-link text-uppercase text-white" [routerLink]="['strategies']"><img alt="strategie" width="22"
-                                                                                             src="assets/icons/tasks-solid.svg">
+            <a data-toggle="tooltip" data-placement="top" title="Strategie" class="nav-link  text-white" [routerLink]="['strategies']">
+                <img alt="strategie" width="22"  src="assets/icons/tasks-solid.svg">
               <span class="ml-1">Strategie</span></a>
           </li>
-          <li class="nav-item" *ngIf="authService.role == 'admin'">
-            <a data-toggle="tooltip" data-placement="top" title="Opzioni" class="nav-link text-uppercase text-white" [routerLink]="['settings']"><img alt="opzioni" width="22"
-                                                                                           src="assets/icons/folder-open-solid.svg">
+          <li class="nav-item" *ngIf="authService.role === 'admin'">
+            <a data-toggle="tooltip" data-placement="top" title="Calcoli" class="nav-link  text-white" [routerLink]="['indicators']">
+              <img alt="opzioni" width="22" src="assets/icons/chart-line-solid-b.svg">
+              <span class="ml-1">Proiezioni</span></a>
+          </li>
+          <li class="nav-item">
+            <a data-toggle="tooltip" data-placement="top" title="Opzioni" class="nav-link  text-white" [routerLink]="['settings']">
+                <img alt="opzioni" width="22" src="assets/icons/folder-open-solid.svg">
               <span class="ml-1">Opzioni</span></a>
           </li>
           <li class="nav-item logout">
             <button data-toggle="tooltip" data-placement="top" title="Log Out"  class="btn btn-lg" (click)="authService.logout()">
              <img src="../../../assets/icons/sign-out-alt-solid.svg" width="24" alt="logout">
+<!--              <span style="font-size: 16px" class="pl-1 text-white font-">Log Out</span>-->
             </button>
           </li>
         </ul>
@@ -72,9 +110,29 @@
     </div>
 
   </main>
-  <!--  <footer class="footer bg-dark">-->
-  <!--    <div class="container">-->
-  <!--      <span>Sticky footer content here.</span>-->
-  <!--    </div>-->
-  <!--  </footer>-->
 </div>
+<modal #walletModal  [ngClass]="{'light':isLightMode,'dark': !isLightMode}">
+  <div class="app-modal-header">
+    <h3>Portafoglio</h3>
+  </div>
+  <div class="app-modal-body">
+    <ul>
+      <li *ngFor="let b of balances">
+       <strong>{{b.pair}}:</strong> {{b.available}}
+      </li>
+    </ul>
+    <button data-dismiss="modal" class="btn btn-danger float-left w-100" (click)="closeWallet()">CHIUDI</button>
+  </div>
+</modal>
+
+<modal #chartModal  [ngClass]="{'light':isLightMode,'dark': !isLightMode}">
+  <div class="app-modal-header">
+    <h3>Grafico</h3>
+  </div>
+  <div class="app-modal-body">
+    <div class="tradingview-widget-container" >
+      <div id="map"></div>
+    </div>
+    <button data-dismiss="modal" class="btn btn-danger float-left w-100 mt-3" (click)="closeChart()">CHIUDI</button>
+  </div>
+</modal>

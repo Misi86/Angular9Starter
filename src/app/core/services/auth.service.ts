@@ -8,7 +8,7 @@ import {HttpClient} from '@angular/common/http';
   providedIn: 'root'
 })
 
-export class AuthService{
+export class AuthService {
 
   private _token;
   private _user = '';

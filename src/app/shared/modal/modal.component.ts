@@ -1,5 +1,8 @@
-import {Component, ElementRef, EventEmitter, Output, ViewChild} from "@angular/core";
+import {Component, ElementRef, EventEmitter, Output, ViewChild} from '@angular/core';
+import * as _ from 'lodash';
+
 declare var $: any;
+
 // const $ = require('jquery');
 
 @Component({
@@ -7,30 +10,36 @@ declare var $: any;
   templateUrl: 'modal.component.html',
 })
 
-export class ModalComponent{
+export class ModalComponent {
 
   @ViewChild('myModal') myModal: ElementRef;
   @Output() closed = new EventEmitter<boolean>();
   private data: any;
-  constructor() {}
+  private openedElement = null;
 
-  show(optClass?){
+  constructor() {
+  }
+
+
+  show(optClass?, openItem = null) {
+
     // open modal using jQuery
-    ($(this.myModal.nativeElement)).children().addClass(optClass ? optClass : '').end().modal(
-      {
-        backdrop: 'static',
-        keyboard: false
-      }
-    );
+    ($(this.myModal.nativeElement) as any).children().addClass(optClass ? optClass : 'modal-lg').end().modal({
+      backdrop: 'static',
+      keyboard: false
+    });
+
   }
 
 
-  isVisible(): boolean{
-    return ($(this.myModal.nativeElement)).hasClass('show');
+  isVisible(): boolean {
+    return ($(this.myModal.nativeElement) as any).hasClass('show');
   }
 
-  dismiss(){
-    $(this.myModal.nativeElement).modal('hide');
+  dismiss() {
+    $(this.myModal.nativeElement as any).modal('hide');
+    $('body').removeClass('modal-open');
+    $('.modal-backdrop').remove();
     this.closed.emit();
   }
 

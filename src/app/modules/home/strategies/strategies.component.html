@@ -15,101 +15,131 @@
   <div class="strategies-container ">
     <form [formGroup]="strategiesForm" (ngSubmit)="openConfirmModal()" novalidate>
       <div class="row">
-        <div class="col-sm-3 form-group" *ngIf="strategyType === 'single'">
-          <label for="strategy-name">Nome:</label>
-        </div>
-        <div class="col-sm-9 form-group" *ngIf="strategyType === 'single'">
-          <input (blur)="checkIfExist(formValue.strategy_name.value)"  formControlName="strategy_name" class="form-control" type="text"  id="strategy-name">
-        </div>
-        <div class="col-sm-3 form-group">
-          <label for="size_pairs">Satoshi max:</label>
-        </div>
-        <div class="col-sm-9 form-group custom-slider">
-          <ngx-slider  (ngModelChange)="loadPairs()" formControlName="strategy_pairs_size"  id="size_pairs" [options]="optionsStr"></ngx-slider>
-        </div>
-        <div class="col-sm-3 form-group">
-          <label for="select-pairs">Seleziona scambio: <br>(N° {{strLength}})</label>
+      <div class="col-sm-8">
+        <div class="row">
+          <div class="col-sm-3 form-group" *ngIf="strategyType === 'single'">
+            <label for="strategy-name">Nome:</label>
+          </div>
+          <div class="col-sm-9 form-group" *ngIf="strategyType === 'single'">
+            <input (blur)="checkIfExist(formValue.strategy_name.value)"  formControlName="strategy_name" class="form-control" type="text"  id="strategy-name">
+          </div>
+          <div class="col-sm-3 form-group">
+            <label for="size_pairs">Satoshi max:</label>
+          </div>
+          <div class="col-sm-9 form-group custom-slider">
+            <ngx-slider  (ngModelChange)="setPairs()" formControlName="strategy_pairs_size"  id="size_pairs" [options]="optionsStr"></ngx-slider>
+          </div>
+          <div class="col-sm-3 form-group">
+            <label for="select-pairs">Seleziona scambio: <br>(N° {{strLength}})</label>
+          </div>
+          <div class="col-sm-9 form-group">
+            <!--          <input type="checkbox" formControlName="small_cap"> <span style="font-size:14px"> Small Cap</span>-->
+            <select (ngModelChange)="loadPrices()" formControlName="strategy_pairs" class="form-control" id="select-pairs">
+              <option value=""></option>
+              <option *ngFor="let p of pairs" [value]="p.name">{{p.name}}</option>
+            </select>
+          </div>
+          <div class="col-sm-3 form-group" *ngIf="strategyType === 'multi'">
+            <label for="select-jumps">Salti in satoshi:</label>
+          </div>
+          <div class="col-sm-9 form-group" *ngIf="strategyType === 'multi'">
+            <select  formControlName="strategy_jumps" class="form-control" id="select-jumps">
+              <option value="1" [selected]="true">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+            </select>
+          </div>
+          <div class="col-sm-3 form-group">
+            <label for="select-pairs">Seleziona Capitale:</label>
+          </div>
+          <div class="col-sm-9 form-group">
+            <label  for="btc-capital">
+              <input formControlName="strategy_capitalType"   type="radio" value="btc"  id="btc-capital" [(ngModel)]="capitalType" >
+              BTC</label> &nbsp;&nbsp;
+            <label  for="other-capital" *ngIf="!isBtcCapital" >
+              <input  formControlName="strategy_capitalType"   type="radio" [value]="formValue.strategy_pairs.value"  id="other-capital" [(ngModel)]="capitalType" >
+              {{formValue.strategy_pairs.value ? formValue.strategy_pairs.value.replace('BTC' , '') : 'Choose'}}  - {{availableCapital}} | Ordine minimo: {{minOrder.toFixed(0)}}</label>
+          </div>
+          <div class="col-sm-3 form-group">
+            <label for="buy-price">Capitale {{capitalType != 'btc' ? capitalType.toUpperCase().replace('BTC', ''): 'BTC'}}:<br>(tasse escluse)</label>
+          </div>
+          <div class="col-sm-9 form-group">
+            <input  formControlName="strategy_capital" class="form-control inputStr" type="number" id="capital">
+            <label for="cutOrder" class="mt-3"  *ngIf="checkSizeOrder(capitalType) && role === 'admin'" >
+              <input id="cutOrder" class="" type="checkbox" formControlName="strategy_segmented"> Ordine frammentato (tagli da $400)
+            </label>
+            <div class="p-2 alert-danger  mt-1" style="border-radius: 6px" *ngIf="checkInvestedCapital(capitalType)">Capitale errato</div>
+          </div>
 
-        </div>
-        <div class="col-sm-9 form-group">
-<!--          <input type="checkbox" formControlName="small_cap"> <span style="font-size:14px"> Small Cap</span>-->
-          <select (ngModelChange)="loadPrices()" formControlName="strategy_pairs" class="form-control" id="select-pairs">
-            <option value=""></option>
-            <option *ngFor="let p of pairs" [value]="p.name">{{p.name}}</option>
-          </select>
-
-
-        </div>
-<!--        <div class="col-sm-3 form-group">-->
-<!--          <label for="select-pairs">Seleziona Capitale:</label>-->
-<!--        </div>-->
-<!--        <div class="col-sm-9 form-group">-->
-<!--          <label  for="btc-capital">-->
-<!--            <input formControlName="strategy_capitalType"   type="radio" value="btc"  id="btc-capital" [(ngModel)]="capitalType" >-->
-<!--            BTC</label> &nbsp;&nbsp;-->
-<!--          <label  for="other-capital">-->
-<!--            <input  formControlName="strategy_capitalType"   type="radio" value="other"  id="other-capital" [(ngModel)]="capitalType" >-->
-<!--            Other Value </label>-->
-<!--        </div>-->
-        <div class="col-sm-3 form-group">
-          <label for="buy-price">Capitale BTC:<br>(tasse escluse)</label>
-        </div>
-        <div class="col-sm-9 form-group">
-          <input formControlName="strategy_capital" class="form-control inputStr" type="number" id="capital">
-        </div>
-        <div class="col-sm-3 form-group">
-          <label for="buy-price">Prezzo<span *ngIf="strategyType === 'single'"> compera</span>:</label>
-        </div>
-        <div class="col-sm-9 form-group">
-          <input formControlName="strategy_buy_price" class="form-control inputStr" type="number" id="buy-price">
-        </div>
-        <div class="col-sm-3 form-group" *ngIf="strategyType === 'single'">
-          <label for="sell-price">Prezzo vendita:</label>
-        </div>
-        <div class="col-sm-9 form-group" *ngIf="strategyType === 'single'">
-          <input formControlName="strategy_sell_price" class="form-control inputStr" type="number" id="sell-price">
-        </div>
-        <div class="col-sm-3 form-group" *ngIf="strategyType === 'multi'">
-          <label for="direction">Direzione:</label>
-        </div>
-        <div class="col-sm-9 form-group" *ngIf="strategyType === 'multi'">
-          <select formControlName="strategy_direction" class="form-control inputStr" type="number" id="direction">
-            <option value="up">Crescente</option>
-            <option value="down">Decrescente</option>
-          </select>
-        </div>
-      <div class="col-sm-3 form-group" *ngIf="strategyType === 'multi'">
-          <label for="sell-price">Numero ordini:</label>
-        </div>
-        <div class="col-sm-9 form-group custom-slider" *ngIf="strategyType === 'multi'">
-        <ngx-slider formControlName="strategy_size" [options]="options"></ngx-slider>
-          <!--          <input formControlName="strategy_size" class="form-control inputStr" type="number" [maxLength]="50" id="size">-->
-        </div>
-        <div class="col-sm-3 form-group">
-        </div>
-        <div class="col-sm-9 form-group">
-            <button [disabled]="strategiesForm.invalid || isStrPresent" class="btn start-btn float-right" >AVVIA</button>
+          <div class="col-sm-3 form-group" *ngIf="strategyType === 'single'">
+            <label for="select-pairs">Seleziona Ordine:</label>
+          </div>
+          <div class="col-sm-9 form-group" *ngIf="strategyType === 'single'">
+            <label  for="cyclic-order">
+              <input  [(ngModel)]="orderType" formControlName="strategy_orderType"   type="radio" value="cyclic"  id="cyclic-order" >
+              Ordine Ciclico</label> &nbsp;&nbsp;
+            <label  for="single-order"  *ngIf="capitalType != 'btc'">
+              <input [(ngModel)]="orderType" formControlName="strategy_orderType"  type="radio" value="single"   id="one-order">
+              Ordine Singolo </label>
+          </div>
+          <div class="col-sm-3 form-group" *ngIf="orderType === 'cyclic'">
+            <label for="buy-price">Prezzo<span *ngIf="strategyType === 'single'"> compera</span>:</label>
+          </div>
+          <div class="col-sm-9 form-group" *ngIf="orderType === 'cyclic'">
+            <input formControlName="strategy_buy_price" class="form-control inputStr" type="number" id="buy-price">
+          </div>
+          <div class="col-sm-3 form-group" *ngIf="strategyType === 'single'">
+            <label for="sell-price">Prezzo vendita:</label>
+          </div>
+          <div class="col-sm-9 form-group" *ngIf="strategyType === 'single'">
+            <input formControlName="strategy_sell_price" class="form-control inputStr" type="number" id="sell-price">
+          </div>
+          <div class="col-sm-3 form-group" *ngIf="strategyType === 'multi'">
+            <label for="direction">Direzione:</label>
+          </div>
+          <div class="col-sm-9 form-group" *ngIf="strategyType === 'multi'">
+            <select formControlName="strategy_direction" class="form-control inputStr" type="number" id="direction">
+              <option value="up">Crescente</option>
+              <option value="down">Decrescente</option>
+            </select>
+          </div>
+          <div class="col-sm-3 form-group" *ngIf="strategyType === 'multi'">
+            <label for="sell-price">Numero ordini:</label>
+          </div>
+          <div class="col-sm-9 form-group custom-slider" *ngIf="strategyType === 'multi'">
+            <ngx-slider formControlName="strategy_size" [options]="options"></ngx-slider>
+          </div>
+          <div class="col-sm-3 form-group">
+          </div>
+          <div class="col-sm-9 form-group">
+            <button [disabled]="strategiesForm.invalid || isStrPresent || checkInvestedCapital(capitalType)" class="btn start-btn float-right" >AVVIA</button>
+          </div>
         </div>
       </div>
+      <div class="col-sm-4">
 
+      </div>
+      </div>
     </form>
 
   </div>
-  <modal #confirmModal>
-    <div class="app-modal-header">
-      <h3>Conferma azione</h3>
-    </div>
-    <div class="app-modal-body text-center">
-      <p>Stai inizializzando "{{strategyType === 'single' ? formValue.strategy_name.value : 'un ordine Multiplo'}}" con i seguenti settaggi:</p>
-      <p>Scambio: {{formValue.strategy_pairs.value}}</p>
-      <p>Prezzo di compera: {{formValue.strategy_buy_price.value | number: '1.1-8'}} BTC </p>
-      <p *ngIf="strategyType === 'single'">Prezzo di vendita: {{formValue.strategy_sell_price.value | number: '1.1-8'}} BTC </p>
-      <p>Capitale: {{formValue.strategy_capital.value}} BTC <span *ngIf="strategyType ==='multi'">per strategia</span></p>
-     <p *ngIf="strategyType === 'multi'">Ordine: {{formValue.strategy_direction.value === 'up' ? 'Crescente' : 'Decrescente'}}</p>
-     <p *ngIf="strategyType === 'multi'">N° Ordini: {{formValue.strategy_size.value}}</p>
-      <h3>CONFERMA</h3>
-      <button class="btn btn-danger float-left" (click)="close()">DECLINA</button>
-      <button class="btn start-btn float-right" (click)="strategyType === 'single' ? initializeStrategy() : initializeStrategies()">CONFERMA</button>
-    </div>
-  </modal>
+
+<modal #confirmModal>
+  <div class="app-modal-header">
+    <h3>Conferma azione</h3>
+  </div>
+  <div class="app-modal-body text-center">
+    <p>Stai inizializzando "{{strategyType === 'single' ? formValue.strategy_name.value : 'un ordine Multiplo'}}" con i seguenti settaggi:</p>
+    <p>Scambio: {{formValue.strategy_pairs.value}}</p>
+    <p>Prezzo di compera: {{formValue.strategy_buy_price.value | number: '1.1-8'}} BTC </p>
+    <p *ngIf="strategyType === 'single'">Prezzo di vendita: {{formValue.strategy_sell_price.value | number: '1.1-8'}} BTC </p>
+    <p>Capitale: {{formValue.strategy_capital.value}} {{capitalType === 'btc' ? capitalType.toUpperCase() : capitalType.replace('BTC', '').toUpperCase() }} <span *ngIf="strategyType ==='multi'">per strategia</span></p>
+    <p *ngIf="strategyType === 'multi'">Ordine: {{formValue.strategy_direction.value === 'up' ? 'Crescente' : 'Decrescente'}}</p>
+    <p *ngIf="strategyType === 'multi'">N° Ordini: {{formValue.strategy_size.value}}</p>
+    <h3>CONFERMA</h3>
+    <button data-dismiss="modal" class="btn btn-danger float-left" (click)="close()">DECLINA</button>
+    <button data-dismiss="modal" class="btn start-btn float-right" (click)="strategyType === 'single' ? initializeStrategy() : initializeStrategies()">CONFERMA</button>
+  </div>
+</modal>
 

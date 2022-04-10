@@ -1,49 +1,107 @@
 <div class="sub-header">
-  <div class="h1">Riepilogo <span class="float-right" style="font-size: 16px">Strategie attive: {{strNumber}}</span>
+  <div class="h1">Riepilogo <span class="float-right" style="font-size: 16px"><u>Strategie attive: {{strNumber}}</u></span>
   </div>
 </div>
 <div class="mt-3" *ngIf="loaded">
-<!--  <div *ngIf="selectedCoin.length && user === 'admin'">-->
-<!--    <span  class="arrow left " (click)="manageSlider(false)"><img src="assets/icons/arrow-left-solid.svg" width="16"></span>-->
-<!--    <div class="row mb-3">-->
-<!--      <div [ngClass]="{'d-none': $i < minSlide || $i >maxSlide }" class="col-sm-3" *ngFor="let c of selectedCoin; let $i = index">-->
-<!--        <div  class="coin-card">-->
-<!--          <p>Name: {{c.name}}</p>-->
-<!--          <p>Price: {{c.price.toFixed(8)}}</p>-->
-<!--          <span>Volume: {{c.volume}}</span>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--    <span class="arrow right" (click)="manageSlider(true)"> <img src="assets/icons/arrow-right-solid.svg" width="16"></span>-->
-<!--  </div>-->
-<!--  <div class="text-center"  *ngIf="!activeStrategies.length && user === 'admin'">-->
-<!--    <h2>Inizializza le tue stategie</h2>-->
-<!--  </div>-->
-  <div id="accordion">
-    <div>
-      <div id="headingOne">
-        <h5 class=" mb-3">
-          <button class="btn start-btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-            AZIONI MULTIPLE
-          </button>
-        </h5>
-      </div>
-
-      <div id="collapseOne" class="collapse " aria-labelledby="headingOne" data-parent="#accordion">
-        <div class="float-left multi-container">
-          <button class="btn btn-dark" (click)="openMultiple('pp')">PAUSE/PLAY</button> &nbsp;&nbsp;
-          <button class="btn btn-danger" (click)="openMultiple('cancel')">CANCELLA</button>
-          <span class="float-right">Strategie selezionate: {{selectedStrategy.length}}</span>
+  <div id="accordion" class="mb-3">
+        <div class="row"  >
+          <div class="col-10">
+            <div class="mobile-info">
+              <div id="carouselExampleControlsAssets" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                  <div   class="carousel-item stat " *ngFor="let p of currentPrices; let first=first" [ngClass]="{'active': first}" (click)="setFilterPair(p.symbol)">
+                    <strong>{{p.symbol}}</strong>: {{ (p.lastPrice).toFixed(8) }} <br>
+                     <strong> Volume</strong>: {{p.quoteVolume.toFixed(2)}} BTC
+                  </div>
+                </div>
+                <a class="carousel-control-prev top" href="#carouselExampleControlsAssets" role="button" data-slide="prev">
+<!--                  <span class="carousel-control-prev-icon" [ngClass]="{'light': cssmode}" aria-hidden="true"></span>-->
+                  <span class="sr-only">Previous</span>
+                </a>
+                <a class="carousel-control-next top" href="#carouselExampleControlsAssets" role="button" data-slide="next">
+<!--                  <span class="carousel-control-next-icon" [ngClass]="{'light': cssmode}" aria-hidden="true"></span>-->
+                  <span class="sr-only">Next</span>
+                </a>
+              </div>
+            </div>
+            <div class="desk-info" *ngIf="currentPrices.length">
+            <span  class="price-label m-1 pointer"  *ngFor="let p of currentPrices; let last=last" (click)="setFilterPair(p.symbol)" [ngClass]="{'light': cssmode,'dark': !cssmode, 'selected-filter': p.symbol === searchFilter}">
+             <strong>{{p.symbol}}</strong>: {{ (p.lastPrice).toFixed(8) }} <br>
+             <strong> Volume</strong>: {{p.quoteVolume.toFixed(2)}}
+            </span>
+          </div>
+          </div>
+          <div class="col-2">
+          <span class="float-right mb-2">
+            <img class="info-dot partial"  src="assets/icons/info-solid.svg" data-toggle="tooltip" data-placement="bottom" title="Ordine parzialmente eseguito">
+            <img class="info-dot single"  src="assets/icons/info-solid.svg" data-toggle="tooltip" data-placement="bottom" title="Ordine singolo">
+          </span>
+          </div>
         </div>
+      <div>
+      </div>
+    <div *ngIf="selectedStrategy.length > 1" >
+      <div class="float-left mt-2 mb-2 multi-container">
+        <button class="btn btn-dark" (click)="openMultiple('pp')">PAUSE/PLAY</button> &nbsp;&nbsp;
+        <button class="btn btn-danger" (click)="openMultiple('cancel')">CANCELLA</button>
+        <span class="float-right">Strategie selezionate: {{selectedStrategy.length}}</span>
       </div>
     </div>
+
+
   </div>
   <table id="dash-table" class="table-responsive">
     <tr class="text-center">
       <th></th>
       <th>Stato</th>
-      <th>Nome</th>
-      <th>Scambio</th>
+      <th>
+       <div class="desk-info"> Nome </div>
+       <div class="mobile-info">
+         <div id="carouselExampleControlsTop" class="carousel slide" data-interval="false">
+           <div class="carousel-inner">
+             <div id="0" class="carousel-item stat active">
+               <label>Nome</label>
+             </div>
+             <div id="1"  class="carousel-item stat">
+               <label>Scambio</label>
+             </div>
+             <div id="2" class="carousel-item stat">
+               <label>ToT Btc Iniziali</label> <br> <span>{{calculateCapital('initial')}}</span>
+             </div>
+             <div id="3" class="carousel-item stat">
+               <label>ToT Btc Vendita</label> <br> <span>{{calculateCapital('selled')}}</span>
+             </div>
+             <div id="4" class="carousel-item stat">
+               <label>&#9650; BTC vendita</label> <br> <span>{{calculateDelta(btcInitialTotal, btcSelledTotal) + '%'}}</span>
+             </div>
+             <div id="5" class="carousel-item stat">
+               <label>ToT Btc Correnti</label> <br> <span>{{calculateCapital('current')}}</span>
+             </div>
+             <div id="6" class="carousel-item stat">
+               <label>&#9650; BTC Correnti</label> <br> <span>{{calculateDelta(btcInitialTotal, btcCurrentTotal)  + '%'}}</span>
+             </div>
+             <div id="7" class="carousel-item stat">
+               <label>Prezzo Compera</label>
+             </div>
+             <div id="8" class="carousel-item stat">
+               <label>Prezzo Vendita</label>
+             </div>
+             <div id="9" class="carousel-item stat">
+               <label>Data</label>
+             </div>
+           </div>
+           <a class="carousel-control-prev top" href="#carouselExampleControlsTop" role="button" data-slide="prev"  (click)="moveSliderDetails('prev')">
+             <span class="carousel-control-prev-icon" [ngClass]="{'light': cssmode}" aria-hidden="true"></span>
+             <span class="sr-only">Previous</span>
+           </a>
+           <a class="carousel-control-next top" href="#carouselExampleControlsTop" role="button" data-slide="next" (click)="moveSliderDetails('next')">
+             <span class="carousel-control-next-icon" [ngClass]="{'light': cssmode}" aria-hidden="true"></span>
+             <span class="sr-only">Next</span>
+           </a>
+         </div>
+       </div>
+      </th>
+      <th class="hidden-column">Scambio</th>
       <th class="hidden-column">BTC iniziali</th>
       <th class="hidden-column" data-toggle="tooltip" data-placement="top" title="Totale BTC alla fine di tutte le vendite">BTC alla vendita</th>
       <th class="hidden-column" data-toggle="tooltip" data-placement="top" title="Differenza % tra BTC iniziali e BTC vendita">&#9650; % vendita</th>
@@ -51,7 +109,7 @@
       <th class="hidden-column" data-toggle="tooltip" data-placement="top" title="Differenza % tra BTC iniziali e BTC correnti">&#9650; % correnti</th>
       <th class="hidden-column">Prezzo di compera</th>
       <th class="hidden-column">Prezzo di vendita</th>
-      <th>Data</th>
+      <th class="hidden-column">Data</th>
       <th class="d-none">PAUSA</th>
       <th class="d-none">CHIUDI</th>
       <th>Cicli eseguiti</th>
@@ -93,7 +151,7 @@
           </svg>
         </label>
       </td>
-      <td>
+      <td class="hidden-column">
         <input type="text" id="filter-name" class="w-100" [(ngModel)]="searchName"
                (ngModelChange)="filterResult(searchName,'name')">
       </td>
@@ -106,18 +164,25 @@
       <td class="hidden-column"><input [value]="calculateDelta(btcInitialTotal, btcCurrentTotal)  + '%'" type="text" class="filter-dash tot text-center" [disabled]="true"></td>
       <td class="hidden-column"><input type="text" class="filter-dash " [disabled]="true"></td>
       <td class="hidden-column"><input type="text" class="filter-dash " [disabled]="true"></td>
-      <td><input [disabled]="true" type="text" id="filter-date" class="filter-dash" [(ngModel)]="searchDate"
+      <td class="hidden-column"><input [disabled]="true" type="text" id="filter-date" class="filter-dash" [(ngModel)]="searchDate"
                  (ngModelChange)="filterResult(searchDate,'date')"></td>
       <td class="d-none"><input type="text" class="filter-dash min" [disabled]="true"></td>
       <td class="d-none"><input type="text" class="filter-dash min" [disabled]="true"></td>
       <td><input [(ngModel)]="executedTransaction"  type="text" class="filter-dash text-center" [disabled]="true"></td>
     </tr>
-    <tr *ngFor="let str of activeStrategies; let $index = index; let $last=last" (click)="openDetails($index)" style="cursor: pointer">
+    <tr *ngIf="!activeStrategies || !activeStrategies.length">
+      <td colspan="13" class="text-uppercase pt-3 text-center">
+        <p>
+          <span *ngIf="!activeStrategies" class="spinner-border"></span>
+          <strong *ngIf="activeStrategies && activeStrategies.length === 0">Comincia settando le tue strategie !!!</strong>
+        </p>
+      </td>
+    </tr>
+    <tr *ngFor="let str of activeStrategies; let $index = index; let $first=first; let $last=last"  (click)="openDetails($index)" style="cursor: pointer" [ngClass]="{'partial': isPartial[$index] === true, 'single': str.order_type === 'single'}">
       <td >
         <input class="check-dash" type="checkbox" [checked]="isChecked[$index]" [name]="str.name" (change)="updateSelectStatus($event, str.order_id, str.name, str.status, str.coin_pair, $index)" id="{{'select'+ $index}}">
       </td>
-      <td class="text-center showD">
-        <!--        <span (click)="openConfirmModal($index)" class="d-sm-block d-md-none">INFO</span>-->
+      <td class="text-center showD" >
         <span data-toggle="tooltip" data-placement="top" title="Visualizza ordini">
           <img *ngIf="str.current_status == 'BUY'" src="assets/icons/dollar-sign-solid.svg" alt="buy" width="18">
           <img *ngIf="str.current_status != 'BUY'" src="assets/icons/dollar-sign.svg" alt="sell" width="18">
@@ -125,20 +190,78 @@
                alt="play" width="18">
           <img class="status-icon pause" *ngIf="str.status != 'ACTIVE'" src="assets/icons/pause-circle-solid.svg"
                alt="pause" width="18">
-
       </span>
       </td>
-      <td class="showD">{{str.name}}</td>
-      <td class="showD">{{str.coin_pair}}</td>
-      <td
-        class="hidden-column showD">{{str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital}}</td>
-      <td class="hidden-column showD">{{calculateSelledCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status)}}</td>
-      <td class="hidden-column showD text-center">{{calculateDelta(str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital , calculateSelledCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status), false )}}%</td>
-      <td class="hidden-column showD">{{calculateCurrentCapital(str.current_capital ,str.coin_pair, str)}}</td>
-      <td class="hidden-column showD text-center">{{calculateDelta(str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital , calculateCurrentCapital(str.current_capital ,str.coin_pair, str), str.current_status, str)}}%</td>
-      <td class="hidden-column showD">{{str.buy_price.toFixed(8)}}</td>
+      <td >
+      <div class="showD desk-info"> {{str.name}}</div>
+      <div class="mobile-info read">
+        <div [id]="'carouselExampleControls' + $index" class="carousel slide" data-interval="false">
+          <div class="carousel-inner ">
+            <div id="00" class="carousel-item" [ngClass]="{'active' : 0 === reloaded || reloaded === undefined}">
+              <br> <span>{{str.name}}</span>
+            </div>
+            <div id="10" class="carousel-item" [ngClass]="{'active' : 1 === reloaded }">
+              <br> <span>{{str.coin_pair}}</span>
+            </div>
+            <div id="20" class="carousel-item " [ngClass]="{'active' : 2 === reloaded}">
+              <br> <span> {{showInitialCapital(str)}}</span>
+            </div>
+            <div id="30" class="carousel-item" [ngClass]="{'active' : 3 === reloaded}">
+              <br> <span>{{calculateSelledCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status, str.isBtcCapital)}}</span>
+            </div>
+            <div id="40" class="carousel-item" [ngClass]="{'active' : 4 === reloaded}">
+              <br> <span>{{str.order_type !== 'single' ? calculateDelta( str.isBtcCapital ? str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital : str.sell_price < str.current_initial_price ? fromCoinToBTC(str.capital, str.current_initial_price) : fromCoinToBTC(str.capital, str.sell_price), calculateSelledCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status, str.isBtcCapital), false , str) : 0}}%</span>
+            </div>
+            <div id="50" class="carousel-item" [ngClass]="{'active' : 5 === reloaded}">
+              <br> <span>{{calculateCurrentCapital(str.current_capital ,str.coin_pair, str)}}</span>
+            </div>
+            <div id="60" class="carousel-item" [ngClass]="{'active' : 6 === reloaded}">
+              <span>
+               {{str.order_type !== 'single' ? calculateDelta( str.isBtcCapital ? str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital : str.sell_price < str.current_initial_price ? fromCoinToBTC(str.capital, str.current_initial_price) : fromCoinToBTC(str.capital, str.sell_price) , calculateCurrentCapital(str.current_capital ,str.coin_pair, str), str.current_status, str) : 0}}%
+              </span>
+            </div>
+            <div id="70" class="carousel-item" [ngClass]="{'active' : 7 === reloaded}">
+              <br> <span>{{str.order_type !== 'single' ? str.buy_price.toFixed(8): '-'}}</span>
+            </div>
+            <div id="80" class="carousel-item" [ngClass]="{'active' : 8 === reloaded}">
+              <br> <span>{{str.sell_price.toFixed(8)}}</span>
+            </div>
+            <div id="90" class="carousel-item" [ngClass]="{'active' : 9 === reloaded}">
+              <br> <span>{{str.date | date:'dd/MM/yyyy'}}</span>
+            </div>
+          </div>
+<!--          <a class="carousel-control-prev" [href]="'  #carouselExampleControls' + $index" role="button" data-slide="prev" >-->
+<!--            <span class="carousel-control-prev-icon  d-none" aria-hidden="true"></span>-->
+<!--            <span class="sr-only">Previous</span>-->
+<!--          </a>-->
+<!--          <a class="carousel-control-next " [href]="'#carouselExampleControls' + $index" role="button" data-slide="next" >-->
+<!--            <span class="carousel-control-next-icon d-none" aria-hidden="true"></span>-->
+<!--            <span class="sr-only">Next</span>-->
+<!--          </a>-->
+        </div>
+      </div>
+      </td>
+      <td class="hidden-column showD">{{str.coin_pair}}</td>
+      <td class="hidden-column showD">{{showInitialCapital(str)}}</td>
+      <td class="hidden-column showD">{{calculateSelledCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status, str.isBtcCapital)}}</td>
+      <td class="hidden-column showD text-center">{{str.order_type !== 'single' ? calculateDelta( str.isBtcCapital ? str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital : str.sell_price < str.current_initial_price ? fromCoinToBTC(str.capital, str.current_initial_price) : fromCoinToBTC(str.capital, str.sell_price), calculateSelledCapital(str.capital, str.sell_price, str.current_capital,str.buy_price,str.current_status, str.isBtcCapital), false , str) : 0}}%</td>
+      <td class="hidden-column showD text-center">
+        <span *ngIf="isNumero(calculateCurrentCapital(str.current_capital ,str.coin_pair, str))">{{calculateCurrentCapital(str.current_capital ,str.coin_pair, str)}}</span>
+        <div *ngIf="!isNumero(calculateCurrentCapital(str.current_capital ,str.coin_pair, str))" class="spinner-grow" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      </td>
+      <td class="hidden-column showD text-center">
+        <span *ngIf="isNumero(calculateCurrentCapital(str.current_capital ,str.coin_pair, str))">
+          {{str.order_type !== 'single' ? calculateDelta( str.isBtcCapital ? str.transactions[0] && str.transactions[0].cumulative_quantity ? str.transactions[0].cumulative_quantity : str.capital : str.sell_price < str.current_initial_price ? fromCoinToBTC(str.capital, str.current_initial_price) : fromCoinToBTC(str.capital, str.sell_price) , calculateCurrentCapital(str.current_capital ,str.coin_pair, str), str.current_status, str) : 0}}%
+        </span>
+        <div *ngIf="!isNumero(calculateCurrentCapital(str.current_capital ,str.coin_pair, str))" class="spinner-grow" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </td>
+      <td class="hidden-column showD text-center">{{str.order_type !== 'single' ? str.buy_price.toFixed(8): '-'}}</td>
       <td class="hidden-column showD">{{str.sell_price.toFixed(8)}}</td>
-      <td class="showD">{{str.date | date:'dd/MM/yyyy'}}</td>
+      <td class="hidden-column showD">{{str.date | date:'dd/MM/yyyy'}}</td>
       <td class="showD d-none">
         <button (click)="openStopModal()" class="btn"
                 [ngClass]="{'btn-dark':str.status == 'ACTIVE','btn-success':str.status != 'ACTIVE'}">
@@ -153,120 +276,122 @@
           <img alt="stop" src="assets/icons/stop-circle-solid.svg" width="20">
         </button>
       </td>
-      <td class="nTransactions text-center showD"> {{calculateTransactions(str.status ,str.transactions, str.transactions.length)}} <span *ngIf="str.current_status === 'SELL' && str.status === 'STOP'" data-toggle="tooltip" data-placement="top" title="A transazione conclusa">*</span></td>
+      <td class="nTransactions text-center showD"> {{str.order_type !== 'single' ? calculateTransactions(str, str.status ,str.transactions, str.transactions.length) : '-'}} <span *ngIf="str.current_status === 'SELL' && str.status === 'STOP'" data-toggle="tooltip" data-placement="top" title="A transazione conclusa">*</span></td>
     </tr>
   </table>
-  <modal id="edit-modal" #detailsModal>
-    <div class="app-modal-header"><h3>Dettagli: </h3></div>
-    <div class="app-modal-body" *ngIf="checkMobileData">
-      <p>{{checkMobileData.name}}</p>
-      <p>{{checkMobileData.coin_pair}}</p>
-      <p>{{checkMobileData.capital}}</p>
-      <p>{{checkMobileData.capital}}</p>
-      <p>{{checkMobileData.buy_price.toFixed(8)}}</p>
-      <p>{{checkMobileData.sell_price.toFixed(8)}}</p>
-      <p>{{checkMobileData.date}}</p>
+
+</div>
+
+<modal id="edit-modal" #detailsModal>
+  <div class="app-modal-header"><h3>Dettagli: </h3></div>
+  <div class="app-modal-body" *ngIf="checkMobileData">
+    <p>{{checkMobileData.name}}</p>
+    <p>{{checkMobileData.coin_pair}}</p>
+    <p>{{checkMobileData.capital}}</p>
+    <p>{{checkMobileData.capital}}</p>
+    <p>{{checkMobileData.buy_price.toFixed(8)}}</p>
+    <p>{{checkMobileData.sell_price.toFixed(8)}}</p>
+    <p>{{checkMobileData.date}}</p>
+  </div>
+</modal>
+<modal id="stop-modal" #stopModal>
+  <div class="app-modal-header"><h3>STOP </h3></div>
+  <div class="app-modal-body">
+    <div class="text-center">
+      <h2 *ngIf="stopData"><span *ngIf="stopData.status === 'ACTIVE'">Stai fermando</span> <span
+        *ngIf="stopData.status !== 'ACTIVE'">Stai riavviando</span>  {{stopData.name}}</h2>
+      <h2>Conferma !!</h2>
     </div>
-  </modal>
-  <modal id="stop-modal" #stopModal>
-    <div class="app-modal-header"><h3>STOP </h3></div>
-    <div class="app-modal-body">
-      <div class="text-center">
-        <h2 *ngIf="stopData"><span *ngIf="stopData.status === 'ACTIVE'">Stai fermando</span> <span
-          *ngIf="stopData.status !== 'ACTIVE'">Stai riavviando</span>  {{stopData.name}}</h2>
-        <h2>Conferma !!</h2>
-      </div>
-      <button class="btn btn-danger float-left" (click)="closeStop()">CHIUDI</button>
-      <button class="btn start-btn float-right" (click)="updateStrategy(stopData.name,stopData.status)">
-        CONTINUA
-      </button>
+    <button data-dismiss="modal" class="btn btn-danger float-left" (click)="closeStop()">CHIUDI</button>
+    <button data-dismiss="modal" class="btn start-btn float-right" (click)="updateStrategy(stopData.name,stopData.status)">
+      CONTINUA
+    </button>
+  </div>
+</modal>
+<modal id="cancel-modal" #cancelModal>
+  <div class="app-modal-header"><h3>CANCEL </h3></div>
+  <div class="app-modal-body">
+    <div class="text-center">
+      <h2 *ngIf="stopData">
+        <span>Stai cancellando la strategia</span>
+        {{stopData.name}}</h2>
+      <h2>Conferma !!</h2>
     </div>
-  </modal>
-  <modal id="cancel-modal" #cancelModal>
-    <div class="app-modal-header"><h3>CANCEL </h3></div>
-    <div class="app-modal-body">
-      <div class="text-center">
-        <h2 *ngIf="stopData">
-          <span>Stai cancellando la strategia</span>
-          {{stopData.name}}</h2>
-        <h2>Conferma !!</h2>
-      </div>
-      <button class="btn btn-danger" (click)="closeCancel()">CHIUDI</button>
-      <button class="btn start-btn float-right"
-              (click)="cancelStrategy(stopData.order_id , stopData.coin_pair, stopData.name)">
-        CONTINUA
-      </button>
-    </div>
-  </modal>
-  <modal id="transaction-modal" #transactionsModal>
-    <div class="app-modal-header"><h3>TRANSAZIONI</h3></div>
-    <div class="app-modal-body">
-      <div class="text-center" *ngIf="stopData">
-        Strategia: <strong>{{stopData.name}}</strong>
-        <div>
-          <table class="table-responsive-lg  ">
-            <tr>
-              <th>Id dell' Ordine</th>
-              <th>Tipo</th>
-              <th>Data</th>
-              <th>Quantità</th>
-              <th>Stato Ordine</th>
-              <th>Pausa Ordine</th>
-              <th>Ferma Ordine</th>
-            </tr>
-            <tr *ngFor="let tr of stopData.transactions; let lst = last">
-              <td>{{tr.order_id}}</td>
-              <td>{{tr.type_transaction}}</td>
-              <td>{{parseDate(tr.date)  }}</td>
-              <td>{{tr.quantity ? tr.quantity : 'fake'}}</td>
-              <td>
-                <button *ngIf="lst" class="btn btn-dark w-100"
-                        (click)="getSpecificStatus(tr.order_id,stopData.coin_pair)">STATO
-                </button>
-              </td>
-              <td>
-                <button *ngIf="lst" (click)="openStopModal()" class="btn w-100"
-                        [ngClass]="{'btn-dark':stopData.status == 'ACTIVE','btn-success':stopData.status != 'ACTIVE'}">
+    <button data-dismiss="modal" class="btn btn-danger" (click)="closeCancel()">CHIUDI</button>
+    <button data-dismiss="modal" class="btn start-btn float-right"
+            (click)="cancelStrategy(stopData.order_id , stopData.coin_pair, stopData.name)">
+      CONTINUA
+    </button>
+  </div>
+</modal>
+<modal id="transaction-modal" #transactionsModal>
+  <div class="app-modal-header"><h3>TRANSAZIONI</h3></div>
+  <div class="app-modal-body">
+    <div class="text-center" *ngIf="stopData">
+      Strategia: <strong>{{stopData.name}}</strong>
+      <div>
+        <table class="table-responsive-lg  ">
+          <tr>
+            <th>Id dell' Ordine</th>
+            <th>Tipo</th>
+            <th>Data</th>
+            <th>Quantità</th>
+            <th>Stato Ordine</th>
+            <th>Pausa Ordine</th>
+            <th>Ferma Ordine</th>
+          </tr>
+          <tr *ngFor="let tr of stopData.transactions; let lst = last">
+            <td>{{tr.order_id}}</td>
+            <td>{{tr.type_transaction}}</td>
+            <td>{{parseDate(tr.date)  }}</td>
+            <td>{{tr.quantity ? tr.quantity : 'fake'}}</td>
+            <td>
+              <button *ngIf="lst" class="btn btn-dark w-100"
+                      (click)="getSpecificStatus(tr.order_id,stopData.coin_pair)">STATO
+              </button>
+            </td>
+            <td>
+              <button *ngIf="lst" (click)="openStopModal()" class="btn w-100"
+                      [ngClass]="{'btn-dark':stopData.status == 'ACTIVE','btn-success':stopData.status != 'ACTIVE'}">
           <span *ngIf="stopData.status == 'ACTIVE'"><img width="20" alt="pause"
                                                          src="assets/icons/pause-circle-solid.svg"></span>
-                  <span *ngIf="stopData.status != 'ACTIVE'"><img width="20" alt="play"
-                                                                 src="assets/icons/play-circle-solid.svg"></span>
-                </button>
-              </td>
-              <td>
-                <button *ngIf="lst" class="btn btn-danger w-100"
-                        (click)="openCancelModal()">
-                  <img alt="stop"
-                       src="assets/icons/stop-circle-solid.svg"
-                       width="20">
-                </button>
-              </td>
-            </tr>
-            <tr *ngIf="stopData.transactions.length === 0">
-              <td></td>
-              <td></td>
-              <td colspan="3">
-                <button class="btn btn-danger" (click)="deleteFromDb(stopData.name)">CANCELLA STRATEGIA</button>
-              </td>
-              <td></td>
-              <td></td>
-            </tr>
-          </table>
-        </div>
-        <button class="btn btn-danger mt-3 w-100" (click)="closeTransaction()">CHIUDI</button>
+                <span *ngIf="stopData.status != 'ACTIVE'"><img width="20" alt="play"
+                                                               src="assets/icons/play-circle-solid.svg"></span>
+              </button>
+            </td>
+            <td>
+              <button *ngIf="lst" class="btn btn-danger w-100"
+                      (click)="openCancelModal()">
+                <img alt="stop"
+                     src="assets/icons/stop-circle-solid.svg"
+                     width="20">
+              </button>
+            </td>
+          </tr>
+          <tr *ngIf="stopData.transactions.length === 0">
+            <td></td>
+            <td></td>
+            <td colspan="3">
+              <button class="btn btn-danger" (click)="deleteFromDb(stopData.name)">CANCELLA STRATEGIA</button>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+        </table>
       </div>
+      <button data-dismiss="modal" class="btn btn-danger mt-3 w-100" (click)="closeTransaction()">CHIUDI</button>
     </div>
-  </modal>
-  <modal id="multiple-action" #multipleAction>
-    <div class="app-modal-header"><h3>Azione multipla : </h3></div>
-    <div class="app-modal-body " *ngIf="selectedStrategy">
-       <h3 class="text-center"> Stai eseguendo una {{multipleType === 'pp' ? 'PLAY/PAUSE' : 'CANCELLAZIONE'}} multipla per le seguenti startegie:</h3>
-      <ul class="text-center">
-        <li style="  list-style-type: none;" *ngFor="let s of selectedStrategy">{{s.nm}}</li>
-      </ul>
-      <h2 class="text-center">Conferma !!</h2>
-      <button class="btn btn-danger" (click)="closeMultiple()" >CHIUDI</button>
-      <button class="btn start-btn float-right" (click)="manageMultipleAction(multipleType)" >CONTINUA</button>
-    </div>
-  </modal>
-</div>
+  </div>
+</modal>
+<modal id="multiple-action" #multipleAction>
+  <div class="app-modal-header"><h3>Azione multipla : </h3></div>
+  <div class="app-modal-body " *ngIf="selectedStrategy">
+    <h3 class="text-center"> Stai eseguendo una {{multipleType === 'pp' ? 'PLAY/PAUSE' : 'CANCELLAZIONE'}} multipla per le seguenti startegie:</h3>
+    <ul class="text-center">
+      <li style="  list-style-type: none;" *ngFor="let s of selectedStrategy">{{s.nm}}</li>
+    </ul>
+    <h2 class="text-center">Conferma !!</h2>
+    <button data-dismiss="modal" class="btn btn-danger" (click)="closeMultiple()" >CHIUDI</button>
+    <button data-dismiss="modal" class="btn start-btn float-right" (click)="manageMultipleAction(multipleType)" >CONTINUA</button>
+  </div>
+</modal>

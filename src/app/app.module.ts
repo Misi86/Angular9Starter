@@ -13,7 +13,10 @@ import {HomeModule} from './modules/home/home.module';
 import {ActionService} from './core/services/action.service';
 import {HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
-import {NgxSliderModule} from "@angular-slider/ngx-slider";
+import {NgxSliderModule} from '@angular-slider/ngx-slider';
+import {SharingService} from './core/services/sharing.service';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {NgxChartsModule} from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,9 @@ import {NgxSliderModule} from "@angular-slider/ngx-slider";
     AppRoutingModule,
     HomeModule,
     NgbModule,
-    NgxSliderModule
+    NgxSliderModule,
+    BrowserAnimationsModule,
+    NgxChartsModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: APIInterceptor, multi: true},
@@ -35,6 +40,7 @@ import {NgxSliderModule} from "@angular-slider/ngx-slider";
     AuthService,
     AlertService,
     ActionService,
+    SharingService,
   ],
   exports: [
     NgbModule

@@ -1,1 +1,404 @@
-<h1 class="sub-header">Indicators</h1>
+<h1 class="sub-header">Proiezioni</h1>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#proiezioni" role="tab" aria-controls="proiezioni" aria-selected="true">Proiezioni</a>
+  </li>
+  <li class="nav-item" >
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#monitor" role="tab" aria-controls="monitor" aria-selected="false">Monitor</a>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="proiezioni" role="tabpanel" aria-labelledby="home-tab">
+    <div class="mt-3 row">
+      <div class="col-sm-5">
+        <form [formGroup]="indicatorForm" (ngSubmit)="load()" novalidate>
+          <div class="row">
+            <div class="form-group col-sm-6">
+              <label for="cap">Capitale per strategia $</label>
+              <input id="cap" type="number" class="form-control inputStr" formControlName="indicator_cap" >
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="n-strat">Numero Strategie</label>
+              <input id="n-strat" type="number" class="form-control inputStr" formControlName="indicator_n_strat" >
+            </div>
+            <div class="form-group col-sm-12">
+              <label for="pairs">Scambio</label>
+              <select  formControlName="indicator_pair"  class="form-control inputStr" id="pairs" (ngModelChange)="loadPrice()" >
+                <option value=""></option>
+                <option *ngFor="let p of pairs" [value]="p.name">{{p.name}}</option>
+              </select>
+            </div>
+            <div class="form-group col-sm-12">
+              <label for="s-price">Prezzo di partenza</label>
+              <input id="s-price" type="number" class="form-control inputStr" formControlName="indicator_price" >
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="satoshi">Salto in Satoshi</label>
+              <select id="satoshi" class="form-control inputStr" formControlName="indicator_satoshi" >
+                <option value="1" >1</option>
+                <option value="2" >2</option>
+                <option value="3" >3</option>
+                <option value="4" >4</option>
+              </select>
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="timeframe">Timeframe</label>
+              <select id="timeframe" class="form-control inputStr" formControlName="indicator_timeframe" >
+                <option value="1h" >1h</option>
+                <option value="1d" >1d</option>
+              </select>
+            </div>
+            <div class="col-sm-6 form-group">
+              <label for="fromD">Da</label>
+              <input [minDate]="minDates" [maxDate]="toDay"  class="form-control inputStr" id="fromD" name="fromD" ngbDatepicker #fromD="ngbDatepicker" (keydown.enter)="fromD.toggle()" (click)="fromD.open()" formControlName="indicator_from" >
+            </div>
+            <div class="col-sm-6 form-group">
+              <label for="toD">A</label>
+              <input [minDate]="formValue.indicator_from.value"  [maxDate]="toDay"  class="form-control inputStr" id="toD" name="toD" ngbDatepicker #toD="ngbDatepicker" (keydown.enter)="toD.toggle()" (click)="toD.open()" formControlName="indicator_to">
+            </div>
+            <div class="form-group col-sm-12">
+              <button  [disabled]="indicatorForm.invalid"  class="btn start-btn w-100">Carica</button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-sm-7">
+        <div class="mt-4 stat-container">
+          <div class="d-flex">
+            <div class="float-left">
+              <div><label>Saldo iniziale:</label> {{initialCap || (formValue.indicator_cap.value * strategies.length)}}$</div>
+              <div *ngIf="finalCap"><label>Saldo finale:</label> {{finalCap}}$</div>
+              <div *ngIf="finalCapTaxed"><label>Saldo finale Tassato:</label> {{finalCapTaxed}}$</div>
+              <div *ngIf="to">
+                <label>Dal: </label> {{to}}&nbsp;&nbsp;
+              </div>
+            </div>
+            <div class="float-right pl-5" >
+              <div>
+                <div>
+                  <span *ngIf="initialCap && finalCap"><label>Differenza:</label> {{calculateDelta(initialCap, finalCap)}} % </span><span role="button" tabindex="0" class="btn start-btn ml-3" *ngIf="candlesticks" (click)="start()"> Calcola </span>
+                </div>
+                <span *ngIf="initialCap && finalCapTaxed"><label>Differenza Tassata:</label> {{calculateDelta(initialCap, finalCapTaxed)}} % </span>
+              </div>
+              <div *ngIf="initialCap && finalCap">
+                <label>Giri eseguiti: </label> {{totalGiri}}
+              </div>
+              <div *ngIf="from">
+                <label>Al: </label> {{from}}
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="parsedData.length > 0" class="pt-4 d-flex chart-dark text-center" >
+            <ngx-charts-bar-vertical-2d
+              [results]="parsedData"
+              [xAxisLabel]="'Strategie'"
+              [legendTitle]="'Legenda'"
+              [yAxisLabel]="'Buy/Sell'"
+              [legend]="true"
+              [showXAxisLabel]="true"
+              [showYAxisLabel]="true"
+              [xAxis]="true"
+              [yAxis]="true"
+              [gradient]="true"
+              [style]="!color ? 'fill: #ffffff' : 'fill: #000000'"
+            > </ngx-charts-bar-vertical-2d>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 text-center">
+        <div class="mb-3">
+          <button *ngIf="candlesticksShown" class="btn start-btn " type="button" data-toggle="collapse" data-target="#collapseCandle" aria-expanded="false" aria-controls="collapseCandle">
+            Mostra/Nascondi Candele
+          </button>
+        </div>
+        <div id="collapseCandle" class="row collapse">
+          <div class="col-sm-1 candlesticks mt-2" *ngFor="let c of candlesticksShown; let i = index " >
+            <!--          <div>H : {{c.high.slice(-3)}}</div>-->
+            <!--          <div>L : {{c.low.slice(-3)}}</div>-->
+            <img data-toggle="tooltip" data-placement="bottom" src="assets/icons/thumbs-up-solid.svg" alt="" width="24" *ngIf="c.close > c.opens"
+                 [title]="'Candela del: ' + c.date + '\n' + 'High: ' + c.high + '\n' + 'Low: ' + c.low + '\n' + 'Open: ' + c.opens + '\n' + 'Close: ' + c.close">
+            <img data-toggle="tooltip" data-placement="bottom" src="assets/icons/thumbs-down-solid.svg" alt="" width="24" *ngIf="c.close < c.opens"
+                 [title]="'Candela del: ' + c.date + '\n' + 'High: ' + c.high + '\n' + 'Low: ' + c.low + '\n' + 'Open: ' + c.opens + '\n' + 'Close: ' + c.close">
+            <img data-toggle="tooltip" data-placement="bottom" src="assets/icons/equals-solid.svg" alt="" width="24" *ngIf="c.close === c.opens"
+                 [title]="'Candela del: ' + c.date + '\n' + 'High: ' + c.high + '\n' + 'Low: ' + c.low + '\n' + 'Open: ' + c.opens + '\n' + 'Close: ' + c.close">
+            <div>{{c.date}}</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-sm-12">
+        <table  *ngIf="this.strategies" class="table mt-3 project-table" [ngClass]="{'light': color, 'dark': !color}" >
+          <tr>
+            <th>Buy Price</th>
+            <th>Sell Price</th>
+            <th>N° Buy</th>
+            <th>N° Sell</th>
+            <th>Partenza</th>
+            <th>Totale</th>
+            <th>Totale Tassato</th>
+            <th>Totale $</th>
+            <th>Totale $ Tassato</th>
+          </tr>
+          <tr *ngFor="let s of strategies">
+            <td>{{s.buy.toFixed(8)}}</td>
+            <td>{{s.sell.toFixed(8)}}</td>
+            <td>{{s.countB}}</td>
+            <td>{{s.countS}}</td>
+            <td>{{capitalss}}</td>
+            <td>{{s.total}}</td>
+            <td>{{s.totalTaxed}}</td>
+            <td><span *ngIf="s.total">{{(s.total * priceBtc).toFixed(2)}}</span></td>
+            <td><span *ngIf="s.totalTaxed">{{(s.totalTaxed * priceBtc).toFixed(2)}}</span></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="tab-pane fade" id="monitor" role="tabpanel" aria-labelledby="profile-tab">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="sub-header">
+            <button class="btn start-btn" (click)="manageAddModal(true)"> AGGIUNGI  </button>
+            <button class="ml-3 btn start-btn" type="button" data-toggle="collapse" data-target="#collapseList" aria-expanded="false" aria-controls="collapseList">
+              LISTA
+            </button>
+          </div>
+          <div id="collapseList" class="collapse pt-3" *ngIf="monitoredPairs.length">
+          <h5>Monete monitorate:</h5>
+            <div class="pairs-list "  *ngFor="let m of monitoredPairs; let i =index;">
+              <ul>
+                <li *ngFor="let mm of m">
+                  {{mm.pair}}
+                  <img role="button" tabindex="0" class="float-right pt-1 pl-1" src="assets/icons/times-circle-solid.svg" width="16" (click)="manageDeleteModal(true, mm.pair)" >
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="pt-3" *ngIf=" !monitoredPairs.length">
+           <h5 >Scegli le tue monete da monitorare !!</h5>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="sub-header">
+            <h5 class="mb-3 text-center">
+              <img (click)="manageTopPerformer(false)" class="float-left" role="button" [src]="this.color ? 'assets/icons/arrow-circle-left-solid.svg' : 'assets/icons/arrow-circle-left-solid-w.svg'" width="20">
+              Top 10 Monete della Settimana:
+              <img (click)="manageTopPerformer(true)" class="float-right" role="button" [src]="this.color ?  'assets/icons/arrow-circle-right-solid.svg' : 'assets/icons/arrow-circle-right-solid-w.svg'" width="20">
+            </h5>
+          </div>
+          <div *ngIf="!topPerformer.length" class="pt-5 text-center"><h3>Ops! Non hai più risultati</h3></div>
+          <div *ngIf="topPerformer.length" class="pt-3 text-center">
+            <div>
+              <strong>N° Strategie:</strong> {{calculateRecap('str', this.topPerformer)}} -
+              <strong>Investimento:</strong> {{calculateRecap('tot', this.topPerformer, calculateRecap('str', this.topPerformer))}}$ -
+              <strong>Tot Delta Tassato:</strong> {{calculateRecap('delta', this.topPerformer)}}% -
+              <strong>Ricavo Tassato:</strong> {{calculateRecap('taxed', this.topPerformer,calculateRecap('tot', this.topPerformer, calculateRecap('str', this.topPerformer)), calculateRecap('delta', this.topPerformer))}}$
+            </div>
+            <table class="project-table table best table-responsive  mt-3" [ngClass]="{'light': color, 'dark': !color}">
+              <tr>
+                <th></th>
+                <th>Moneta</th>
+                <th>Scenario</th>
+                <th>Apertura</th>
+                <th>Salti</th>
+                <th>Strategie</th>
+                <th>Delta</th>
+                <th>Delta T</th>
+                <th>From</th>
+                <th>To</th>
+              </tr>
+              <tr *ngFor="let p of topPerformer; let $index = index;">
+                <td>
+                  <input class="check-dash" type="checkbox"  (change)="addPairtoParse(p, $event)" id="{{'add'+ $index}}">
+                </td>
+                <td>{{p.pair}} </td>
+                <td class="text-center">{{ parseScenario(p.possible_situation) }}</td>
+                <td>{{p.open.toFixed(8)}}</td>
+                <td>{{p.jumps}}</td>
+                <td>{{p.number_strategies ? p.number_strategies : 10}}</td>
+                <td>{{p.delta}}%</td>
+                <td>{{p.delta_taxed}}%</td>
+                <td>{{formatDate(p.from)}}</td>
+                <td>{{formatDate(p.to)}}</td>
+              </tr>
+            </table>
+
+          </div>
+          <div *ngIf="!projections.length" class="pt-3 text-center">
+            <h5 >Proiezioni non ancora pronte! Aspetta fino a domenica!</h5>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="sub-header custom d-flex space-btwn">
+            <span class="mb-3" style="font-size:20px;">
+              Riscontro:
+            </span>
+           <span >
+            <label for="pcStrategy">% da Applicare:</label>
+            <input style="width: 50px" class="ml-3" id="pcStrategy" type="number" [(ngModel)]="perCentStrategy">
+            <button class="btn start-btn ml-3" (click)="getBestLast()" >CALCOLA</button>
+           </span>
+          </div>
+          <div *ngIf="!bestLast.length && !laddaBest" class="pt-3 text-center">
+            <h5 >Proiezioni non ancora pronte! Aspetta fino a domenica!</h5>
+          </div>
+            <div class="text-center" *ngIf="laddaBest || bestLast.length">
+
+              <div *ngIf="laddaBest" class="spinner-grow spinner-grow-border-xl mt-5" role="status">
+                <span class="sr-only">Loading...</span>
+              </div>
+              <div *ngIf="!laddaBest && bestLast.length">
+
+                <div class="pt-3">
+                  <strong>N° Strategie:</strong> {{calculateRecap('str', bestLast)}} -
+                  <strong>Investimento:</strong> {{calculateRecap('tot', bestLast, calculateRecap('str', bestLast))}}$ -
+                  <strong>Tot Delta Tassato:</strong> {{calculateRecap('delta', bestLast)}}% -
+                  <strong>Ricavo Tassato:</strong> {{calculateRecap('taxed', bestLast,calculateRecap('tot', bestLast, calculateRecap('str', bestLast)), calculateRecap('delta', bestLast))}}$
+                </div>
+                <table  class="project-table table best table-responsive  mt-3" [ngClass]="{'light': color, 'dark': !color}">
+                  <tr>
+                    <th>Moneta</th>
+                    <th>Scenario</th>
+                    <th>Apertura</th>
+                    <th>Salti</th>
+                    <th>Strategie</th>
+                    <th>Delta</th>
+                    <th>Delta T</th>
+                    <th>From</th>
+                    <th>To</th>
+                  </tr>
+                  <tr *ngFor="let p of bestLast">
+                    <td>{{p.pair}} </td>
+                    <td class="text-center">{{ parseScenario(p.possible_situation) }}</td>
+                    <td>{{p.open.toFixed(8)}}</td>
+                    <td>{{p.jumps}}</td>
+                    <td>{{p.number_strategies ? p.number_strategies : 10}}</td>
+                    <td>{{p.delta}}%</td>
+                    <td>{{p.delta_taxed}}%</td>
+                    <td>{{formatDate(p.from)}}</td>
+                    <td>{{formatDate(p.to)}}</td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+<!--          </div>-->
+        </div>
+        <div class="col-sm-12">
+          <div *ngIf="projections.length">
+            <div class="sub-header">
+              <div class="row">
+                <div class="col-sm-12">
+                  <h3>Storico</h3>
+                </div>
+                <div class="col-sm-3">
+                  <div class="form-group">
+                    <label for="moneta">Moneta :</label>
+                    <select  id="moneta" class="inputStr form-control" [(ngModel)]="pairToShown" (ngModelChange)="filtersSelected('pair',pairToShown)">
+                      <option value="all">Tutti</option>
+                      <option *ngFor="let p of pairToShow">{{p}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-3">
+                  <label for="fromD">Da</label>
+                  <input [(ngModel)]="fromProjection" (dateSelect)="filtersSelected('from', fromProjection)" [maxDate]="toDay"  class="form-control inputStr" id="fromDP" name="fromDP" ngbDatepicker #fromDP="ngbDatepicker" (keydown.enter)="fromDP.toggle()" (click)="fromDP.open()" >
+                </div>
+                <div class="col-sm-3">
+                  <label for="toD">A</label>
+                  <input [(ngModel)]="toProjection" (dateSelect)="filtersSelected('to', toProjection)" [minDate]=""  [maxDate]="toDay"  class="form-control inputStr" id="toDP" name="toDP" ngbDatepicker #toDP="ngbDatepicker" (keydown.enter)="toDP.toggle()" (click)="toDP.open()" >
+                </div>
+                <div class="col-sm-3">
+                  <label for="jumps">Salti</label>
+                  <select [(ngModel)]="salti"  id="jumps" class="inputStr form-control" (ngModelChange)="filtersSelected('jumps', salti)" >
+                    <option value="all">Tutti</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <table class="project-table table   mt-3" [ngClass]="{'light': color, 'dark': !color}">
+              <tr>
+                <th>Moneta</th>
+                <th>Scenario</th>
+                <th>Strategie</th>
+                <th>Apertura</th>
+                <th>Salti</th>
+                <th>Da</th>
+                <th>A</th>
+                <th>Delta</th>
+                <th>Delta Tax</th>
+                <th>Giri</th>
+              </tr>
+              <tr *ngFor="let s of filteredProjections; let i =index">
+                <td *ngIf="i < rowToShow">{{s.pair}}</td>
+                <td *ngIf="i < rowToShow">{{parseScenario(s.possible_situation)}}</td>
+                <td *ngIf="i < rowToShow">{{s.number_strategies ? s.number_strategies : 10}}</td>
+                <td *ngIf="i < rowToShow">{{s.open.toFixed(8)}}</td>
+                <td *ngIf="i < rowToShow">{{s.jumps}}</td>
+                <td *ngIf="i < rowToShow">{{formatDate(s.from)}}</td>
+                <td *ngIf="i < rowToShow">{{formatDate(s.to)}}</td>
+                <td *ngIf="i < rowToShow">{{s.delta}}%</td>
+                <td *ngIf="i < rowToShow">{{s.delta_taxed}}%</td>
+                <td *ngIf="i < rowToShow">{{s.loops}}</td>
+              </tr>
+              <tr *ngIf="countProjections > 12">
+                <td colspan="10">
+                  <button (click)="loadRow(true)" class="btn start-btn float-left" *ngIf="countProjections > rowToShow"> Mostra piu risultati</button>
+                  <button *ngIf="rowToShow > 12" (click)="loadRow(false)" class="btn btn-danger float-right"> Mostra meno risultati</button>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="text-center" *ngIf="!projections.length">
+            <h4>Proiezioni non ancora pronte! Aspetta fino a domenica!</h4>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+
+<modal #addModal>
+  <div class="app-modal-header">
+    <h3>Aggiungi moneta da Monitorare</h3>
+  </div>
+  <div class="app-modal-body text-center">
+    <div class="row">
+      <div class="col-sm-12 form-group">
+        <label for="pairsM">Scambio</label>
+        <select   class="form-control inputStr" id="pairsM" [(ngModel)]="pairM">
+          <option value=""></option>
+          <option *ngFor="let p of pairs" [value]="p.name">{{p.name}}</option>
+        </select>
+      </div>
+      <div class="col-sm-12">
+        <button class="btn start-btn w-100" (click)="setPairs()"> AGGIUNGI </button>
+      </div>
+
+    </div>
+  </div>
+</modal>
+<modal #removeModal>
+  <div class="app-modal-header">
+    <h3>Rimuovi moneta da Monitorare</h3>
+  </div>
+  <div class="app-modal-body text-center">
+    <div class="row">
+      <div class="form-group col-sm-12">
+        Stai rimuovendo {{pairToRemove}} !!
+      </div>
+      <div class="col-sm-12">
+        <button class="btn start-btn w-100" (click)="removePair()"> RIMUOVI </button>
+      </div>
+
+    </div>
+  </div>
+</modal>
+
+

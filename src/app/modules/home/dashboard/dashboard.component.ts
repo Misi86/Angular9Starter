@@ -3,7 +3,7 @@ import {
   AfterContentInit,
   AfterViewChecked,
   AfterViewInit, ChangeDetectorRef,
-  Component,
+  Component, Input,
   OnDestroy,
   OnInit,
   ViewChild
@@ -13,7 +13,9 @@ import {ActionService} from '../../../core/services/action.service';
 import * as _ from 'lodash';
 import {AlertService} from '../../../shared/alert/alert.service';
 import {AuthService} from '../../../core/services/auth.service';
-import {newArray} from "@angular/compiler/src/util";
+import {HomeComponent} from '../home.component';
+import {SharingService} from '../../../core/services/sharing.service';
+import {ViewportScroller} from '@angular/common';
 
 declare var $: any;
 
@@ -28,6 +30,7 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   @ViewChild('cancelModal') cancelModal: ModalComponent;
   @ViewChild('transactionsModal') transactionsModal: ModalComponent;
   @ViewChild('multipleAction') multipleAction: ModalComponent;
+  // @Input() = valueChange: boolean;
   public activeStrategies: any;
   public stopData: any;
   public checkMobileData: any;
@@ -56,38 +59,80 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   public selectedStrategy: any = [];
   public isChecked: any = [];
   public multipleType = '';
+  public isPartial = [];
+  public cssmode: any;
+  public reloaded: any;
+  public appliedFilter: boolean;
 
   constructor(private actionService: ActionService,
               private alertService: AlertService,
               private cdFref: ChangeDetectorRef,
-              private authService: AuthService
+              private _vps: ViewportScroller,
+              private sharingService: SharingService,
+              private authService: AuthService,
+              private homeCmp: HomeComponent
   ) {
     this.loadActiveStrategy();
-
-
-    // this.specificPair(this.selectedCoin);
     this.user = this.authService.user;
-    // console.log(this.user)
-    // this.selectedCoin = [
-    //   {name: 'CKBBTC', price: 0.00000038, volume: 12},
-    //   {name: 'ARPABTC', price: 0.00000088, volume: 18},
-    //   {name: 'POABTC', price: 0.00000070, volume: 19},
-    //   {name: 'COSBTC', price: 0.00000035, volume: 25},
-    //   {name: 'XVGBTC', price: 0.00000070, volume: 50},
-    // ];
+    this.cssmode = localStorage.getItem('cssmode') === 'light';
+
   }
 
   ngOnInit() {
+
     this.reloadStuff = setInterval(() => {
       this.reload();
-    }, 20000);
+      this.reloaded = parseFloat($('#carouselExampleControlsTop .active').attr('id'));
+    }, 31000);
 
+    this.sharingService.notifyObservable$.subscribe((res) => {
+      if (res.hasOwnProperty('value')) {
+        this.cssmode = res.value;
+      }
+    });
+
+    $('#carouselExampleControlsTop').carousel({
+      interval: false
+    });
+
+
+  }
+
+
+  moveSliderDetails(action: string) {
+
+    $('#carouselExampleControlsTop').carousel('pause');
+    if (action === 'next') {
+      for (let i = 0; i < this.strNumber; i++) {
+        const name = '#carouselExampleControls' + i;
+        $(name).carousel(action);
+      }
+    } else {
+      for (let i = 0; i < this.strNumber; i++) {
+        const name = '#carouselExampleControls' + i;
+        $(name).carousel(action);
+      }
+    }
+  }
+
+
+  setSlider() {
+    let slide = $('#carouselExampleControlsTop .active').attr('id');
+    for (let i = 0; i < this.strNumber; i++) {
+      const name = '#carouselExampleControls' + i;
+      if (slide === undefined) {
+        slide = 0;
+      }
+      if ($(name).find('#' + slide + '0').hasClass('active')) {
+        $(name).find('#' + slide + '0').removeClass('active');
+      }
+      $(name).find('#' + slide + '0').addClass('active');
+    }
   }
 
 
   ngAfterContentChecked() {
     this.calculateTotalTransactions();
-    this.cdFref.detectChanges();
   }
 
   ngOnDestroy() {
@@ -100,14 +145,31 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     this.executedTransaction = 0;
     this.calculateTotalTransactions();
     this.reloadCheckBox();
-
   }
 
+
+  setFilterPair(pair: string) {
+    if (this.searchFilter === pair) {
+      this.searchFilter = '';
+    } else {
+      this.searchFilter = pair;
+    }
+    this.filterResult(this.searchFilter, 'pairs');
+  }
+
+  isNumero(val) {
+    let result = false;
+    if (!_.isNaN(val)) {
+      result = true;
+    }
+    return result;
+  }
 
   reloadCheckBox() {
     if (this.selectAll) {
       this.isChecked = _.fill(this.isChecked, true);
     } else if (!this.selectAll && !_.isEmpty(this.selectedStrategy)) {
+      // console.log(this.selectedStrategy, 'reload')
       _.forEach(this.selectedStrategy, (s, i) => {
         this.isChecked[s.id] = true;
       });
@@ -117,18 +179,17 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   }
 
   manageAll(event: any) {
+
     if (event === true) {
       _.forEach(this.activeStrategies, (o, i) => {
         this.selectedStrategy.push({order: o.order_id, nm: o.name, st: o.status, pair: o.coin_pair});
         this.isChecked[i] = true;
       });
-      // $('.check-dash').prop('checked', true);
     } else {
       this.selectedStrategy = [];
       _.forEach(this.activeStrategies, (o, i) => {
         this.isChecked[i] = false;
       });
-      // $('.check-dash').prop('checked', false);
     }
     this.selectedStrategy = _.uniqBy(this.selectedStrategy, (o) => {
       return o.order;
@@ -150,10 +211,10 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     }
   }
 
-  updateSelectStatus(event: any, orderId: any, name: any, status: any, pair: any, index: any) {
+  updateSelectStatus(event: any, orderId: any, name: any, status: any, pairC: any, index: any) {
     this.selectAll = false;
     if (event.target.checked === true) {
-      this.selectedStrategy.push({order: orderId, nm: name, st: status, pair_c: pair, id: index});
+      this.selectedStrategy.push({order: orderId, nm: name, st: status, pair: pairC, id: index});
       this.isChecked[index] = true;
     } else {
       this.selectedStrategy = _.remove(this.selectedStrategy, (n) => {
@@ -169,14 +230,28 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   }
 
   specificPair(pairs: any) {
-
-    _.forEach(pairs, (p) => {
-      this.actionService.getSpecificPairs(p.coin_pair).subscribe((resp) => {
-          resp.name = p.coin_pair;
-          this.currentPrices.push(resp);
+    // console.log(pairs, 'pp')
+    this.currentPrices = [];
+    _.forEach(pairs, (p, i) => {
+      this.actionService.getDetailsPairs(p.coin_pair).subscribe((resp) => {
+          // console.log(resp);
+          resp.prevDay.symbol = p.coin_pair;
+          resp.prevDay.lastPrice = parseFloat(resp.prevDay.lastPrice);
+          resp.prevDay.quoteVolume = parseFloat(resp.prevDay.quoteVolume);
+          this.currentPrices.push(resp.prevDay);
           this.currentPrices = _.uniqBy(this.currentPrices, (e) => {
-            return e.name;
+            return e.symbol;
           });
+          // if (this.currentPrices === []) {
+          // } else {
+          //   _.forEach(this.currentPrices, (pp) => {
+          //     if (pp.name === p.name && p.price !== pp.price) {
+          //       pp.price = p.price;
+          //     }
+          //   });
+          // }
+
+          // console.log(this.currentPrices)
         },
         (error) => {
         });
@@ -186,13 +261,13 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   calculateCurrentCapital(currentCapital: any, pair: any, str: any) {
 
     if (str.current_status === 'BUY') {
-      return this.calculateSelledCapital(str.capital, str.sell_price, str.current_capital, str.buy_price, str.current_status);
+      return this.calculateSelledCapital(str.capital, str.sell_price, str.current_capital, str.buy_price, str.current_status, str.isBtcCapital);
     }
 
     let selectedPairPrice;
     _.forEach(this.currentPrices, (cp) => {
-      if (cp.name === pair) {
-        selectedPairPrice = cp.price;
+      if (cp.symbol === pair) {
+        selectedPairPrice = cp.lastPrice;
       }
     });
     const result = (currentCapital * selectedPairPrice).toFixed(8);
@@ -209,23 +284,27 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     }
     if (status === 'BUY') {
       // tslint:disable-next-line:max-line-length
-      return this.calculateDelta(p1, this.calculateSelledCapital(str.capital, str.sell_price, str.current_capital, str.buy_price, str.current_status));
+      return this.calculateDelta(p1, this.calculateSelledCapital(str.capital, str.sell_price, str.current_capital, str.buy_price, str.current_status, str.isBtcCapital));
     }
+    if (str && !str.isBtcCapital && _.isInteger(p1)) {
+      p1 = (p1 * str.sell_price).toFixed(8);
+    }
+
     const partial = (parseFloat(p2) - p1) / p1;
     return (partial * 100).toFixed(2);
   }
 
-  calculateSelledCapital(capital: any, sellPrice: any, currentCapital: any, buyPrice: any, status: any) {
+  calculateSelledCapital(capital: any, sellPrice: any, currentCapital: any, buyPrice: any, status: any, isBtcCapital: boolean) {
     const parseSellPrice = sellPrice.toFixed(8);
     const parseBuyPrice = buyPrice.toFixed(8);
     const ccS = parseFloat((currentCapital * parseSellPrice).toFixed(8));
     const ccB = parseFloat((currentCapital * parseBuyPrice).toFixed(8));
-
     switch (status) {
       case'BUY':
         if (ccB <= 0.00000010) {
           return capital;
         }
+        // iisBtcCapital ? ccB :ccS
         return ccB;
         break;
       case'SELL':
@@ -238,18 +317,19 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
 
   }
 
-  calculateTransactions(status: any, transactions: any, length: any) {
+  calculateTransactions(str: any, status: any, transactions: any, length: any) {
     const lastTransaction = transactions[length - 1];
     const type = lastTransaction && lastTransaction.type_transaction ? lastTransaction.type_transaction : 'BUY';
     let result = length % 2 === 0 ? length / 2 : this.getFloor(length / 2);
-    if (length >= 3) {
-      if (type === 'SELL' && status === 'ACTIVE') {
-        result = result - 1;
-      }
-    } else {
-      if (type === 'SELL' && status === 'ACTIVE') {
-        result = result - 1;
-      }
+    // if (length >= 3) {
+    //
+    // } else {
+    //   if (type === 'SELL' && status === 'ACTIVE') {
+    //     result = str.isBtcCapital ? result - 1 : result;
+    //   }
+    // }
+    if (type === 'SELL' && status === 'ACTIVE') {
+      result = str.isBtcCapital ? result - 1 : result;
     }
     return result;
   }
@@ -257,19 +337,23 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
   calculateTotalTransactions() {
     let partial = 0;
     _.forEach(this.activeStrategies, (str) => {
-      const lastTransaction = str.transactions[str.transactions.length - 1];
-      const type = lastTransaction && lastTransaction.type_transaction ? lastTransaction.type_transaction : 'BUY';
-      let result = str.transactions.length % 2 === 0 ? str.transactions.length / 2 : this.getFloor(str.transactions.length / 2);
-      if (str.transactions.length >= 3) {
+      if (str.order_type !== 'single') {
+        const lastTransaction = str.transactions[str.transactions.length - 1];
+        const type = lastTransaction && lastTransaction.type_transaction ? lastTransaction.type_transaction : 'BUY';
+        let result = str.transactions.length % 2 === 0 ? str.transactions.length / 2 : this.getFloor(str.transactions.length / 2);
+        // if (str.transactions.length >= 3) {
+        //   if (type === 'SELL' && str.status === 'ACTIVE') {
+        //     result = str.isBtcCapital ? result - 1 : result;
+        //   }
+        // } else {
+        // }
         if (type === 'SELL' && str.status === 'ACTIVE') {
-          result = result - 1;
+          result = str.isBtcCapital ? result - 1 : result;
         }
-      } else {
-        if (type === 'SELL' && str.status === 'ACTIVE') {
-          result = result - 1;
-        }
+        partial += result;
       }
-      partial += result;
+
+
     });
     this.executedTransaction = partial;
     this.loaded = true;
@@ -361,7 +445,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     });
     this.selectAll = false;
     this.isChecked = _.fill(this.isChecked, false);
-    // console.log('endtro', _.isArray(this.isChecked), this.isChecked);
   }
 
   closeMultiple() {
@@ -379,8 +462,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     this.cancelModal.show('modal-lg');
   }
 
-  fromCoinToBTC(amount: any, value: any) {
-    return amount * value;
+  fromCoinToBTC(amount: any, price: any) {
+    const parsedAmount = parseFloat((amount * price).toFixed(8));
+    return parsedAmount;
   }
 
   loadActiveStrategy() {
@@ -395,7 +479,6 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
         return e.coin_pair;
       });
       this.specificPair(this.selectedCoin);
-      // console.log(this.selectedCoin)
       this.checkMobileData = resp[0];
       this.strNumber = this.clonedStrategy.length;
       _.forEach(this.selecteFilter, (sf) => {
@@ -403,11 +486,22 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
           this.filterResult(sf.name, sf.type);
         }
       });
-      // const ll = this.activeStrategies.length;
-      // this.isChecked = Array(ll);
-      // this.isChecked = _.fill
 
+      this.checkPartialOrders();
+    });
+  }
 
+  checkPartialOrders() {
+    const result = [];
+    _.forEach(this.activeStrategies, (str, i) => {
+      result.push({tr: _.last(str.transactions), pair: str.coin_pair, status: str.current_status});
+    });
+    _.forEach(result, (re, i) => {
+      if (_.has(re.tr, 'partially_filled')) {
+        this.isPartial[i] = true;
+      } else {
+        this.isPartial[i] = false;
+      }
     });
   }
 
@@ -526,6 +620,38 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     });
   }
 
+
+  showInitialCapital(str: any) {
+    if (str.isBtcCapital) {
+      if (str.transactions[0] && str.transactions[0].cumulative_quantity) {
+        return str.transactions[0].cumulative_quantity;
+      }
+      return str.capital;
+    } else {
+      // ALTCOINS
+      // if (str.transactions[0] && str.transactions[0].cumulative_quantity ) {
+      //   return str.transactions[0].cumulative_quantity;
+      // }
+      // if (str.current_status === 'SELL') {
+      //   return this.fromCoinToBTC(str.capital, str.sell_price);
+      // }
+      // console.log(this.currentPrices);
+      // const price = _.filter(this.currentPrices, (o) => {
+      //   return o.name === str.coin_pair;
+      // });
+      // console.log(price, '<<<');
+
+      if (str.current_initial_price && (str.sell_price < str.current_initial_price)) {
+        // console.log('soddisffo',str);
+        return this.fromCoinToBTC(str.capital, str.current_initial_price);
+      }
+      // console.log('nn soddisfso',str.name, str.capital, str.sell_price);
+
+      return this.fromCoinToBTC(str.capital, str.sell_price);
+    }
+
+  }
+
   calculateCapital(type: string) {
     let startCapital = 0;
     let currentCapital = 0;
@@ -534,23 +660,32 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterContentChecke
     switch (type) {
       case 'initial':
         _.forEach(this.activeStrategies, (str) => {
-          if (str.transactions[0] && str.transactions[0].cumulative_quantity) {
-            startCapital += str.transactions[0].cumulative_quantity;
-          } else {
-            startCapital += str.capital;
+          if (str.order_type !== 'single') {
+            if (str.transactions[0] && str.transactions[0].cumulative_quantity && str.isBtcCapital) {
+              // tslint:disable-next-line:max-line-length
+              startCapital += str.transactions[0].cumulative_quantity;
+            } else {
+              // tslint:disable-next-line:max-line-length
+              startCapital += str.isBtcCapital ? str.capital : str.sell_price < str.current_initial_price ? this.fromCoinToBTC(str.capital, str.current_initial_price) : this.fromCoinToBTC(str.capital, str.sell_price);
+            }
           }
         });
         this.btcInitialTotal = startCapital.toFixed(8);
         return startCapital.toFixed(8);
       case 'selled':
         _.forEach(this.activeStrategies, (str) => {
-          currentCapital += this.calculateSelledCapital(str.capital, str.sell_price, str.current_capital, str.buy_price, str.current_status);
+          if (str.order_type !== 'single') {
+            // tslint:disable-next-line:max-line-length
+            currentCapital += this.calculateSelledCapital(str.capital, str.sell_price, str.current_capital, str.buy_price, str.current_status, str.isBtcCapital);
+          }
         });
         this.btcSelledTotal = currentCapital.toFixed(8);
         return currentCapital.toFixed(8);
       case 'current' :
         _.forEach(this.activeStrategies, (str) => {
-          realCurrentCapital += parseFloat(this.calculateCurrentCapital(str.current_capital, str.coin_pair, str));
+          if (str.order_type !== 'single') {
+            realCurrentCapital += parseFloat(this.calculateCurrentCapital(str.current_capital, str.coin_pair, str));
+          }
         });
         this.btcCurrentTotal = realCurrentCapital.toFixed(8);
         return realCurrentCapital.toFixed(8);

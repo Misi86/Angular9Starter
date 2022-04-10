@@ -1,0 +1,53 @@
+.project-table{
+  &.best{
+    tr{
+      height: 73px;
+    }
+  }
+  &.dark{
+    tr{
+      color: #dddddd !important;
+    }
+  }
+  &.light{
+    tr{
+      color: black !important;
+    }
+  }
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.pairs-list{
+  display: inline-flex;
+
+  ul{
+    list-style: none;
+    padding-left: 10px;
+  }
+}
+
+.stat-container{
+  font-size: large;
+}
+.candlesticks{
+  font-size:14px;
+  //border: 1px solid #727272;
+
+  text-align: center;
+  &.red{
+    background-color: orangered;
+    color: white;
+  }
+  &.green{
+    background-color: forestgreen;
+    color: white;
+  }
+}
+@media screen and (max-width: 600px) {
+  .project-table{
+    display: block;
+    overflow-x: auto;
+  }
+}

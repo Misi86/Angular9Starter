@@ -12,6 +12,10 @@ import {ModalComponent} from '../../shared/modal/modal.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AlertComponent} from '../../shared/alert/alert.component';
 import {NgxSliderModule} from '@angular-slider/ngx-slider';
+import {NgxChartsModule} from "@swimlane/ngx-charts";
+import {NgbDatepickerModule} from "@ng-bootstrap/ng-bootstrap";
+import {IndicatorsGuard} from "./indicators/indicators.guard";
+// import {BarChartModule} from "@swimlane/ngx-charts";
 // import {Ng5SliderModule} from 'ng5-slider';
 // import {BrowserModule} from "@angular/platform-browser";
 // import {HttpClientModule} from "@angular/common/http";
@@ -24,10 +28,13 @@ import {NgxSliderModule} from '@angular-slider/ngx-slider';
         ReactiveFormsModule,
         FormsModule,
         NgxSliderModule,
+        NgxChartsModule,
+        NgbDatepickerModule,
+        // BarChartModule,
         // BrowserModule,
         // HttpClientModule,
     ],
-  providers: [HomeGuard],
+  providers: [HomeGuard, IndicatorsGuard],
   declarations: [
     HomeComponent,
     DashboardComponent,

@@ -1,12 +1,13 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
+import {FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {ModalComponent} from '../../../shared/modal/modal.component';
 import {AlertService} from '../../../shared/alert/alert.service';
 import {ActionService} from '../../../core/services/action.service';
 import {DatePipe} from '@angular/common';
 import * as _ from 'lodash';
 import {Options} from '@angular-slider/ngx-slider';
-import {parse} from "@angular/compiler/src/render3/view/style_parser";
+import {AuthService} from '../../../core/services/auth.service';
+
 
 declare var $: any;
 
@@ -16,11 +17,12 @@ declare var $: any;
   styleUrls: ['./strategies.component.scss'],
   providers: [DatePipe]
 })
-export class StrategiesComponent implements OnInit {
+export class StrategiesComponent implements OnInit, AfterViewChecked, AfterViewInit {
   public strategiesForm: FormGroup;
   @ViewChild('confirmModal') confirmModal: ModalComponent;
   public pairs: any = [];
   private currentPrice: number;
+  private btcPrice: number;
   public strategyType = 'single';
   public isStrPresent: boolean;
   public options: Options;
@@ -57,6 +59,7 @@ export class StrategiesComponent implements OnInit {
     {pair: 'ALICEBTC'},
     {pair: 'ALPHABTC'},
     {pair: 'AMBBTC'},
+    {pair: 'AMPBTC'},
     {pair: 'ANKRBTC'},
     {pair: 'APPCBTC'},
     {pair: 'ARBTC'},
@@ -160,6 +163,7 @@ export class StrategiesComponent implements OnInit {
     {pair: 'IOTXBTC'},
     {pair: 'IRISBTC'},
     {pair: 'JSTBTC'},
+    {pair: 'JASMYBTC'},
     {pair: 'JUVBTC'},
     {pair: 'KAVABTC'},
     {pair: 'KEEPBTC'},
@@ -243,6 +247,7 @@ export class StrategiesComponent implements OnInit {
     {pair: 'SNTBTC'},
     {pair: 'SNXBTC'},
     {pair: 'SOLBTC'},
+    {pair: 'SPELLBTC'},
     {pair: 'SRMBTC'},
     {pair: 'STEEMBTC'},
     {pair: 'STMXBTC'},
@@ -304,21 +309,36 @@ export class StrategiesComponent implements OnInit {
     {pair: 'KSMBTC'},
     {pair: 'AGIXBTC'}];
   public capitalType = 'btc';
+  public isBtcCapital = true;
+  public availableCapital: any;
+  public minOrder = 0;
+  public orderType = 'cyclic';
+  public isSegmented = false;
+  public role: string;
+  public btcBalance: any;
+  public showMsg = false;
+  public firstCall: any;
 
   constructor(private fb: FormBuilder,
               private alert: AlertService,
+              private cdFref: ChangeDetectorRef,
               private actionService: ActionService,
               private alertService: AlertService,
+              private authService: AuthService,
               private datePipe: DatePipe) {
 
+    this.role = this.authService.role;
     this.strategiesForm = this.fb.group({
       strategy_name: [''],
       strategy_pairs: ['', Validators.required],
-      strategy_capital: ['', Validators.required],
+      strategy_capital: ['', [Validators.required]],
       strategy_buy_price: ['', Validators.required],
       strategy_sell_price: [''],
+      strategy_jumps: [1],
       strategy_capitalType: ['btc'],
-      strategy_pairs_size: [''],
+      strategy_segmented: [false],
+      strategy_orderType: ['cyclic'],
+      strategy_pairs_size: [null],
       strategy_direction: [''],
       strategy_size: [''],
     });
@@ -329,24 +349,74 @@ export class StrategiesComponent implements OnInit {
     };
     this.optionsStr = {
       floor: 0,
-      ceil: 200,
+      ceil: 1000,
       step: 1
     };
-    this.manageValidators(this.strategyType);
+
+
   }
 
   ngOnInit() {
-
     this.loadPairs();
+
+    this.actionService.getSpecificPairs('BTCUSDT').subscribe((resp) => {
+      this.btcPrice = resp.price;
+    });
+
+  }
+
+  ngAfterViewInit() {
+
+    this.manageValidators(this.strategyType);
+
+    this.cdFref.detectChanges();
+
+  }
+
+  ngAfterViewChecked() {
+
+    this.btcBalance = this.actionService.balanceBtc;
+  }
+
+  checkInvestedCapital(type: string) {
+    let disabled = false;
+    if (type !== 'btc') {
+      if (this.strategyType === 'single') {
+        if (this.availableCapital < this.minOrder || this.formValue.strategy_capital.value >= this.availableCapital) {
+          disabled = true;
+        }
+      } else {
+        // tslint:disable-next-line:max-line-length
+        if (this.availableCapital < this.minOrder || (this.formValue.strategy_capital.value * this.formValue.strategy_size.value) >= this.availableCapital) {
+          disabled = true;
+        }
+      }
+
+    } else {
+      if (this.strategyType === 'single') {
+        if (this.formValue.strategy_capital.value >= this.btcBalance) {
+          disabled = true;
+        }
+      } else {
+        if ((this.formValue.strategy_capital.value * this.formValue.strategy_size.value) >= this.btcBalance) {
+          disabled = true;
+        }
+      }
+    }
+
+    this.showMsg = disabled;
+    return disabled;
   }
 
   manageValidators(str: any) {
+
     if (str === 'single') {
       this.strategiesForm.reset();
       this.formValue.strategy_name.setValidators([Validators.required]);
       this.formValue.strategy_sell_price.setValidators([Validators.required]);
       this.formValue.strategy_direction.clearValidators();
       this.formValue.strategy_size.clearValidators();
+      // this.formValue.strategy_jumps.clearValidators();
       this.updateFormStatus();
     } else {
       this.isStrPresent = false;
@@ -360,9 +430,12 @@ export class StrategiesComponent implements OnInit {
       this.formValue.strategy_sell_price.clearValidators();
       this.formValue.strategy_direction.setValidators([Validators.required]);
       this.formValue.strategy_size.setValidators([Validators.required]);
+      // this.formValue.strategy_jumps.setValidators([Validators.required]);
       this.updateFormStatus();
     }
-
+    this.formValue.strategy_capitalType.setValue('btc');
+    this.formValue.strategy_orderType.setValue('cyclic');
+    this.isBtcCapital = true;
   }
 
   updateFormStatus() {
@@ -373,7 +446,7 @@ export class StrategiesComponent implements OnInit {
   }
 
   checkIfExist(name) {
-    if (name !== '' && this.strategyType === 'single') {
+    if (name !== '/' && name !== '' && this.strategyType === 'single') {
       this.actionService.checkStrategy(name).subscribe((resp) => {
         if (_.isString(resp.success)) {
           this.isStrPresent = false;
@@ -390,44 +463,48 @@ export class StrategiesComponent implements OnInit {
 
   loadPairs() {
     this.actionService.getAllPairs().subscribe((resp) => {
-        if (this.formValue.strategy_pairs_size.value === 0) {
-          let result;
-          result = _.filter(resp, (o) => {
-            return o.price <= 0.000002;
-          });
-          this.pairs = [];
-          _.forEach(this.activeList, (o) => {
-            _.forEach(result, (p) => {
-              if (o.pair === p.name) {
-                this.pairs.push(p);
-              }
-            });
-
-          });
-          this.formValue.strategy_pairs_size.setValue(200);
-          this.strLength = this.pairs.length;
-        } else {
-          const value = this.formValue.strategy_pairs_size.value < 100 ? this.formValue.strategy_pairs_size.value < 10 ? '0.0000000' + this.formValue.strategy_pairs_size.value.toString() : '0.000000' + this.formValue.strategy_pairs_size.value.toString() : '0.00000' + this.formValue.strategy_pairs_size.value.toString();
-          let result2;
-          result2 = _.filter(resp, (o) => {
-            return o.price <= parseFloat(value);
-          });
-          this.pairs = [];
-          _.forEach(this.activeList, (o) => {
-            _.forEach(result2, (p) => {
-              if (o.pair === p.name) {
-                this.pairs.push(p);
-              }
-            });
-
-          });
-          // console.log(this.pairs, this.pairs.length)
-          this.strLength = this.pairs.length;
-        }
-
+      this.firstCall = _.cloneDeep(resp);
+      this.setPairs();
       },
       (error) => {
       });
+  }
+
+  setPairs(){
+
+    if (this.formValue.strategy_pairs_size.value === '' || this.formValue.strategy_pairs_size.value === null) {
+      const result = _.filter(this.firstCall, (o) => {
+        return o.price <= 0.00001;
+      });
+      this.pairs = [];
+      _.forEach(this.activeList, (o) => {
+        _.forEach(result, (p) => {
+          if (o.pair === p.name) {
+            this.pairs.push(p);
+          }
+        });
+
+      });
+      this.formValue.strategy_pairs_size.setValue('999');
+      this.strLength = this.pairs.length;
+    } else {
+      // tslint:disable-next-line:max-line-length
+      const pSize = (this.formValue.strategy_pairs_size.value);
+      const value = this.formValue.strategy_pairs_size.value < 100 ? this.formValue.strategy_pairs_size.value < 10 ? '0.0000000' + pSize : '0.000000' + pSize : '0.00000' + pSize;
+      const result2 = _.filter(this.firstCall, (o) => {
+        return o.price <= parseFloat(value);
+      });
+      this.pairs = [];
+      _.forEach(this.activeList, (o) => {
+        _.forEach(result2, (p) => {
+          if (o.pair === p.name) {
+            this.pairs.push(p);
+          }
+        });
+
+      });
+      this.strLength = this.pairs.length;
+    }
   }
 
   loadPrices() {
@@ -438,61 +515,185 @@ export class StrategiesComponent implements OnInit {
       const formattedPrice = Math.floor(price.price.toFixed(8));
       this.formValue.strategy_buy_price.setValue(price.price.toFixed(8));
       this.formValue.strategy_sell_price.setValue(price.price.toFixed(8));
+      this.formValue.strategy_capitalType.setValue('btc');
+      this.isBtcCapital = true;
+      this.getAvailableBalance(pairs);
     }
 
   }
 
   initializeStrategy() {
-    const quantity = this.formValue.strategy_capital.value / parseFloat(this.formValue.strategy_buy_price.value);
+    let quantity;
+    if (this.capitalType === 'btc') {
+      quantity = this.formValue.strategy_capital.value / parseFloat(this.formValue.strategy_buy_price.value);
+    } else {
+      quantity = this.formValue.strategy_capital.value;
+    }
     const date = new Date();
+    // console.log( parseFloat(this.formValue.strategy_sell_price.value) , this.formValue.strategy_sell_price.value);  : (this.formValue.strategy_capital.value * this.currentPrice).toFixed(8)
     const payload = {
       name: this.formValue.strategy_name.value,
       coin_pair: this.formValue.strategy_pairs.value,
       capital: this.formValue.strategy_capital.value,
       quantity: Math.floor(parseFloat(quantity.toFixed(3))),
       current_capital: this.formValue.strategy_capital.value,
-      current_status: 'BUY',
+      current_status: this.capitalType === 'btc' ? 'BUY' : 'SELL',
       buy_price: parseFloat(this.formValue.strategy_buy_price.value),
       sell_price: parseFloat(this.formValue.strategy_sell_price.value),
+      current_initial_price: this.currentPrice,
       date: this.datePipe.transform(date, 'yyyy-MM-dd'),
-      status: 'ACTIVE',
+      status: this.orderType !== 'single' ? 'ACTIVE' : 'INACTIVE',
+      isBtcCapital: this.capitalType === 'btc',
+      order_type: this.orderType,
     };
-    // console.log(payload);
-    this.actionService.setStrategy(payload).subscribe((resp) => {
-        if (resp) {
+    if (this.formValue.strategy_segmented.value === true) {
+      const size = (400 / this.btcPrice).toFixed(8);
+      // console.log(payload, size)
+      this.actionService.setStrategySplitted(payload, size).subscribe((resp) => {
+          if (resp) {
+            this.close();
+            this.actionService.getBtcBalance().subscribe();
+            this.alertService.addMessage('success', 'Strategia inizializzata con successo');
+          }
+        },
+        (error) => {
           this.close();
-          this.actionService.getBtcBalance().subscribe();
-          this.alertService.addMessage('success', 'Strategia inizializzata con successo');
+        });
+
+    } else {
+      this.actionService.setStrategy(payload).subscribe((resp) => {
+          if (resp) {
+            this.close();
+            this.actionService.getBtcBalance().subscribe();
+            this.alertService.addMessage('success', 'Strategia inizializzata con successo');
+          }
+        },
+        (error) => {
+          this.close();
+        });
+    }
+
+
+  }
+
+  checkSizeOrder(type: string) {
+    if (this.formValue.strategy_capital.value) {
+
+      let result = false;
+
+      if (this.formValue.strategy_capital.value * this.btcPrice > 800 && type === 'btc') {
+        // console.log(this.formValue.strategy_capital.value, this.currentPrice, this.formValue.strategy_capital.value * this.currentPrice);
+        // const val = this.formValue.strategy_capital.value * this.currentPrice;
+        // const pivot = 400 / this.btcPrice;
+        // console.log(val, pivot)
+        result = true;
+      }
+
+      if (type !== 'btc') {
+        const val = this.formValue.strategy_capital.value * this.currentPrice;
+        const pivot = 400 / this.btcPrice;
+        // console.log(val, pivot, 2 * pivot);
+        if (val > (2 * pivot)) {
+          result = true;
+        }
+      }
+      return result;
+    }
+  }
+
+  checkSizeAltcoin() {
+    if (this.formValue.strategy_capitalType.value !== 'btc' && this.strategiesForm.valid) {
+      if (this.strategyType !== 'single') {
+        const count = this.availableCapital / this.formValue.strategy_capital.value;
+        // tslint:disable-next-line:max-line-length
+        if (count >= 2 && count >= this.formValue.strategy_size.value && (this.formValue.strategy_capital.value > this.minOrder.toFixed(0))) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        // tslint:disable-next-line:max-line-length
+        if (this.formValue.strategy_capital.value > this.availableCapital || (this.formValue.strategy_capital.value < this.minOrder.toFixed(0))) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+    } else if (this.formValue.strategy_capitalType.value === 'btc') {
+      return true;
+    }
+
+  }
+
+  getAvailableBalance(pair) {
+    this.actionService.getSpecificBalance(pair).subscribe((resp) => {
+        this.minOrder = 0.00011 / this.currentPrice;
+        // console.log('min order: ', this.minOrder);
+        if (resp.pair_balance > this.minOrder) {
+          this.availableCapital = parseFloat(resp.pair_balance);
+          this.isBtcCapital = false;
+
+        } else {
+          this.availableCapital = 0;
+          this.isBtcCapital = true;
         }
       },
       (error) => {
-        this.close();
       });
   }
 
   initializeStrategies() {
-    const quantity = this.formValue.strategy_capital.value / parseFloat(this.formValue.strategy_buy_price.value);
+    let quantity;
+    if (this.isBtcCapital) {
+      quantity = this.formValue.strategy_capital.value / parseFloat(this.formValue.strategy_buy_price.value);
+    } else {
+      quantity = this.formValue.strategy_capital.value;
+    }
     const payload = {
       coin_pair: this.formValue.strategy_pairs.value,
       capital: this.formValue.strategy_capital.value,
       quantity: Math.round(parseFloat(quantity.toFixed(3))),
       price: parseFloat(this.formValue.strategy_buy_price.value),
+      current_initial_price: this.currentPrice,
       n_strategy: this.formValue.strategy_size.value,
-      order: this.formValue.strategy_direction.value
+      order: this.formValue.strategy_direction.value,
+      // tslint:disable-next-line:radix
+      jumps: parseInt(this.formValue.strategy_jumps.value),
+      isBtcCapital: this.capitalType === 'btc',
+      order_type: this.orderType
     };
     // console.log(payload);
-    this.actionService.setStrategies(payload).subscribe((resp) => {
-        if (resp) {
+    if (this.formValue.strategy_segmented.value === true) {
+      // tslint:disable-next-line:max-line-length
+      const size = (400 / this.btcPrice).toFixed(8) ;
+      // console.log(payload, size)
+      this.actionService.setStrategiesSplitted(payload, size).subscribe((resp) => {
+          if (resp) {
+            this.close();
+            this.actionService.getBtcBalance().subscribe();
+            this.alertService.addMessage('success', resp.success);
+          }
+        },
+        (error) => {
           this.close();
-          this.actionService.getBtcBalance().subscribe();
-          this.alertService.addMessage('success', resp.success);
-        }
-      },
-      (error) => {
-        this.close();
-        this.alertService.addMessage('danger', error.error);
+          this.alertService.addMessage('danger', error.error);
 
-      });
+        });
+    } else {
+      this.actionService.setStrategies(payload).subscribe((resp) => {
+          if (resp) {
+            this.close();
+            this.actionService.getBtcBalance().subscribe();
+            this.alertService.addMessage('success', resp.success);
+          }
+        },
+        (error) => {
+          this.close();
+          this.alertService.addMessage('danger', error.error);
+
+        });
+    }
+
   }
 
   editStrategy() {
@@ -501,8 +702,13 @@ export class StrategiesComponent implements OnInit {
   }
 
   openConfirmModal() {
-    this.confirmModal.show('modal-lg');
+    if (this.checkSizeAltcoin()) {
+      this.confirmModal.show('modal-lg');
+    } else {
+      this.alertService.addMessage('danger', 'Quantità inserite nell ordine errate!! Controlla il tuo ordine!!');
+    }
   }
+
 
   close() {
     this.confirmModal.dismiss();

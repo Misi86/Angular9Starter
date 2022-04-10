@@ -6,6 +6,7 @@ import {HomeGuard} from './home.guard';
 import {IndicatorsComponent} from './indicators/indicators.component';
 import {StrategiesComponent} from './strategies/strategies.component';
 import {SettingsComponent} from './settings/settings.component';
+import {IndicatorsGuard} from './indicators/indicators.guard';
 
 
 const routes: Routes = [
@@ -17,11 +18,12 @@ const routes: Routes = [
         path: 'dashboard',
         component: DashboardComponent
       }
-      // ,
-      // {
-      //   path: 'indicators',
-      //   component: IndicatorsComponent
-      // }
+      ,
+      {
+        path: 'indicators',
+        component: IndicatorsComponent,
+        canActivate: [IndicatorsGuard]
+      }
       , {
       path: 'strategies',
         component: StrategiesComponent
@@ -30,7 +32,7 @@ const routes: Routes = [
       {
       path: 'settings',
         component: SettingsComponent
-}
+      }
     ],
   }
 ];
