@@ -24,12 +24,17 @@
                 </a>
               </div>
             </div>
-            <div class="desk-info" *ngIf="currentPrices.length">
-            <span  class="price-label m-1 pointer"  *ngFor="let p of currentPrices; let last=last" (click)="setFilterPair(p.symbol)" [ngClass]="{'light': cssmode,'dark': !cssmode, 'selected-filter': p.symbol === searchFilter}">
-             <strong>{{p.symbol}}</strong>: {{ (p.lastPrice).toFixed(8) }} <br>
-             <strong> Volume</strong>: {{p.quoteVolume.toFixed(2)}}
-            </span>
-          </div>
+            <div class="desk-info top" >
+              <div *ngIf="currentPrices.length">
+                <span  class="price-label m-1 pointer"  *ngFor="let p of currentPrices; let last=last" (click)="setFilterPair(p.symbol)" [ngClass]="{'light': cssmode,'dark': !cssmode, 'selected-filter': p.symbol === searchFilter}">
+                 <strong>{{p.symbol}}</strong>: {{ (p.lastPrice).toFixed(8) }} <br>
+                 <strong> Volume</strong>: {{p.quoteVolume.toFixed(2)}}
+                </span>
+              </div>
+              <div *ngIf="!currentPrices.length" >
+                <div class="card-s" role="status"></div>
+              </div>
+            </div>
           </div>
           <div class="col-2">
           <span class="float-right mb-2">

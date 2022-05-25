@@ -84,6 +84,9 @@
 }
 .desk-info{
   display: block;
+  &.top{
+    height: 74px;
+  }
 }
 table {
 

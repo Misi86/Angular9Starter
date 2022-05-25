@@ -41,6 +41,12 @@ export class ActionService {
     }));
   }
 
+  getMoneyPrice(pairs: any, ex: any) {
+    return this.http.get<any>('api/binance/getprice/' + pairs + ex).pipe(map(resp => {
+      return resp;
+    }));
+  }
+
   getDetailsPairs(pair: any) {
     return this.http.get<any>('api/binance/prevday/' + pair).pipe(map(resp => {
       return resp;
@@ -99,6 +105,12 @@ export class ActionService {
 
   getProjections() {
     return this.http.get<any>('api/projections/all').pipe(map(data => {
+      return data;
+    }));
+  }
+
+  getMACD(pair: any, interval: any) {
+    return this.http.get<any>('api/macd/' + pair + '/' + interval ).pipe(map(data => {
       return data;
     }));
   }

@@ -12,9 +12,10 @@ import {ModalComponent} from '../../shared/modal/modal.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {AlertComponent} from '../../shared/alert/alert.component';
 import {NgxSliderModule} from '@angular-slider/ngx-slider';
-import {NgxChartsModule} from "@swimlane/ngx-charts";
-import {NgbDatepickerModule} from "@ng-bootstrap/ng-bootstrap";
-import {IndicatorsGuard} from "./indicators/indicators.guard";
+import {NgxChartsModule} from '@swimlane/ngx-charts';
+import {NgbDatepickerModule} from '@ng-bootstrap/ng-bootstrap';
+import {IndicatorsGuard} from './indicators/indicators.guard';
+import {VaultComponent} from './vault/vault.component';
 // import {BarChartModule} from "@swimlane/ngx-charts";
 // import {Ng5SliderModule} from 'ng5-slider';
 // import {BrowserModule} from "@angular/platform-browser";
@@ -40,6 +41,7 @@ import {IndicatorsGuard} from "./indicators/indicators.guard";
     DashboardComponent,
     IndicatorsComponent,
     StrategiesComponent,
+    VaultComponent,
     SettingsComponent,
     NotFoundComponent,
     ModalComponent,

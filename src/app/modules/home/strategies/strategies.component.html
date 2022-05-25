@@ -23,12 +23,12 @@
           <div class="col-sm-9 form-group" *ngIf="strategyType === 'single'">
             <input (blur)="checkIfExist(formValue.strategy_name.value)"  formControlName="strategy_name" class="form-control" type="text"  id="strategy-name">
           </div>
-          <div class="col-sm-3 form-group">
-            <label for="size_pairs">Satoshi max:</label>
-          </div>
-          <div class="col-sm-9 form-group custom-slider">
-            <ngx-slider  (ngModelChange)="setPairs()" formControlName="strategy_pairs_size"  id="size_pairs" [options]="optionsStr"></ngx-slider>
-          </div>
+<!--          <div class="col-sm-3 form-group">-->
+<!--            <label for="size_pairs">Satoshi max:</label>-->
+<!--          </div>-->
+<!--          <div class="col-sm-9 form-group custom-slider">-->
+<!--            <ngx-slider  (ngModelChange)="setPairs()" formControlName="strategy_pairs_size"  id="size_pairs" [options]="optionsStr"></ngx-slider>-->
+<!--          </div>-->
           <div class="col-sm-3 form-group">
             <label for="select-pairs">Seleziona scambio: <br>(N° {{strLength}})</label>
           </div>
@@ -43,12 +43,13 @@
             <label for="select-jumps">Salti in satoshi:</label>
           </div>
           <div class="col-sm-9 form-group" *ngIf="strategyType === 'multi'">
-            <select  formControlName="strategy_jumps" class="form-control" id="select-jumps">
-              <option value="1" [selected]="true">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-            </select>
+            <input type="number" formControlName="strategy_jumps" class="form-control" id="select-jumps">
+<!--            <select  formControlName="strategy_jumps" class="form-control" id="select-jumps">-->
+<!--              <option value="1" [selected]="true">1</option>-->
+<!--              <option value="2">2</option>-->
+<!--              <option value="3">3</option>-->
+<!--              <option value="4">4</option>-->
+<!--            </select>-->
           </div>
           <div class="col-sm-3 form-group">
             <label for="select-pairs">Seleziona Capitale:</label>

@@ -1,0 +1,77 @@
+<div class="sub-header">
+  <div class="h1">Vault  </div>
+</div>
+<div  class="row">
+  <div class="col-sm-12 mb-2 mt-2">
+    <form class="container" [formGroup]="vaultForm" (ngSubmit)="setData()" novalidate>
+        <div class="form-group d-inline-flex">
+          <label for="pair">Moneta</label>
+          <select (ngModelChange)="checkedPair(formValue.vault_pair.value, formValue.vault_ex.value, formValue.vault_timeframe.value)" formControlName="vault_pair" class="ml-3 form-control inputStr" id="pair">
+            <option *ngFor="let p of allPairs" >{{p.pair}}</option>
+          </select>
+          <span style="font-size:30px" class="ml-2 mr-2">/</span>
+          <select (ngModelChange)="checkedPair(formValue.vault_pair.value, formValue.vault_ex.value, formValue.vault_timeframe.value)" formControlName="vault_ex" class="form-control inputStr">
+            <option value="BTC">BTC</option>
+            <option value="USDT">USDT</option>
+          </select>
+          <label for="tf" class="ml-2 mr-2"> TimeFrame</label>
+          <select id="tf" formControlName="vault_timeframe" class="form-control inputStr" (ngModelChange)="checkedPair(formValue.vault_pair.value, formValue.vault_ex.value, formValue.vault_timeframe.value)">
+            <option value="60">1h</option>
+            <option value="240">4h</option>
+            <option value="D">Day</option>
+          </select>
+        </div>
+      <div class="ml-5 form-group d-inline-flex" *ngIf="isAccepted">
+          <label for="qty">Quantity</label>
+          <input formControlName="vault_quantity" type="number" class="form-control inputStr ml-5" id="qty">
+        </div>
+      <div class="ml-5 form-group d-inline-flex" *ngIf="isAccepted">
+        <button class="btn start-btn float-right"> AVVIA</button>
+      </div>
+      <div class="ml-5 form-group d-inline-flex" *ngIf="!isAccepted">
+          <p>Credito insufficente per investire !!!</p>
+           </div>
+    </form>
+  </div>
+  <div class="col-sm-12">
+    <div class="container tradingview-widget-container" >
+      <div style="height: 500px" id="mappa"></div>
+    </div>
+<!--    <div class="spinner-border" role="status">-->
+<!--      <span class="sr-only">Loading...</span>-->
+<!--    </div>-->
+  </div>
+  <div class="col-sm-12 mt-5">
+    <table class="table" style="color:white">
+      <tr>
+        <th>Moneta</th>
+        <th>Initial qty</th>
+        <th>Updated qty</th>
+        <th>Money tmp</th>
+        <th>Status</th>
+        <th>Increment</th>
+        <th></th>
+      </tr>
+      <tr *ngFor="let d of savedData">
+        <td>{{d.pair}}</td>
+        <td>{{d.initial_qty}}</td>
+        <td>{{d.updated_qty}}</td>
+        <td>{{d.tmpMoney}}</td>
+        <td>{{d.status}}</td>
+        <td>{{d.increment}}%</td>
+        <td><button (click)="removePair(d.id)" class="btn btn-danger">Cancella</button></td>
+      </tr>
+    </table>
+  </div>
+<!--  <div class="col-sm-4 invested mt-4" *ngFor="let d of savedData; let $i = index;">-->
+<!--    <div class="progress blue" id="{{$i}}">-->
+<!--                <span class="progress-left">-->
+<!--                  <span class="progress-bar"></span>-->
+<!--                </span>-->
+<!--      <span class="progress-right">-->
+<!--                    <span class="progress-bar"></span>-->
+<!--                </span>-->
+<!--      <div class="progress-value">{{d.increment}}% <span style="font-size:14px">{{d.pair}}</span></div>-->
+<!--    </div>-->
+<!--  </div>-->
+</div>

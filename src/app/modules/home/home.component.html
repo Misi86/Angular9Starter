@@ -54,6 +54,11 @@
                  [routerLink]="['indicators']"><img width="22" src="assets/icons/chart-line-solid-b.svg">
                 <span>  Proiezioni</span></a>
             </li>
+            <li class="nav-item" *ngIf="authService.role === 'admin' && (authService.user === 'Misi862' || authService.user === 'mattia88')">
+              <a class="nav-link mobile" data-target=".navbar-collapse.show" data-toggle="collapse"
+                 [routerLink]="['vault']"><img width="22" src="assets/icons/lock-solid.svg">
+                <span>  Vault</span></a>
+            </li>
             <li class="nav-item">
               <a class="nav-link mobile" data-target=".navbar-collapse.show" data-toggle="collapse"
                  [routerLink]="['settings']"><img width="22" src="assets/icons/folder-open-solid.svg">
@@ -90,6 +95,11 @@
             <a data-toggle="tooltip" data-placement="top" title="Calcoli" class="nav-link  text-white" [routerLink]="['indicators']">
               <img alt="opzioni" width="22" src="assets/icons/chart-line-solid-b.svg">
               <span class="ml-1">Proiezioni</span></a>
+          </li>
+          <li class="nav-item" *ngIf="authService.role === 'admin' && (authService.user === 'Misi862' || authService.user === 'mattia88')">
+            <a data-toggle="tooltip" data-placement="top" title="Vault" class="nav-link  text-white" [routerLink]="['vault']">
+              <img alt="vault" width="22" src="assets/icons/lock-solid.svg">
+              <span class="ml-1">Vault</span></a>
           </li>
           <li class="nav-item">
             <a data-toggle="tooltip" data-placement="top" title="Opzioni" class="nav-link  text-white" [routerLink]="['settings']">

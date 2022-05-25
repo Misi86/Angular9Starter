@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   local: true,
-  api: 'http://127.0.0.1:3000/'
-  // api: 'http://ec2-15-160-50-127.eu-south-1.compute.amazonaws.com:3000/'
+  // api: 'http://127.0.0.1:3000/'
+  api: 'http://ec2-15-160-240-109.eu-south-1.compute.amazonaws.com:3000/'
   // api: 'http://ec2-15-160-2-192.eu-south-1.compute.amazonaws.com:3000/' andrea
   // api: 'http://ec2-35-152-51-18.eu-south-1.compute.amazonaws.com:3000/' Multiclienti
   // OLD ACCOUNT
@@ -17,7 +17,7 @@ export const environment = {
   // api: 'http://ec2-15-161-58-222.eu-south-1.compute.amazonaws.com:3000/' -- AnnalisaP
   // api: 'http://ec2-15-161-134-114.eu-south-1.compute.amazonaws.com:3000/' -- CapocciaMarco
   // api: 'http://ec2-15-161-146-7.eu-south-1.compute.amazonaws.com:3000/' -- AlessiaRoberti
-  // api: 'http://ec2-35-152-51-132.eu-south-1.compute.amazonaws.com:3000/' -- DanieleRotella
+  // api: 'http://ec2-35-152-51-132.eu-south-1.compute.amazonaws.com:3000/' -- DanieleRotella -50-127
 
 };
 

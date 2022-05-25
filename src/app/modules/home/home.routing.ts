@@ -7,6 +7,7 @@ import {IndicatorsComponent} from './indicators/indicators.component';
 import {StrategiesComponent} from './strategies/strategies.component';
 import {SettingsComponent} from './settings/settings.component';
 import {IndicatorsGuard} from './indicators/indicators.guard';
+import {VaultComponent} from "./vault/vault.component";
 
 
 const routes: Routes = [
@@ -22,6 +23,12 @@ const routes: Routes = [
       {
         path: 'indicators',
         component: IndicatorsComponent,
+        canActivate: [IndicatorsGuard]
+      }
+      ,
+      {
+        path: 'vault',
+        component: VaultComponent,
         canActivate: [IndicatorsGuard]
       }
       , {
