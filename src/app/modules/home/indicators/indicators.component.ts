@@ -131,7 +131,7 @@ export class IndicatorsComponent implements OnInit, AfterViewInit {
   loadPairs() {
     this.actionService.getAllPairs().subscribe((resp) => {
       const result = _.filter(resp, (o) => {
-        return o.price <= 0.00001;
+        return o.price <= 0.1;
       });
       this.pairs = [];
       _.forEach(this.activeList, (o) => {

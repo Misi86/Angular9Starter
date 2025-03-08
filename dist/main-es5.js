@@ -7960,7 +7960,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
           this.actionService.getAllPairs().subscribe(function (resp) {
             var result = lodash__WEBPACK_IMPORTED_MODULE_1__["filter"](resp, function (o) {
-              return o.price <= 0.00001;
+              return o.price <= 0.1;
             });
             _this25.pairs = [];
             lodash__WEBPACK_IMPORTED_MODULE_1__["forEach"](_this25.activeList, function (o) {
@@ -10295,10 +10295,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         this.strategiesForm = this.fb.group({
           strategy_name: [''],
           strategy_pairs: ['', _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required],
-          strategy_capital: ['', [_angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required]],
+          strategy_capital: ['', _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required],
           strategy_buy_price: ['', _angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required],
           strategy_sell_price: [''],
-          strategy_jumps: [1],
+          strategy_jumps: [],
           strategy_capitalType: ['btc'],
           strategy_segmented: [false],
           strategy_orderType: ['cyclic'],
@@ -10378,8 +10378,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             this.formValue.strategy_name.setValidators([_angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required]);
             this.formValue.strategy_sell_price.setValidators([_angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required]);
             this.formValue.strategy_direction.clearValidators();
-            this.formValue.strategy_size.clearValidators(); // this.formValue.strategy_jumps.clearValidators();
-
+            this.formValue.strategy_size.clearValidators();
             this.updateFormStatus();
           } else {
             this.isStrPresent = false;
@@ -10392,8 +10391,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             this.formValue.strategy_name.clearValidators();
             this.formValue.strategy_sell_price.clearValidators();
             this.formValue.strategy_direction.setValidators([_angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required]);
-            this.formValue.strategy_size.setValidators([_angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required]); // this.formValue.strategy_jumps.setValidators([Validators.required]);
-
+            this.formValue.strategy_size.setValidators([_angular_forms__WEBPACK_IMPORTED_MODULE_1__["Validators"].required]);
+            this.formValue.strategy_jumps.setValue(1);
             this.updateFormStatus();
           }
 
@@ -10739,7 +10738,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       features: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵProvidersFeature"]([_angular_common__WEBPACK_IMPORTED_MODULE_2__["DatePipe"]])],
       decls: 88,
       vars: 37,
-      consts: [[1, "sub-header"], [1, "row"], [1, "col-sm-2"], ["for", "single-order"], ["value", "single", "type", "radio", "id", "single-order", 3, "ngModel", "ngModelChange"], [1, "col-sm-3"], ["for", "multiple-order"], ["type", "radio", "value", "multi", "id", "multiple-order", 3, "ngModel", "ngModelChange"], [1, "col-sm-7"], [1, "strategies-container"], ["novalidate", "", 3, "formGroup", "ngSubmit"], [1, "col-sm-8"], ["class", "col-sm-3 form-group", 4, "ngIf"], ["class", "col-sm-9 form-group", 4, "ngIf"], [1, "col-sm-3", "form-group"], ["for", "select-pairs"], [1, "col-sm-9", "form-group"], ["formControlName", "strategy_pairs", "id", "select-pairs", 1, "form-control", 3, "ngModelChange"], ["value", ""], [3, "value", 4, "ngFor", "ngForOf"], ["for", "btc-capital"], ["formControlName", "strategy_capitalType", "type", "radio", "value", "btc", "id", "btc-capital", 3, "ngModel", "ngModelChange"], ["for", "other-capital", 4, "ngIf"], ["for", "buy-price"], ["formControlName", "strategy_capital", "type", "number", "id", "capital", 1, "form-control", "inputStr"], ["for", "cutOrder", "class", "mt-3", 4, "ngIf"], ["class", "p-2 alert-danger  mt-1", "style", "border-radius: 6px", 4, "ngIf"], ["class", "col-sm-9 form-group custom-slider", 4, "ngIf"], [1, "btn", "start-btn", "float-right", 3, "disabled"], [1, "col-sm-4"], ["confirmModal", ""], [1, "app-modal-header"], [1, "app-modal-body", "text-center"], [4, "ngIf"], ["data-dismiss", "modal", 1, "btn", "btn-danger", "float-left", 3, "click"], ["data-dismiss", "modal", 1, "btn", "start-btn", "float-right", 3, "click"], ["for", "strategy-name"], ["formControlName", "strategy_name", "type", "text", "id", "strategy-name", 1, "form-control", 3, "blur"], [3, "value"], ["for", "select-jumps"], ["type", "number", "formControlName", "strategy_jumps", "id", "select-jumps", 1, "form-control"], ["for", "other-capital"], ["formControlName", "strategy_capitalType", "type", "radio", "id", "other-capital", 3, "value", "ngModel", "ngModelChange"], ["for", "cutOrder", 1, "mt-3"], ["id", "cutOrder", "type", "checkbox", "formControlName", "strategy_segmented", 1, ""], [1, "p-2", "alert-danger", "mt-1", 2, "border-radius", "6px"], ["for", "cyclic-order"], ["formControlName", "strategy_orderType", "type", "radio", "value", "cyclic", "id", "cyclic-order", 3, "ngModel", "ngModelChange"], ["for", "single-order", 4, "ngIf"], ["formControlName", "strategy_orderType", "type", "radio", "value", "single", "id", "one-order", 3, "ngModel", "ngModelChange"], ["formControlName", "strategy_buy_price", "type", "number", "id", "buy-price", 1, "form-control", "inputStr"], ["for", "sell-price"], ["formControlName", "strategy_sell_price", "type", "number", "id", "sell-price", 1, "form-control", "inputStr"], ["for", "direction"], ["formControlName", "strategy_direction", "type", "number", "id", "direction", 1, "form-control", "inputStr"], ["value", "up"], ["value", "down"], [1, "col-sm-9", "form-group", "custom-slider"], ["formControlName", "strategy_size", 3, "options"]],
+      consts: [[1, "sub-header"], [1, "row"], [1, "col-sm-2"], ["for", "single-order"], ["value", "single", "type", "radio", "id", "single-order", 3, "ngModel", "ngModelChange"], [1, "col-sm-3"], ["for", "multiple-order"], ["type", "radio", "value", "multi", "id", "multiple-order", 3, "ngModel", "ngModelChange"], [1, "col-sm-7"], [1, "strategies-container"], ["novalidate", "", 3, "formGroup", "ngSubmit"], [1, "col-sm-8"], ["class", "col-sm-3 form-group", 4, "ngIf"], ["class", "col-sm-9 form-group", 4, "ngIf"], [1, "col-sm-3", "form-group"], ["for", "select-pairs"], [1, "col-sm-9", "form-group"], ["formControlName", "strategy_pairs", "id", "select-pairs", 1, "form-control", 3, "ngModelChange"], ["value", ""], [3, "value", 4, "ngFor", "ngForOf"], ["for", "btc-capital"], ["formControlName", "strategy_capitalType", "type", "radio", "value", "btc", "id", "btc-capital", 3, "ngModel", "ngModelChange"], ["for", "other-capital", 4, "ngIf"], ["for", "buy-price"], ["formControlName", "strategy_capital", "type", "number", "id", "capital", 1, "form-control", "inputStr"], ["for", "cutOrder", "class", "mt-3", 4, "ngIf"], ["class", "p-2 alert-danger  mt-1", "style", "border-radius: 6px", 4, "ngIf"], ["class", "col-sm-9 form-group custom-slider", 4, "ngIf"], [1, "btn", "start-btn", "float-right", 3, "disabled"], [1, "col-sm-4"], ["confirmModal", ""], [1, "app-modal-header"], [1, "app-modal-body", "text-center"], [4, "ngIf"], ["data-dismiss", "modal", 1, "btn", "btn-danger", "float-left", 3, "click"], ["data-dismiss", "modal", 1, "btn", "start-btn", "float-right", 3, "click"], ["for", "strategy-name"], ["formControlName", "strategy_name", "type", "text", "id", "strategy-name", 1, "form-control", 3, "blur"], [3, "value"], ["for", "select-jumps"], ["type", "number", "formControlName", "strategy_jumps", "id", "select-jumps", 1, "form-control", "inputStr"], ["for", "other-capital"], ["formControlName", "strategy_capitalType", "type", "radio", "id", "other-capital", 3, "value", "ngModel", "ngModelChange"], ["for", "cutOrder", 1, "mt-3"], ["id", "cutOrder", "type", "checkbox", "formControlName", "strategy_segmented", 1, ""], [1, "p-2", "alert-danger", "mt-1", 2, "border-radius", "6px"], ["for", "cyclic-order"], ["formControlName", "strategy_orderType", "type", "radio", "value", "cyclic", "id", "cyclic-order", 3, "ngModel", "ngModelChange"], ["for", "single-order", 4, "ngIf"], ["formControlName", "strategy_orderType", "type", "radio", "value", "single", "id", "one-order", 3, "ngModel", "ngModelChange"], ["formControlName", "strategy_buy_price", "type", "number", "id", "buy-price", 1, "form-control", "inputStr"], ["for", "sell-price"], ["formControlName", "strategy_sell_price", "type", "number", "id", "sell-price", 1, "form-control", "inputStr"], ["for", "direction"], ["formControlName", "strategy_direction", "type", "number", "id", "direction", 1, "form-control", "inputStr"], ["value", "up"], ["value", "down"], [1, "col-sm-9", "form-group", "custom-slider"], ["formControlName", "strategy_size", 3, "options"]],
       template: function StrategiesComponent_Template(rf, ctx) {
         if (rf & 1) {
           _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "h1", 0);
@@ -11852,6 +11851,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           }, {
             pair: 'GASBTC'
           }, {
+            pair: 'GALABTC'
+          }, {
             pair: 'SNMBTC'
           }, {
             pair: 'BQXBTC'
@@ -12185,6 +12186,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             pair: 'ORNBTC'
           }, {
             pair: 'OXTBTC'
+          }, {
+            pair: 'QIBTC'
           }, {
             pair: 'PAXGBTC'
           }, {
@@ -13067,8 +13070,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       production: false,
       local: true,
       // api: 'http://127.0.0.1:3000/'
-      // api: 'http://ec2-15-160-240-109.eu-south-1.compute.amazonaws.com:3000/'
-      api: 'http://ec2-15-160-2-192.eu-south-1.compute.amazonaws.com:3000/' // api: 'http://ec2-35-152-51-18.eu-south-1.compute.amazonaws.com:3000/' Multiclienti
+      api: 'http://ec2-15-161-147-70.eu-south-1.compute.amazonaws.com:3000/' // api: 'http://ec2-15-160-2-192.eu-south-1.compute.amazonaws.com:3000/' andrea
+      // api: 'http://ec2-35-152-51-18.eu-south-1.compute.amazonaws.com:3000/'multi
       // OLD ACCOUNT
       // api: 'http://ec2-15-160-2-188.eu-south-1.compute.amazonaws.com:3000/' --AndreaP
       // api: 'http://ec2-35-152-50-80.eu-south-1.compute.amazonaws.com:3000/' -- Mattia

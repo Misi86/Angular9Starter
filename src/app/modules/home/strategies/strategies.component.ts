@@ -53,10 +53,10 @@ export class StrategiesComponent implements OnInit, AfterViewChecked, AfterViewI
     this.strategiesForm = this.fb.group({
       strategy_name: [''],
       strategy_pairs: ['', Validators.required],
-      strategy_capital: ['', [Validators.required]],
+      strategy_capital: ['', Validators.required],
       strategy_buy_price: ['', Validators.required],
       strategy_sell_price: [''],
-      strategy_jumps: [1],
+      strategy_jumps: [],
       strategy_capitalType: ['btc'],
       strategy_segmented: [false],
       strategy_orderType: ['cyclic'],
@@ -138,7 +138,6 @@ export class StrategiesComponent implements OnInit, AfterViewChecked, AfterViewI
       this.formValue.strategy_sell_price.setValidators([Validators.required]);
       this.formValue.strategy_direction.clearValidators();
       this.formValue.strategy_size.clearValidators();
-      // this.formValue.strategy_jumps.clearValidators();
       this.updateFormStatus();
     } else {
       this.isStrPresent = false;
@@ -152,7 +151,7 @@ export class StrategiesComponent implements OnInit, AfterViewChecked, AfterViewI
       this.formValue.strategy_sell_price.clearValidators();
       this.formValue.strategy_direction.setValidators([Validators.required]);
       this.formValue.strategy_size.setValidators([Validators.required]);
-      // this.formValue.strategy_jumps.setValidators([Validators.required]);
+      this.formValue.strategy_jumps.setValue(1);
       this.updateFormStatus();
     }
     this.formValue.strategy_capitalType.setValue('btc');
