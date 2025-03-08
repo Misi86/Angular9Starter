@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../../core/services/auth.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {ActivatedRoute, Router} from '@angular/router';
 import {AlertService} from '../../../shared/alert/alert.service';
 
@@ -10,9 +10,9 @@ import {AlertService} from '../../../shared/alert/alert.service';
     styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit{
-    public loginForm: FormGroup;
+    public loginForm: UntypedFormGroup;
     constructor(private authService: AuthService,
-                private fb: FormBuilder,
+                private fb: UntypedFormBuilder,
                 private route: ActivatedRoute,
                 private alert: AlertService,
                 private router: Router) {

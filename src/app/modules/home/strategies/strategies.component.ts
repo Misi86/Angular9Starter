@@ -1,5 +1,5 @@
 import {AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, FormGroup, ValidatorFn, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, ValidatorFn, Validators} from '@angular/forms';
 import {ModalComponent} from '../../../shared/modal/modal.component';
 import {AlertService} from '../../../shared/alert/alert.service';
 import {ActionService} from '../../../core/services/action.service';
@@ -18,7 +18,7 @@ declare var $: any;
   providers: [DatePipe]
 })
 export class StrategiesComponent implements OnInit, AfterViewChecked, AfterViewInit {
-  public strategiesForm: FormGroup;
+  public strategiesForm: UntypedFormGroup;
   @ViewChild('confirmModal') confirmModal: ModalComponent;
   public pairs: any = [];
   private currentPrice: number;
@@ -41,7 +41,7 @@ export class StrategiesComponent implements OnInit, AfterViewChecked, AfterViewI
   public showMsg = false;
   public firstCall: any;
 
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
               private alert: AlertService,
               private cdFref: ChangeDetectorRef,
               private actionService: ActionService,

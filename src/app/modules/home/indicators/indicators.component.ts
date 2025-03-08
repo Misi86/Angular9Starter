@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import {ActionService} from '../../../core/services/action.service';
 import {NgxChartsModule} from '@swimlane/ngx-charts';
 import {SharingService} from '../../../core/services/sharing.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup, Validators} from '@angular/forms';
 import {NgbDate, NgbCalendar} from '@ng-bootstrap/ng-bootstrap';
 import {ModalComponent} from '../../../shared/modal/modal.component';
 import {AlertService} from '../../../shared/alert/alert.service';
@@ -20,7 +20,7 @@ export class IndicatorsComponent implements OnInit, AfterViewInit {
   @ViewChild('removeModal') removeModal: ModalComponent;
   public candles = [];
   public strategies = [];
-  public indicatorForm: FormGroup;
+  public indicatorForm: UntypedFormGroup;
   public candlesticks: any;
   public candlesticksShown: any;
   public initialCap: any;
@@ -65,7 +65,7 @@ export class IndicatorsComponent implements OnInit, AfterViewInit {
   public selectedProjections = [];
 
   constructor(public actionService: ActionService,
-              private fb: FormBuilder,
+              private fb: UntypedFormBuilder,
               private cdFref: ChangeDetectorRef,
               public alertService: AlertService,
               private sharingService: SharingService,

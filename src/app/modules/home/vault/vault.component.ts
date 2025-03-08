@@ -1,4 +1,4 @@
-import {FormBuilder, FormGroup} from '@angular/forms';
+import {UntypedFormBuilder, UntypedFormGroup} from '@angular/forms';
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../../core/services/auth.service';
 import {ActionService} from '../../../core/services/action.service';
@@ -14,7 +14,7 @@ declare const TradingView: any;
 })
 export class VaultComponent implements OnInit {
 
-  public vaultForm: FormGroup;
+  public vaultForm: UntypedFormGroup;
   public macdValue: any;
   public allPairs: any;
   public isAccepted = false;
@@ -22,7 +22,7 @@ export class VaultComponent implements OnInit {
   public reload: any;
 
   constructor(public authService: AuthService,
-              private fb: FormBuilder,
+              private fb: UntypedFormBuilder,
               public actionService: ActionService) {
 
     this.vaultForm = this.fb.group({
