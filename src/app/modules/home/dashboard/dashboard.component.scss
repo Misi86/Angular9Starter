@@ -95,10 +95,6 @@ table {
   width: 100%;
 
 
-  .hidden-column{
-   //display: block;
-  }
-
   .single{
     background-color: #FDF493;
     color: black;
@@ -188,9 +184,6 @@ input[class="all"]:focus + svg {
   fill: rgb(0, 109, 217);
 }
 @media screen and (max-width: 600px) {
-  .table {
-
-  }
   .hidden-column{
     display: none !important;
   }

@@ -16,9 +16,11 @@ export class LoginComponent implements OnInit{
                 private route: ActivatedRoute,
                 private alert: AlertService,
                 private router: Router) {
+      
+      
       this.loginForm = this.fb.group({
-        user: ['', Validators.required],
-        password: ['', Validators.required],
+        user: ['example@email.com', Validators.required],
+        password: ['*******', Validators.required],
       });
 
     }
@@ -33,6 +35,21 @@ export class LoginComponent implements OnInit{
         },
         (error) => {}
       );
+    }
+
+    loginWithGoogle() {
+      console.log('Login with Google');
+      // Implement Google login
+    }
+    
+    loginWithApple() {
+      console.log('Login with Apple');
+      // Implement Apple login
+    }
+    
+    loginWithSSO() {
+      console.log('Login with SSO');
+      // Implement SSO login
     }
 }
 

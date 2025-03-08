@@ -1,11 +1,27 @@
-<div class="login-wrapper">
-  <form [formGroup]="loginForm" class="form-signin" (ngSubmit)="login()">
-    <img class="mb-4 logo-back" src="assets/bitcoin-brands.svg" alt="" width="72" height="72">
-    <h1 class="h3 mb-3 font-weight-normal" style="color: white">Accedi</h1>
-    <label for="inputEmail" class="sr-only">Utente</label>
-    <input formControlName="user" type="text" id="inputEmail" class="form-control mb-3" autocomplete="off" placeholder="Utente"  >
-    <label for="inputPassword" class="sr-only">Password</label>
-    <input formControlName="password" type="password" id="inputPassword" class="form-control" placeholder="Password" >
-    <button class="mt-3 btn btn-lg login-btn btn-block" type="submit">Accedi</button>
-  </form>
+<div class="row login-page">
+  <div class="col-sm-6 login-background">
+
+  </div>
+  <div class="col-sm-6">
+    <div class="login-wrapper">
+      <form [formGroup]="loginForm" class="form-signin" (ngSubmit)="login()">
+        <h1>Welcome to lowCapBot</h1>
+        <p>Don't you have an account? <a href="/">Sign Up for free</a></p>
+        <div class="input-container">
+          <label for="inputEmail" class="sr-only">Utente</label>
+          <input formControlName="user" type="text" id="inputEmail" class="form-control mb-3 mt-5" autocomplete="off">
+          <label for="inputPassword" class="sr-only">Password</label>
+          <input formControlName="password" type="password" id="inputPassword" class="form-control">
+          <button class="mt-3 login-btn btn-block" type="submit">Accedi</button>
+        </div>
+      </form>
+      <div class="separator"><hr class="white-sp"><span>OR</span></div>
+      <div class="login-option">
+      <button class="mt-3 login-btn secondary btn-block" (click)="loginWithGoogle()">
+        <img src="../../../../assets/icons/google.png" width="20"> <span>Login with Google</span></button>
+        <a class="mt-4 forgot-pw" href="/">Forgot Password</a>
+      </div>
+    </div>
+  </div>
 </div>
+

@@ -1,19 +1,66 @@
-.login-wrapper{
-  .form-signin{
-    width: 100%;
-    max-width: 330px;
-    padding: 15px;
-    margin: 0 auto;
-    .logo-back{
-      background-color: white;
-      border-radius: 40px;
+
+.login-page {
+  .form-control{
+    padding:  1.4rem 2.75rem !important;
+  }
+  color: white;
+  .login-wrapper{
+
+    .form-signin{
+      width: 100%;
+
+      padding: 20px;
+      margin: 0 auto;
+
+      .input-container {
+        padding: 0 10px;
+      }
+
     }
-    .login-btn{
+    .login-option {
+      padding: 0 20px;
+      .forgot-pw {
+        color: whitesmoke;
+        display: block;
+      }
+    }
+    .login-btn {
       color: white;
       background-color: #435772;
       border-color: #435772;
       opacity: 0.8;
-      font-weight: bold;
+      // font-weight: bold;
+      border-radius: 50px;
+      padding: 15px 0;
+      &.secondary{
+        img {
+          float: left;
+        }
+        color: black;
+        padding: 15px 25px;
+        background-color: whitesmoke;
+        border-color: whitesmoke;
+      }
     }
+    .separator {
+      margin: 20px 0;
+      .white-sp {
+        color: white;
+        border-color: white;
+      }
+      span {
+        position: relative;
+        background: black;
+        top: -27px;
+        padding: 0 20px;
+      }
+    }
+  }
+  .login-background {
+    background-image: url('../../../../../src/assets/img/back_1_btc.jpg');
+    background-position: center;
+    background-size: 100%;
+    background-repeat: no-repeat;
+  
   }
 }
