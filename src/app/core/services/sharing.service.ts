@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@angular/core';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 @Injectable()
 export class SharingService {
   private notify = new Subject<any>();
@@ -8,6 +8,7 @@ export class SharingService {
    */
   notifyObservable$ = this.notify.asObservable();
 
+  
   constructor(){}
 
   public notifyOther(data: any) {
