@@ -1,0 +1,85 @@
+<!-- app.component.html -->
+<div class="bg-dark text-white min-vh-100 d-flex flex-column">
+    <!-- Navigation Bar -->
+    <header class="container py-3">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center">
+            <!-- Logo -->
+            <div class="logo mr-5">
+              <img src="assets/fey-logo.svg" alt="Fey Logo" height="32">
+            </div>
+            
+            <!-- Navigation Links -->
+            <nav class="d-none d-md-flex">
+              <ul class="nav">
+                <li class="nav-item">
+                  <a class="nav-link text-white-50 text-decoration-none" href="#">Pricing</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-white-50 text-decoration-none" href="#">Updates</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link text-white-50 text-decoration-none" href="#">Download</a>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+        
+        <!-- Auth Buttons -->
+        <div class="col-md-6 text-right">
+          <a href="#" class="text-white-50 text-decoration-none mr-3">Login</a>
+          <a href="#" class="btn btn-light rounded-pill px-4">Start your trial</a>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="flex-grow-1 container d-flex flex-column justify-content-center align-items-center text-center py-5">
+      <!-- Hero Section -->
+      <div class="mb-5">
+        <h1 class="display-4 font-weight-bold mb-4">Finance is finally effortless.</h1>
+        <p class="text-white-50 mb-4">
+          Press <span class="badge badge-dark p-1">T</span> anytime to start your trial
+        </p>
+        
+        <button class="btn btn-dark rounded-pill px-4 py-2 mx-auto d-flex align-items-center">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="mr-2" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/>
+          </svg>
+          Watch the guided tour
+        </button>
+      </div>
+      
+      <!-- Dashboard Image -->
+      <div class="position-relative w-100 mb-5">
+        <img 
+          src="assets/dashboard.png" 
+          alt="Finance Dashboard" 
+          class="img-fluid rounded shadow"
+        />
+      </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="container py-3 border-top border-secondary">
+      <div class="row align-items-center">
+        <div class="col-6">
+          <div class="d-flex align-items-center">
+            <div class="logo">
+              <img src="assets/fey-logo.svg" alt="Fey Logo" height="32">
+            </div>
+            <span class="ml-2 font-weight-medium">Fey</span>
+          </div>
+        </div>
+        
+        <div class="col-6 text-right text-white-50">
+          <span>curated by</span>
+          <img src="assets/mobbin-logo.svg" alt="Mobbin Logo" height="24" class="ml-2">
+        </div>
+      </div>
+    </footer>
+  </div>
+  
